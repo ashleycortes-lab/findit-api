@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FINDIT - Modern Neumorphic & Glassmorphic System</title>
+    <!-- SUPABASE JS CLIENT SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        /* =====================================================================================
+           1. MODERN NEUMORPHIC & GLASSMORPHIC DESIGN SYSTEM
+           ===================================================================================== */
+        :root {
+            --bg-dark-slate: #161D27;
+            --bg-viewport: #1A2330;
+            --color-deep-teal: #0D9488;
+            --color-deep-teal-hover: #111827;
+            --color-seafoam: #2DD4BF;
+            --color-coral-spark: #FF6B4A;
+            --color-coral-light: rgba(255, 107, 74, 0.15);
+            --color-text-main: #F1F5F9;
+            --color-text-muted: #94A3B8;
+
+            --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            
+            --radius-small: 10px;
+            --radius-medium: 14px;
+            --radius-card: 20px;
+            --radius-pill: 9999px;
+
+            /* Neumorphic Shadow Tokens */
+            --neu-flat-shadow: 6px 6px 14px #121822, -6px -6px 14px #222E3E;
+            --neu-pressed-shadow: inset 4px 4px 8px #121822, inset -4px -4px 8px #222E3E;
+            --neu-button-shadow: 5px 5px 10px #121822, -5px -5px 10px #222E3E;
+            --neu-button-active: inset 3px 3px 6px #121822, inset -3px -3px 6px #222E3E;
+
+            /* Glassmorphism Surface Tokens */
+            --glass-bg-surface: rgba(30, 41, 59, 0.65);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.12);
+            --glass-blur: blur(14px);
+
+            --transition-smooth: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0; padding: 0;
+            font-family: var(--font-main);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            width: 100%; height: 100vh; overflow: hidden;
+            background-color: var(--bg-dark-slate);
+            color: var(--color-text-main);
+            display: flex; justify-content: center; align-items: center;
+            font-size: 14px; line-height: 1.5;
+        }
+
+        /* HARDWARE PHONE SHELL WITH GLASS FRAME */
+        .mobile-hardware-shell {
+            background: #111620;
+            width: 380px; height: 740px; max-height: 94vh;
+            border-radius: 46px; padding: 12px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7), 0 0 0 2px rgba(255, 255, 255, 0.08), 0 0 20px rgba(13, 148, 136, 0.25);
+            position: relative; display: flex; flex-direction: column;
+            overflow: hidden; flex-shrink: 0;
+        }
+
+        .mobile-viewport-screen {
+            background: var(--bg-viewport);
+            width: 100%; height: 100%; border-radius: 34px;
+            overflow: hidden; display: flex; flex-direction: column;
+            position: relative;
+        }
+
+        /* GLASSMORPHIC STATUS BAR */
+        .mobile-status-bar {
+            height: 40px;
+            background: rgba(22, 29, 39, 0.7);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 18px; font-size: 11px; font-weight: 700;
+            color: var(--color-text-main);
+            border-bottom: var(--glass-border);
+            z-index: 30; flex-shrink: 0;
+        }
+
+        .hardware-camera-notch {
+            width: 90px; height: 14px; background: #0D1219;
+            border-radius: 0 0 12px 12px; margin: 0 auto;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.8);
+        }
+
+        .main-app-content-area {
+            flex: 1; overflow-y: auto; padding: 16px; position: relative; scroll-behavior: smooth;
+        }
+        .main-app-content-area::-webkit-scrollbar { display: none; }
+
+        h2.screen-title { font-size: 19px; font-weight: 800; letter-spacing: -0.02em; color: var(--color-text-main); }
+        p.screen-subtitle { color: var(--color-seafoam); font-size: 11px; margin-bottom: 16px; font-weight: 500; }
+
+        /* NEUMORPHIC INPUT FIELDS */
+        .form-control-group { margin-bottom: 12px; text-align: left; }
+        .form-control-label {
+            font-size: 10px; color: var(--color-text-muted); font-weight: 700;
+            display: block; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.04em;
+        }
+
+        .form-input-field, .form-select-field, .form-textarea-field {
+            width: 100%; padding: 9px 12px; border: none;
+            border-radius: var(--radius-medium); outline: none; font-size: 12px;
+            background: var(--bg-viewport); color: var(--color-text-main);
+            box-shadow: var(--neu-pressed-shadow);
+            transition: border-color var(--transition-smooth);
+        }
+
+        .form-input-field:focus, .form-select-field:focus, .form-textarea-field:focus {
+            box-shadow: var(--neu-pressed-shadow), 0 0 0 1.5px var(--color-seafoam);
+        }
+
+        .password-toggle-wrapper { position: relative; }
+        .password-visibility-toggle {
+            position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+            cursor: pointer; color: var(--color-seafoam); display: flex; align-items: center;
+        }
+
+        /* NEUMORPHIC & GLASSMORPHIC BUTTONS */
+        .action-button-base {
+            width: 100%; padding: 12px; border: var(--glass-border); border-radius: var(--radius-medium);
+            font-size: 12px; font-weight: 800; cursor: pointer; display: flex;
+            justify-content: center; align-items: center; gap: 8px; user-select: none;
+            transition: all var(--transition-smooth);
+            letter-spacing: 0.03em;
+        }
+        
+        .action-button-primary {
+            background: linear-gradient(135deg, #0D9488, #0F766E);
+            color: #FFFFFF;
+            box-shadow: 0 8px 20px rgba(13, 148, 136, 0.35), var(--neu-button-shadow);
+        }
+        .action-button-primary:active { box-shadow: var(--neu-button-active); transform: scale(0.98); }
+
+        .action-button-danger {
+            background: linear-gradient(135deg, #FF6B4A, #DC2626);
+            color: #FFFFFF;
+            box-shadow: 0 8px 20px rgba(255, 107, 74, 0.35);
+        }
+
+        .action-button-secondary {
+            background: var(--glass-bg-surface);
+            color: var(--color-text-main);
+            backdrop-filter: var(--glass-blur);
+            box-shadow: var(--neu-button-shadow);
+        }
+
+        /* GLASSMORPHIC CARDS */
+        .info-card-container {
+            background: var(--glass-bg-surface);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: var(--glass-border);
+            border-radius: var(--radius-card); padding: 12px;
+            margin-bottom: 12px;
+            box-shadow: var(--neu-flat-shadow);
+            display: flex; gap: 12px; align-items: center; cursor: pointer;
+            transition: transform var(--transition-smooth);
+        }
+        .info-card-container:active { transform: scale(0.98); }
+
+        .info-card-thumbnail {
+            width: 44px; height: 44px; border-radius: var(--radius-medium);
+            background: rgba(45, 212, 191, 0.12); color: var(--color-seafoam);
+            border: 1px solid rgba(45, 212, 191, 0.25);
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+
+        .info-card-meta { flex: 1; min-width: 0; }
+        .info-card-title { font-size: 13px; font-weight: 700; color: var(--color-text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .info-card-location { font-size: 10px; color: var(--color-text-muted); margin-top: 2px; }
+
+        .badge-tag-status {
+            display: inline-flex; align-items: center; gap: 4px; font-size: 9px;
+            font-weight: 800; padding: 3px 8px; border-radius: var(--radius-pill); text-transform: uppercase;
+        }
+        .badge-tag-lost { background: rgba(255, 107, 74, 0.18); color: var(--color-coral-spark); border: 1px solid rgba(255, 107, 74, 0.4); }
+        .badge-tag-found { background: rgba(45, 212, 191, 0.18); color: var(--color-seafoam); border: 1px solid rgba(45, 212, 191, 0.4); }
+        .badge-tag-admin { background: rgba(129, 140, 248, 0.18); color: #A5B4FC; border: 1px solid rgba(129, 140, 248, 0.4); }
+        .badge-tag-staff { background: rgba(251, 191, 36, 0.18); color: #FBBF24; border: 1px solid rgba(251, 191, 36, 0.4); }
+        .badge-tag-user { background: rgba(45, 212, 191, 0.18); color: var(--color-seafoam); border: 1px solid rgba(45, 212, 191, 0.4); }
+
+        /* GLASSMORPHIC BOTTOM TAB NAVIGATION */
+        .bottom-navigation-bar {
+            height: 64px;
+            background: rgba(22, 29, 39, 0.75);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-top: var(--glass-border);
+            display: flex; justify-content: space-around; align-items: center;
+            padding-bottom: 4px; z-index: 30; flex-shrink: 0;
+        }
+        .nav-tab-item {
+            display: flex; flex-direction: column; align-items: center;
+            font-size: 9px; color: var(--color-text-muted); cursor: pointer;
+            font-weight: 700; gap: 3px; transition: color var(--transition-smooth);
+        }
+        .nav-tab-item.active { color: var(--color-seafoam); }
+
+        .system-feedback-banner { margin-top: 10px; padding: 8px 12px; border-radius: var(--radius-medium); font-size: 11px; text-align: center; display: none; font-weight: 600; }
+        .feedback-error { background: var(--color-coral-light); color: var(--color-coral-spark); border: 1px solid var(--color-coral-spark); }
+        .feedback-success { background: rgba(45, 212, 191, 0.15); color: var(--color-seafoam); border: 1px solid var(--color-seafoam); }
+
+        /* GLASS OVERLAY MODAL */
+        .confirmation-modal-overlay {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(8px); display: none; justify-content: center;
+            align-items: center; padding: 20px; z-index: 100;
+        }
+
+        .confirmation-modal-dialog {
+            background: var(--glass-bg-surface);
+            backdrop-filter: var(--glass-blur);
+            border: var(--glass-border);
+            padding: 20px; border-radius: var(--radius-card);
+            text-align: center; width: 100%; box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
+
+        .toast-notification-popup {
+            position: absolute; top: 50px; left: 50%; transform: translateX(-50%) translateY(-20px);
+            background: rgba(13, 148, 136, 0.9); backdrop-filter: var(--glass-blur);
+            color: #FFFFFF; padding: 8px 16px; border-radius: var(--radius-pill);
+            font-size: 11px; font-weight: 700; box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            z-index: 150; opacity: 0; pointer-events: none; transition: all var(--transition-smooth);
+            display: flex; align-items: center; gap: 6px;
+        }
+        .toast-notification-popup.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        .auth-toggle-link { display: inline-block; margin-top: 10px; font-size: 11px; color: var(--color-seafoam); font-weight: 700; cursor: pointer; text-decoration: underline; }
+
+        .log-item { background: rgba(15, 23, 42, 0.5); border: var(--glass-border); padding: 8px; border-radius: var(--radius-small); margin-bottom: 6px; font-size: 10px; }
+        .log-time { color: var(--color-text-muted); font-size: 9px; margin-top: 2px; }
+
+        @keyframes fadeInSlideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        .app-view-screen { animation: fadeInSlideUp var(--transition-smooth) forwards; }
+        .brand-vector-svg-container { width: 55px; height: 55px; margin: 0 auto 8px; filter: drop-shadow(0 0 10px rgba(13, 148, 136, 0.5)); }
+        .svg-icon { width: 18px; height: 18px; stroke-width: 2; stroke: currentColor; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+        .svg-icon-lg { width: 22px; height: 22px; stroke-width: 2; stroke: currentColor; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    </style>
+</head>
+<body>
+
+<div class="mobile-hardware-shell">
+    <div class="mobile-viewport-screen">
+        
+        <!-- STATUS BAR -->
+        <div class="mobile-status-bar">
+            <span id="systemClockDisplay">09:41</span>
+            <div class="hardware-camera-notch"></div>
+            <div style="display: flex; gap: 6px; align-items: center;">
+                <svg class="svg-icon" style="width: 12px; height: 12px;" viewBox="0 0 24 24"><path d="M2 20h20L22 4z" fill="currentColor"/></svg>
+                <svg class="svg-icon" style="width: 14px; height: 14px;" viewBox="0 0 24 24"><rect x="2" y="7" width="16" height="10" rx="2" fill="currentColor"/><path d="M22 11v2" stroke="currentColor" stroke-width="2"/></svg>
+            </div>
+        </div>
+
+        <!-- FLOATING TOAST -->
+        <div id="toastNotification" class="toast-notification-popup">
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <span id="toastMessageText">Action completed</span>
+        </div>
+
+        <!-- MAIN VIEW PORT -->
+        <div class="main-app-content-area">
+            
+            <!-- VIEW 1: LOGIN -->
+            <div id="loginViewScreen" class="app-view-screen" style="text-align: center; padding-top: 10px;">
+                <div class="brand-vector-svg-container">
+                    <svg viewBox="0 0 100 100" width="100%" height="100%">
+                        <circle cx="50" cy="50" r="48" fill="url(#tealGradient)"/>
+                        <circle cx="45" cy="45" r="22" stroke="#161D27" stroke-width="6" fill="none"/>
+                        <line x1="61" y1="61" x2="78" y2="78" stroke="#161D27" stroke-width="7" stroke-linecap="round"/>
+                        <path d="M45 32 C39 32 34 37 34 43 C34 50 45 59 45 59 C45 59 56 50 56 43 C56 37 51 32 45 32 Z" fill="#161D27"/>
+                        <circle cx="45" cy="42" r="3" fill="#2DD4BF"/>
+                        <defs>
+                            <linearGradient id="tealGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#2DD4BF" />
+                                <stop offset="100%" stop-color="#0D9488" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+
+                <h2 class="screen-title" style="font-size: 22px;">FINDIT</h2>
+                <p class="screen-subtitle">Supabase Direct Authentication</p>
+
+                <div class="form-control-group">
+                    <label class="form-control-label">User Email Address</label>
+                    <input type="email" id="inputUserEmail" class="form-input-field" value="admin@findit.com" placeholder="Enter email">
+                </div>
+
+                <div class="form-control-group">
+                    <label class="form-control-label">Account Password</label>
+                    <div class="password-toggle-wrapper">
+                        <input type="password" id="inputUserPassword" class="form-input-field" value="Password123" placeholder="Enter password">
+                        <span class="password-visibility-toggle" onclick="togglePasswordInputVisibility('inputUserPassword')">
+                            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </span>
+                    </div>
+                </div>
+
+                <button id="loginSubmitBtn" class="action-button-base action-button-primary" style="margin-top: 10px;" onclick="executeBackendLoginProcess()">
+                    LOG IN
+                </button>
+                
+                <span class="auth-toggle-link" onclick="toggleAuthView('register')">Don't have an account? Register</span>
+
+                <div id="loginFeedbackBanner" class="system-feedback-banner"></div>
+            </div>
+
+            <!-- VIEW 1.5: REGISTER WITH USER / STAFF / ADMIN ROLES -->
+            <div id="registerViewScreen" class="app-view-screen" style="display: none; text-align: center;">
+                <h2 class="screen-title" style="font-size: 18px;">Create Account</h2>
+                <p class="screen-subtitle" style="margin-bottom: 12px;">Min. 8 chars, uppercase, lowercase, number & symbol</p>
+
+                <div class="form-control-group">
+                    <label class="form-control-label">Full Name</label>
+                    <input type="text" id="regFullName" class="form-input-field" placeholder="Full Name">
+                </div>
+
+                <div class="form-control-group">
+                    <label class="form-control-label">Email Address</label>
+                    <input type="email" id="regEmail" class="form-input-field" placeholder="Email">
+                </div>
+
+                <div class="form-control-group">
+                    <label class="form-control-label">Choose Account Role</label>
+                    <select id="regRole" class="form-select-field">
+                        <option value="user" selected>Student / User</option>
+                        <option value="staff">Campus Staff (Verification)</option>
+                        <option value="admin">System Administrator</option>
+                    </select>
+                </div>
+
+                <div class="form-control-group">
+                    <label class="form-control-label">Password</label>
+                    <div class="password-toggle-wrapper">
+                        <input type="password" id="regPassword" class="form-input-field" placeholder="Password@123">
+                        <span class="password-visibility-toggle" onclick="togglePasswordInputVisibility('regPassword')">
+                            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="form-control-group">
+                    <label class="form-control-label">Confirm Password</label>
+                    <div class="password-toggle-wrapper">
+                        <input type="password" id="regConfirmPassword" class="form-input-field" placeholder="Confirm Password">
+                        <span class="password-visibility-toggle" onclick="togglePasswordInputVisibility('regConfirmPassword')">
+                            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </span>
+                    </div>
+                </div>
+
+                <button class="action-button-base action-button-primary" style="margin-top: 4px;" onclick="executeBackendRegisterProcess()">
+                    REGISTER
+                </button>
+
+                <span class="auth-toggle-link" onclick="toggleAuthView('login')">Already registered? Log in</span>
+
+                <div id="registerFeedbackBanner" class="system-feedback-banner"></div>
+            </div>
+
+            <!-- VIEW 2: FEED -->
+            <div id="feedViewScreen" class="app-view-screen" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <div>
+                        <h2 class="screen-title">Campus Feed</h2>
+                        <p class="screen-subtitle" style="margin-bottom: 0;">Real-time reported items</p>
+                    </div>
+                    <span class="badge-tag-status badge-tag-found">Live Stream</span>
+                </div>
+
+                <div class="form-control-group" style="margin-bottom: 12px;">
+                    <input type="text" class="form-input-field" id="feedSearchInput" onkeyup="filterFeedCards()" placeholder="🔍 Search items or locations...">
+                </div>
+
+                <div id="feedItemsContainer"></div>
+            </div>
+
+            <!-- VIEW 3: REPORT -->
+            <div id="reportViewScreen" class="app-view-screen" style="display: none;">
+                <h2 class="screen-title">File Item Report</h2>
+                <p class="screen-subtitle">Submit lost or found items</p>
+
+                <div class="form-control-group">
+                    <label class="form-control-label">Report Category</label>
+                    <select id="reportCategorySelect" class="form-select-field">
+                        <option value="lost">I Lost an Item</option>
+                        <option value="found">I Found an Item</option>
+                    </select>
+                </div>
+
+                <div class="form-control-group">
+                    <label class="form-control-label">Item Title</label>
+                    <input type="text" id="reportTitleInput" class="form-input-field" placeholder="e.g. Leather Wallet">
+                </div>
+
+                <div class="form-control-group">
+                    <label class="form-control-label">Location</label>
+                    <input type="text" id="reportLocationInput" class="form-input-field" placeholder="e.g. Library 2nd Floor">
+                </div>
+
+                <div class="form-control-group">
+                    <label class="form-control-label">Description</label>
+                    <textarea id="reportDescInput" class="form-textarea-field" rows="2" placeholder="Details..."></textarea>
+                </div>
+
+                <button class="action-button-base action-button-primary" onclick="handleNewReportSubmission()">Submit Report</button>
+            </div>
+
+            <!-- VIEW 4: TRACKER -->
+            <div id="trackViewScreen" class="app-view-screen" style="display: none;">
+                <h2 class="screen-title">Status Tracker</h2>
+                <p class="screen-subtitle">Monitor report history & claim progress</p>
+                <div id="trackerListContainer"></div>
+            </div>
+
+            <!-- VIEW 5: MANAGEMENT & AUDIT LOG CONSOLE (STAFF & ADMIN ONLY) -->
+            <div id="adminControlViewScreen" class="app-view-screen" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <div>
+                        <h2 class="screen-title">Management Console</h2>
+                        <p class="screen-subtitle" style="margin-bottom: 0;">Verification & Traceability Log</p>
+                    </div>
+                    <span id="consoleRoleBadge" class="badge-tag-status badge-tag-admin">ADMIN</span>
+                </div>
+
+                <!-- NEW MODULE: USER LOGIN / LOGOUT AUTHENTICATION TRACE -->
+                <!-- USER LOGIN / LOGOUT AUTHENTICATION TRACE (ADMIN ONLY) -->
+<div id="userAuthLogCard" class="info-card-container" style="flex-direction: column; align-items: flex-start; margin-bottom: 12px;">
+    <strong style="font-size: 11px; color: #38BDF8;">🔑 User Sign-In & Sign-Out Activity Log</strong>
+    <div id="userAuthTraceLogContainer" style="width: 100%; max-height: 120px; overflow-y: auto; margin-top: 6px;"></div>
+</div>
+
+                <!-- ITEM TRACE LOG MODULE -->
+                <div class="info-card-container" style="flex-direction: column; align-items: flex-start;">
+                    <strong style="font-size: 11px; color: var(--color-seafoam);">📌 Item Movement & Status Trail (Tracing Log)</strong>
+                    <div id="itemTraceLogContainer" style="width: 100%; max-height: 120px; overflow-y: auto; margin-top: 6px;"></div>
+                </div>
+
+                <strong style="font-size: 11px; color: var(--color-text-muted); display: block; margin: 12px 0 6px;">🛠️ Verify Item Status (Staff Only Action)</strong>
+                <div id="adminManageItemsContainer"></div>
+            </div>
+
+            <!-- VIEW 6: PROFILE -->
+            <div id="profileViewScreen" class="app-view-screen" style="display: none; text-align: center; padding-top: 10px;">
+                <div style="width: 60px; height: 60px; background: rgba(45, 212, 191, 0.15); color: var(--color-seafoam); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; border: 1px solid rgba(45, 212, 191, 0.4); box-shadow: var(--neu-flat-shadow);">
+                    <svg class="svg-icon-lg" style="width: 30px; height: 30px;" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </div>
+                <h3 id="displayAuthenticatedUserName" style="color: var(--color-text-main); font-size: 16px;">User</h3>
+                <p id="displayAuthenticatedUserEmail" style="color: var(--color-seafoam); font-size: 11px; margin-bottom: 16px;">email@domain.com</p>
+
+                <div class="info-card-container" style="flex-direction: column; text-align: left; margin-bottom: 16px;">
+                    <div style="width: 100%; padding: 4px 0; font-size: 11px; display: flex; justify-content: space-between;">
+                        <span>🛡️ System Role</span><span id="userRoleDisplayTag" style="color: var(--color-seafoam); font-weight: bold;">USER</span>
+                    </div>
+                </div>
+
+                <button class="action-button-base action-button-danger" onclick="displaySignoutConfirmationModal()">LOG OUT</button>
+            </div>
+
+        </div>
+
+        <!-- ITEM DETAIL MODAL -->
+        <div id="itemDetailModalOverlay" class="confirmation-modal-overlay">
+            <div class="confirmation-modal-dialog" style="text-align: left;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <h3 id="modalItemTitle" style="font-size: 15px;">Item Details</h3>
+                    <span id="modalItemBadge" class="badge-tag-status">Lost</span>
+                </div>
+                <p id="modalItemLocation" style="font-size: 11px; color: var(--color-text-muted); margin-bottom: 8px;">📍 Location</p>
+                <p id="modalItemDesc" style="font-size: 11px; color: var(--color-text-main); margin-bottom: 14px; background: rgba(15, 23, 42, 0.6); padding: 8px; border-radius: 8px; border: var(--glass-border);">Description...</p>
+                <div style="display: flex; gap: 8px;">
+                    <button class="action-button-base action-button-secondary" onclick="closeItemDetailModal()">Close</button>
+                    <button id="modalClaimBtn" class="action-button-base action-button-primary" onclick="triggerClaimAction()">Claim Item</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- LOGOUT MODAL -->
+        <div id="signoutConfirmationModalOverlay" class="confirmation-modal-overlay">
+            <div class="confirmation-modal-dialog">
+                <h3 style="font-size: 15px; margin-bottom: 4px;">Sign Out Confirmation</h3>
+                <p style="font-size: 11px; color: var(--color-text-muted); margin-bottom: 14px;">Are you sure you want to log out?</p>
+                <div style="display: flex; gap: 8px;">
+                    <button class="action-button-base action-button-secondary" onclick="dismissSignoutConfirmationModal()">Cancel</button>
+                    <button class="action-button-base action-button-danger" onclick="executeBackendLogoutProcess()">Yes, Logout</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB BAR -->
+        <div id="bottomTabBarContainer" class="bottom-navigation-bar" style="display: none;">
+            <div class="nav-tab-item active" onclick="switchActiveTab('feedViewScreen', this)">
+                <div class="nav-tab-icon"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+                Feed
+            </div>
+            <div class="nav-tab-item" onclick="switchActiveTab('reportViewScreen', this)">
+                <div class="nav-tab-icon"><svg class="svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
+                Report
+            </div>
+            <div class="nav-tab-item" onclick="switchActiveTab('trackViewScreen', this)">
+                <div class="nav-tab-icon"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+                Track
+            </div>
+            <div id="adminTabNavItem" class="nav-tab-item" style="display: none;" onclick="switchActiveTab('adminControlViewScreen', this)">
+                <div class="nav-tab-icon"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+                Console
+            </div>
+            <div class="nav-tab-item" onclick="switchActiveTab('profileViewScreen', this)">
+                <div class="nav-tab-icon"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+                Profile
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // =========================================================================
+    // 1. SUPABASE CLIENT INITIALIZATION
+    // =========================================================================
+    const SUPABASE_URL = "https://pyxuzpvpqkzfdatyejui.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5eHV6cHZwcWt6ZmRhdHllanVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyMjcyNzcsImV4cCI6MjEwNjgwMzI3N30.AmwLf-Ct2ckSRRhTkIA-z1IYL5n9n0hQABxLLoUt8Fk";
+    
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const AppState = {
+        currentUser: JSON.parse(localStorage.getItem('findit_user')) || null,
+        selectedItemId: null,
+        failedAttempts: 0,
+        lockoutUntil: 0,
+        lockoutDuration: 30000,
+        itemTraceLogs: [],
+        userAuthTraceLogs: [],
+        itemsData: []
+    };
+
+    // =========================================================================
+    // 2. DATA FETCHING PROCEDURES (SUPABASE DIRECT)
+    // =========================================================================
+    async function fetchItemsFromSupabase() {
+        const { data, error } = await db.from('items').select('*').order('created_at', { ascending: false });
+        if (!error && data) {
+            AppState.itemsData = data.map(item => ({
+                id: item.item_id,
+                title: item.title,
+                location: item.location,
+                category: item.report_type,
+                description: item.description,
+                date: item.created_at ? item.created_at.split('T')[0] : new Date().toISOString().split('T')[0],
+                status: item.status
+            }));
+            renderFeedItems();
+            renderTrackerItems();
+            renderAdminManageItems();
+        }
+    }
+
+    async function fetchItemTraceLogsFromSupabase() {
+        const { data, error } = await db.from('item_trace_logs').select('*').order('created_at', { ascending: false });
+        if (!error && data) {
+            AppState.itemTraceLogs = data.map(log => ({
+                id: log.trace_id,
+                itemId: log.item_id,
+                title: log.title,
+                action: log.action_description,
+                updatedBy: log.performed_by,
+                timestamp: new Date(log.created_at).toLocaleString()
+            }));
+            renderItemTraceLogs();
+        }
+    }
+
+    async function fetchUserAuthTraceLogsFromSupabase() {
+        const { data, error } = await db.from('user_auth_logs').select('*').order('created_at', { ascending: false });
+        if (!error && data) {
+            AppState.userAuthTraceLogs = data.map(log => ({
+                id: log.log_id,
+                userEmail: log.user_email,
+                userRole: log.user_role,
+                eventType: log.event_type,
+                timestamp: new Date(log.created_at).toLocaleString()
+            }));
+            renderUserAuthTraceLogs();
+        }
+    }
+
+    async function addItemTraceLog(itemId, title, action, updatedBy) {
+        await db.from('item_trace_logs').insert([{
+            item_id: itemId,
+            title: title,
+            action_description: action,
+            performed_by: updatedBy || "System"
+        }]);
+        fetchItemTraceLogsFromSupabase();
+    }
+
+    async function recordUserAuthTraceLog(userId, userEmail, userRole, eventType) {
+        await db.from('user_auth_logs').insert([{
+            user_id: userId || null,
+            user_email: userEmail,
+            user_role: userRole || 'user',
+            event_type: eventType // 'LOGIN' or 'LOGOUT'
+        }]);
+        fetchUserAuthTraceLogsFromSupabase();
+    }
+
+    function renderItemTraceLogs() {
+        const container = document.getElementById('itemTraceLogContainer');
+        if (!container) return;
+        if (AppState.itemTraceLogs.length === 0) {
+            container.innerHTML = '<div style="font-size: 10px; color: var(--color-text-muted);">No item trace history recorded.</div>';
+            return;
+        }
+        container.innerHTML = AppState.itemTraceLogs.map(log => `
+            <div class="log-item">
+                <strong style="color: #FBBF24;">Item #${log.itemId} (${log.title})</strong>: ${log.action}
+                <div class="log-time">Updated by: ${log.updatedBy} | ${log.timestamp}</div>
+            </div>
+        `).join('');
+    }
+
+    function renderUserAuthTraceLogs() {
+    const container = document.getElementById('userAuthTraceLogContainer');
+    if (!container) return;
+
+    // Strict role check: do not render logs if user is not an admin
+    if (!AppState.currentUser || AppState.currentUser.role !== 'admin') {
+        container.innerHTML = '';
+        return;
+    }
+
+    if (AppState.userAuthTraceLogs.length === 0) {
+        container.innerHTML = '<div style="font-size: 10px; color: var(--color-text-muted);">No sign-in/out activity recorded.</div>';
+        return;
+    }
+
+    container.innerHTML = AppState.userAuthTraceLogs.map(log => {
+        const isLogin = log.eventType === 'LOGIN';
+        const badgeColor = isLogin ? '#2DD4BF' : '#FF6B4A';
+        return `
+            <div class="log-item">
+                <span style="font-weight: 800; color: ${badgeColor};">[${log.eventType}]</span>
+                <strong>${log.userEmail}</strong> 
+                <span class="badge-tag-status badge-tag-${log.userRole}" style="font-size: 8px; padding: 1px 5px; margin-left: 4px;">${log.userRole}</span>
+                <div class="log-time">${log.timestamp}</div>
+            </div>
+        `;
+    }).join('');
+}
+
+    function updateSystemHardwareClock() {
+        const now = new Date();
+        const clockEl = document.getElementById('systemClockDisplay');
+        if (clockEl) clockEl.innerText = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    }
+    setInterval(updateSystemHardwareClock, 1000);
+    updateSystemHardwareClock();
+
+    function toggleAuthView(targetView) {
+        document.getElementById('loginViewScreen').style.display = targetView === 'login' ? 'block' : 'none';
+        document.getElementById('registerViewScreen').style.display = targetView === 'register' ? 'block' : 'none';
+    }
+
+    function validateIASPassword(password) {
+        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!\%*?&]{8,}$/;
+        return regex.test(password);
+    }
+
+    // =========================================================================
+    // 3. AUTHENTICATION PROCEDURES (SUPABASE DIRECT)
+    // =========================================================================
+    async function executeBackendLoginProcess() {
+        const now = Date.now();
+        if (now < AppState.lockoutUntil) {
+            const secsLeft = Math.ceil((AppState.lockoutUntil - now) / 1000);
+            showBanner('loginFeedbackBanner', `Too many failed attempts. Account locked for ${secsLeft}s.`, "error");
+            return;
+        }
+
+        const email = document.getElementById('inputUserEmail').value.trim();
+        const password = document.getElementById('inputUserPassword').value.trim();
+
+        if (!email || !password) {
+            showBanner('loginFeedbackBanner', "Please enter both email and password.", "error");
+            return;
+        }
+
+        const { data: users, error } = await db.from('users').select('*').eq('email', email).limit(1);
+
+        if (error || !users || users.length === 0) {
+            AppState.failedAttempts++;
+            if (AppState.failedAttempts >= 3) {
+                AppState.lockoutUntil = Date.now() + AppState.lockoutDuration;
+                const lockedSecs = AppState.lockoutDuration / 1000;
+                showBanner('loginFeedbackBanner', `3 failed attempts! Locked out for ${lockedSecs} seconds.`, "error");
+                AppState.lockoutDuration *= 2;
+            } else {
+                showBanner('loginFeedbackBanner', `Invalid credentials. Attempt ${AppState.failedAttempts} of 3.`, "error");
+            }
+            return;
+        }
+
+        const user = users[0];
+
+        AppState.failedAttempts = 0;
+        AppState.currentUser = {
+            user_id: user.user_id,
+            full_name: user.full_name,
+            email: user.email,
+            role: user.role
+        };
+
+        localStorage.setItem('findit_user', JSON.stringify(AppState.currentUser));
+
+        // RECORD LOGIN IN TRACE LOGS
+        await recordUserAuthTraceLog(user.user_id, user.email, user.role, 'LOGIN');
+
+        setupInterfaceForUserRole();
+        fetchItemsFromSupabase();
+
+        document.getElementById('loginViewScreen').style.display = 'none';
+        document.getElementById('feedViewScreen').style.display = 'block';
+        document.getElementById('bottomTabBarContainer').style.display = 'flex';
+        showToastNotification("Welcome, " + AppState.currentUser.full_name + "!");
+    }
+
+    async function executeBackendRegisterProcess() {
+        const fullName = document.getElementById('regFullName').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
+        const role = document.getElementById('regRole').value;
+        const password = document.getElementById('regPassword').value.trim();
+        const confirmPassword = document.getElementById('regConfirmPassword').value.trim();
+
+        if (!fullName || !email || !password || !confirmPassword) {
+            showBanner('registerFeedbackBanner', "All fields are required.", "error");
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            showBanner('registerFeedbackBanner', "Password and Confirm Password do not match.", "error");
+            return;
+        }
+
+        if (!validateIASPassword(password)) {
+            showBanner('registerFeedbackBanner', "Password must be >= 8 chars with Uppercase, Lowercase, Number & Special Character (@$!%*?&).", "error");
+            return;
+        }
+
+        const { data, error } = await db.from('users').insert([{
+            full_name: fullName,
+            email: email,
+            password_hash: password,
+            role: role,
+            status: 'active'
+        }]);
+
+        if (error) {
+            showBanner('registerFeedbackBanner', error.message || "Registration failed.", "error");
+        } else {
+            showBanner('registerFeedbackBanner', "Registration successful! Redirecting...", "success");
+            document.getElementById('inputUserEmail').value = email;
+            document.getElementById('inputUserPassword').value = password;
+            
+            setTimeout(() => {
+                toggleAuthView('login');
+                executeBackendLoginProcess();
+            }, 1000);
+        }
+    }
+
+    function setupInterfaceForUserRole() {
+    if (!AppState.currentUser) return;
+    const currentRole = AppState.currentUser.role || 'user';
+    
+    document.getElementById('displayAuthenticatedUserName').innerText = AppState.currentUser.full_name;
+    document.getElementById('displayAuthenticatedUserEmail').innerText = AppState.currentUser.email;
+    document.getElementById('userRoleDisplayTag').innerText = currentRole.toUpperCase();
+
+    const consoleTab = document.getElementById('adminTabNavItem');
+    const consoleBadge = document.getElementById('consoleRoleBadge');
+    const authLogCard = document.getElementById('userAuthLogCard');
+
+    if (currentRole === 'admin' || currentRole === 'staff') {
+        consoleTab.style.display = 'flex';
+        if (consoleBadge) {
+            consoleBadge.innerText = currentRole.toUpperCase();
+            consoleBadge.className = `badge-tag-status badge-tag-${currentRole}`;
+        }
+        
+        // Hide sign-in/out log card for staff, show only for admin
+        if (authLogCard) {
+            authLogCard.style.display = (currentRole === 'admin') ? 'flex' : 'none';
+        }
+
+        fetchItemTraceLogsFromSupabase();
+        
+        if (currentRole === 'admin') {
+            fetchUserAuthTraceLogsFromSupabase();
+        }
+    } else {
+        consoleTab.style.display = 'none';
+    }
+}
+
+    function showBanner(bannerId, text, type) {
+        const banner = document.getElementById(bannerId);
+        banner.innerText = text;
+        banner.className = `system-feedback-banner feedback-${type}`;
+        banner.style.display = "block";
+    }
+
+    function switchActiveTab(targetScreenId, tabElement) {
+        ['feedViewScreen', 'reportViewScreen', 'trackViewScreen', 'adminControlViewScreen', 'profileViewScreen'].forEach(s => {
+            const el = document.getElementById(s);
+            if (el) el.style.display = 'none';
+        });
+
+        document.querySelectorAll('.nav-tab-item').forEach(t => t.classList.remove('active'));
+        const targetScreen = document.getElementById(targetScreenId);
+        if (targetScreen) targetScreen.style.display = 'block';
+        if (tabElement) tabElement.classList.add('active');
+    }
+
+    function togglePasswordInputVisibility(inputId) {
+        const input = document.getElementById(inputId);
+        input.type = (input.type === 'password') ? 'text' : 'password';
+    }
+
+    function renderFeedItems() {
+        const container = document.getElementById('feedItemsContainer');
+        if (!container) return;
+        container.innerHTML = '';
+
+        AppState.itemsData.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'info-card-container';
+            card.onclick = () => openItemDetailModal(item);
+
+            const isLost = item.category === 'lost';
+            const iconSvg = isLost 
+                ? `<svg class="svg-icon-lg" viewBox="0 0 24 24"><path d="M21 2l-2 2m-3 1l-4 4m2 2l-2 2m-2-2l-4 4a5 5 0 1 1-7-7l4-4a5 5 0 0 1 7 7z"/></svg>`
+                : `<svg class="svg-icon-lg" viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>`;
+
+            card.innerHTML = `
+                <div class="info-card-thumbnail">${iconSvg}</div>
+                <div class="info-card-meta">
+                    <div class="info-card-title">${item.title}</div>
+                    <div class="info-card-location">📍 ${item.location}</div>
+                    <span class="badge-tag-status badge-tag-${item.category}">${item.category}</span>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function filterFeedCards() {
+        const searchVal = document.getElementById('feedSearchInput').value.toLowerCase();
+        const cards = document.querySelectorAll('#feedItemsContainer .info-card-container');
+        cards.forEach(card => {
+            const title = card.querySelector('.info-card-title').innerText.toLowerCase();
+            const location = card.querySelector('.info-card-location').innerText.toLowerCase();
+            card.style.display = (title.includes(searchVal) || location.includes(searchVal)) ? 'flex' : 'none';
+        });
+    }
+
+    function renderTrackerItems() {
+        const container = document.getElementById('trackerListContainer');
+        if (!container) return;
+
+        container.innerHTML = AppState.itemsData.map(item => `
+            <div class="info-card-container" style="flex-direction: column; align-items: flex-start;">
+                <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                    <strong style="font-size: 12px; color: var(--color-text-main);">${item.title}</strong>
+                    <span class="badge-tag-status badge-tag-${item.category}">${item.category}</span>
+                </div>
+                <div style="font-size: 10px; color: var(--color-text-muted); margin-top: 2px;">${item.date} | ${item.location}</div>
+                <div style="margin-top: 8px; width: 100%; background: rgba(45, 212, 191, 0.12); padding: 6px 10px; border-radius: var(--radius-small); font-size: 10px; color: var(--color-seafoam); font-weight: bold; border: 1px solid rgba(45, 212, 191, 0.25);">
+                    Status: ${item.status}
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function renderAdminManageItems() {
+        const container = document.getElementById('adminManageItemsContainer');
+        if (!container) return;
+
+        container.innerHTML = AppState.itemsData.map(item => `
+            <div class="info-card-container" style="flex-direction: column; align-items: flex-start; padding: 10px;">
+                <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                    <strong style="font-size: 12px; color: var(--color-text-main);">${item.title}</strong>
+                    <button style="background: rgba(255,107,74,0.2); color: var(--color-coral-spark); border: 1px solid rgba(255,107,74,0.4); padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer;" onclick="deleteReportByAdmin(${item.id})">Delete</button>
+                </div>
+                <div style="display: flex; gap: 8px; align-items: center; width: 100%;">
+                    <span style="font-size: 10px; color: var(--color-text-muted);">Staff Verification:</span>
+                    <select class="form-select-field" style="padding: 4px 8px; font-size: 10px; width: auto;" onchange="updateItemStatusByAdmin(${item.id}, this.value)">
+                        <option value="Pending" ${item.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                        <option value="Claimable" ${item.status === 'Claimable' ? 'selected' : ''}>Verified Claimable</option>
+                        <option value="Found" ${item.status === 'Found' ? 'selected' : ''}>Verified Found</option>
+                        <option value="Resolved" ${item.status === 'Resolved' ? 'selected' : ''}>Resolved & Claimed</option>
+                    </select>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    async function updateItemStatusByAdmin(id, newStatus) {
+        const item = AppState.itemsData.find(i => i.id === id);
+        if (item) {
+            item.status = newStatus;
+            
+            await db.from('items').update({ status: newStatus }).eq('item_id', id);
+            
+            const staffEmail = AppState.currentUser ? AppState.currentUser.email : "Staff Member";
+            addItemTraceLog(id, item.title, `Status updated to ${newStatus}`, staffEmail);
+
+            fetchItemsFromSupabase();
+            showToastNotification(`Report #${id} verified as ${newStatus}`);
+        }
+    }
+
+    async function deleteReportByAdmin(id) {
+        const item = AppState.itemsData.find(i => i.id === id);
+        const userEmail = AppState.currentUser ? AppState.currentUser.email : "Admin";
+        
+        if (item) {
+            addItemTraceLog(id, item.title, "Report deleted from system", userEmail);
+        }
+
+        await db.from('items').delete().eq('item_id', id);
+
+        fetchItemsFromSupabase();
+        showToastNotification(`Report #${id} removed.`);
+    }
+
+    async function handleNewReportSubmission() {
+        const title = document.getElementById('reportTitleInput').value.trim();
+        const location = document.getElementById('reportLocationInput').value.trim();
+        const category = document.getElementById('reportCategorySelect').value;
+        const desc = document.getElementById('reportDescInput').value.trim();
+        const userEmail = AppState.currentUser ? AppState.currentUser.email : "Guest";
+
+        if (!title || !location) {
+            alert('Please fill in both Title and Location.');
+            return;
+        }
+
+        const { data, error } = await db.from('items').insert([{
+            title: title,
+            location: location,
+            report_type: category,
+            description: desc || "No description provided.",
+            status: 'Pending'
+        }]).select();
+
+        if (!error && data) {
+            const newItem = data[0];
+            addItemTraceLog(newItem.item_id, title, `New report created (${category.toUpperCase()})`, userEmail);
+
+            document.getElementById('reportTitleInput').value = '';
+            document.getElementById('reportLocationInput').value = '';
+            document.getElementById('reportDescInput').value = '';
+
+            fetchItemsFromSupabase();
+            showToastNotification("Report submitted for Staff review!");
+            switchActiveTab('feedViewScreen', document.querySelectorAll('.nav-tab-item')[0]);
+        }
+    }
+
+    function openItemDetailModal(item) {
+        AppState.selectedItemId = item.id;
+        document.getElementById('modalItemTitle').innerText = item.title;
+        document.getElementById('modalItemLocation').innerText = "📍 " + item.location;
+        document.getElementById('modalItemDesc').innerText = item.description;
+        
+        const badge = document.getElementById('modalItemBadge');
+        badge.innerText = item.category;
+        badge.className = `badge-tag-status badge-tag-${item.category}`;
+
+        document.getElementById('itemDetailModalOverlay').style.display = 'flex';
+    }
+
+    function closeItemDetailModal() { 
+        document.getElementById('itemDetailModalOverlay').style.display = 'none'; 
+        AppState.selectedItemId = null;
+    }
+
+    async function triggerClaimAction() {
+        const currentUserRole = AppState.currentUser ? AppState.currentUser.role : 'user';
+
+        if (currentUserRole === 'user') {
+            closeItemDetailModal();
+            showToastNotification("Claim request logged! Staff must inspect and verify item.");
+            if (AppState.selectedItemId) {
+                const targetItem = AppState.itemsData.find(i => i.id === AppState.selectedItemId);
+                if (targetItem) {
+                    addItemTraceLog(targetItem.id, targetItem.title, "User initiated claim request (Pending Staff Check)", AppState.currentUser.email);
+                }
+            }
+            return;
+        }
+
+        if (AppState.selectedItemId) {
+            const targetItem = AppState.itemsData.find(i => i.id === AppState.selectedItemId);
+            if (targetItem) {
+                await db.from('items').update({ status: 'Claimable', report_type: 'found' }).eq('item_id', targetItem.id);
+                const actor = AppState.currentUser ? AppState.currentUser.email : "Staff Member";
+                addItemTraceLog(targetItem.id, targetItem.title, "Verified as Found & Claimable by Staff", actor);
+            }
+        }
+
+        closeItemDetailModal();
+        fetchItemsFromSupabase();
+
+        showToastNotification("Item status updated to Claimable!");
+        switchActiveTab('trackViewScreen', document.querySelectorAll('.nav-tab-item')[2]);
+    }
+
+    function displaySignoutConfirmationModal() { document.getElementById('signoutConfirmationModalOverlay').style.display = 'flex'; }
+    function dismissSignoutConfirmationModal() { document.getElementById('signoutConfirmationModalOverlay').style.display = 'none'; }
+
+    async function executeBackendLogoutProcess() {
+        dismissSignoutConfirmationModal();
+
+        // RECORD LOGOUT IN TRACE LOGS
+        if (AppState.currentUser) {
+            await recordUserAuthTraceLog(AppState.currentUser.user_id, AppState.currentUser.email, AppState.currentUser.role, 'LOGOUT');
+        }
+
+        AppState.currentUser = null;
+        localStorage.removeItem('findit_user');
+
+        ['feedViewScreen', 'reportViewScreen', 'trackViewScreen', 'adminControlViewScreen', 'profileViewScreen', 'registerViewScreen'].forEach(s => {
+            const el = document.getElementById(s);
+            if (el) el.style.display = 'none';
+        });
+
+        document.getElementById('bottomTabBarContainer').style.display = 'none';
+        document.getElementById('loginViewScreen').style.display = 'block';
+
+        showToastNotification("Signed out");
+    }
+
+    function showToastNotification(message) {
+        const toast = document.getElementById('toastNotification');
+        document.getElementById('toastMessageText').innerText = message;
+        toast.classList.add('visible');
+        setTimeout(() => toast.classList.remove('visible'), 3000);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        if (AppState.currentUser) {
+            setupInterfaceForUserRole();
+            fetchItemsFromSupabase();
+            document.getElementById('loginViewScreen').style.display = 'none';
+            document.getElementById('feedViewScreen').style.display = 'block';
+            document.getElementById('bottomTabBarContainer').style.display = 'flex';
+        } else {
+            fetchItemsFromSupabase();
+        }
+    });
+</script>
+
+</body>
+</html>
