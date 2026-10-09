@@ -1096,7 +1096,13 @@
     badge.className = `badge-tag-status badge-tag-${item.category}`;
 
     document.getElementById('itemDetailModalOverlay').style.display = 'flex';
-}
+    }
+
+    function closeItemDetailModal() {
+        document.getElementById('itemDetailModalOverlay').style.display = 'none';
+        AppState.selectedItemId = null;
+    }
+
 
     async function triggerClaimAction() {
         const currentUserRole = AppState.currentUser ? AppState.currentUser.role : 'user';
