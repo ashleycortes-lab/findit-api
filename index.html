@@ -1204,8 +1204,11 @@ async function verifyOtpAndResetPassword() {
         return;
     }
 
-    // 2. Update password in public.users table
-    const { error: updateErr } = await db.from('users').update({ password_hash: newPassword }).eq('email', email);
+    // 2. Update password_hash AND set last_password_reset timestamp in users table
+    const { error: updateErr } = await db.from('users').update({ 
+        password_hash: newPassword,
+        last_password_reset: new Date().toISOString()
+    }).eq('email', email);
 
     if (updateErr) {
         showBanner('otpFeedbackBanner', "Failed to reset password. Try again.", "error");
