@@ -68,15 +68,15 @@
         }
 
         .mobile-viewport-screen {
-    background: var(--bg-viewport);
-    width: 100%; 
-    height: 100%; 
-    border-radius: 34px;
-    overflow: hidden; 
-    display: flex; 
-    flex-direction: column;
-    position: relative; /* REQUIRED: keeps overlays locked inside the phone screen */
-}
+            background: var(--bg-viewport);
+            width: 100%; 
+            height: 100%; 
+            border-radius: 34px;
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column;
+            position: relative; /* Lock absolute overlays inside the phone screen */
+        }
 
         /* GLASSMORPHIC STATUS BAR */
         .mobile-status-bar {
@@ -215,36 +215,34 @@
         .feedback-error { background: var(--color-coral-light); color: var(--color-coral-spark); border: 1px solid var(--color-coral-spark); }
         .feedback-success { background: rgba(45, 212, 191, 0.15); color: var(--color-seafoam); border: 1px solid var(--color-seafoam); }
 
-        /* GLASS OVERLAY MODAL */
-        /* Update overlay to fit strictly inside the viewport screen */
-.confirmation-modal-overlay {
-    position: absolute; 
-    top: 0; 
-    left: 0; 
-    width: 100%; 
-    height: 100%;
-    background: rgba(15, 23, 42, 0.85);
-    backdrop-filter: blur(8px); 
-    display: none; 
-    justify-content: center;
-    align-items: center; 
-    padding: 16px; 
-    z-index: 100;
-    box-sizing: border-box;
-}
+        /* GLASS OVERLAY MODALS */
+        .confirmation-modal-overlay {
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px); 
+            display: none; 
+            justify-content: center;
+            align-items: center; 
+            padding: 16px; 
+            z-index: 100;
+            box-sizing: border-box;
+        }
 
-        /* Constrain dialog maximum width to the phone frame width */
-.confirmation-modal-dialog {
-    background: var(--glass-bg-surface);
-    backdrop-filter: var(--glass-blur);
-    border: var(--glass-border);
-    padding: 16px; 
-    border-radius: var(--radius-card);
-    text-align: center; 
-    width: 100%; 
-    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-    box-sizing: border-box;
-}
+        .confirmation-modal-dialog {
+            background: var(--glass-bg-surface);
+            backdrop-filter: var(--glass-blur);
+            border: var(--glass-border);
+            padding: 16px; 
+            border-radius: var(--radius-card);
+            text-align: center; 
+            width: 100%; 
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            box-sizing: border-box;
+        }
 
         .toast-notification-popup {
             position: absolute; top: 50px; left: 50%; transform: translateX(-50%) translateY(-20px);
@@ -455,12 +453,11 @@
                     <span id="consoleRoleBadge" class="badge-tag-status badge-tag-admin">ADMIN</span>
                 </div>
 
-                <!-- NEW MODULE: USER LOGIN / LOGOUT AUTHENTICATION TRACE -->
                 <!-- USER LOGIN / LOGOUT AUTHENTICATION TRACE (ADMIN ONLY) -->
-<div id="userAuthLogCard" class="info-card-container" style="flex-direction: column; align-items: flex-start; margin-bottom: 12px;">
-    <strong style="font-size: 11px; color: #38BDF8;">🔑 User Sign-In & Sign-Out Activity Log</strong>
-    <div id="userAuthTraceLogContainer" style="width: 100%; max-height: 120px; overflow-y: auto; margin-top: 6px;"></div>
-</div>
+                <div id="userAuthLogCard" class="info-card-container" style="flex-direction: column; align-items: flex-start; margin-bottom: 12px;">
+                    <strong style="font-size: 11px; color: #38BDF8;">🔑 User Sign-In & Sign-Out Activity Log</strong>
+                    <div id="userAuthTraceLogContainer" style="width: 100%; max-height: 120px; overflow-y: auto; margin-top: 6px;"></div>
+                </div>
 
                 <!-- ITEM TRACE LOG MODULE -->
                 <div class="info-card-container" style="flex-direction: column; align-items: flex-start;">
@@ -519,6 +516,56 @@
             </div>
         </div>
 
+        <!-- ACCOUNT RECOVERY (OTP) MODAL -->
+        <div id="otpRecoveryModalOverlay" class="confirmation-modal-overlay">
+            <div class="confirmation-modal-dialog" style="text-align: left;">
+                
+                <!-- STEP 1: REQUEST OTP -->
+                <div id="otpStep1Container">
+                    <h3 style="font-size: 15px; margin-bottom: 4px;">Account Recovery</h3>
+                    <p style="font-size: 11px; color: var(--color-text-muted); margin-bottom: 12px;">Enter your email address to receive a 6-digit OTP code.</p>
+                    
+                    <div class="form-control-group">
+                        <label class="form-control-label">Registered Email</label>
+                        <input type="email" id="otpRequestEmail" class="form-input-field" placeholder="email@findit.com">
+                    </div>
+
+                    <div style="display: flex; gap: 8px; margin-top: 12px;">
+                        <button class="action-button-base action-button-secondary" onclick="closeOtpRecoveryModal()">Cancel</button>
+                        <button class="action-button-base action-button-primary" onclick="sendRecoveryOtpCode()">Send OTP</button>
+                    </div>
+                </div>
+
+                <!-- STEP 2: VERIFY OTP & RESET PASSWORD -->
+                <div id="otpStep2Container" style="display: none;">
+                    <h3 style="font-size: 15px; margin-bottom: 4px;">Verify OTP Code</h3>
+                    <p style="font-size: 11px; color: var(--color-seafoam); margin-bottom: 12px;" id="otpSentNoticeText">OTP sent to email</p>
+
+                    <div class="form-control-group">
+                        <label class="form-control-label">6-Digit OTP Code</label>
+                        <input type="text" id="otpCodeInput" class="form-input-field" maxlength="6" placeholder="123456" style="letter-spacing: 0.2em; text-align: center; font-size: 16px; font-weight: bold;">
+                    </div>
+
+                    <div class="form-control-group">
+                        <label class="form-control-label">New Password</label>
+                        <div class="password-toggle-wrapper">
+                            <input type="password" id="otpNewPassword" class="form-input-field" placeholder="NewPassword@123">
+                            <span class="password-visibility-toggle" onclick="togglePasswordInputVisibility('otpNewPassword')">
+                                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 8px; margin-top: 12px;">
+                        <button class="action-button-base action-button-secondary" onclick="closeOtpRecoveryModal()">Cancel</button>
+                        <button class="action-button-base action-button-primary" onclick="verifyOtpAndResetPassword()">Reset Password</button>
+                    </div>
+                </div>
+
+                <div id="otpFeedbackBanner" class="system-feedback-banner"></div>
+            </div>
+        </div>
+
         <!-- TAB BAR -->
         <div id="bottomTabBarContainer" class="bottom-navigation-bar" style="display: none;">
             <div class="nav-tab-item active" onclick="switchActiveTab('feedViewScreen', this)">
@@ -543,59 +590,9 @@
             </div>
         </div>
 
-    </div>
-</div>
-<!-- PASTE PART 2 HERE -->
-<div id="otpRecoveryModalOverlay" class="confirmation-modal-overlay">
-    <div class="confirmation-modal-dialog" style="text-align: left;">
-        
-        <!-- STEP 1: REQUEST OTP -->
-        <div id="otpStep1Container">
-            <h3 style="font-size: 15px; margin-bottom: 4px;">Account Recovery</h3>
-            <p style="font-size: 11px; color: var(--color-text-muted); margin-bottom: 12px;">Enter your email address to receive a 6-digit OTP code.</p>
-            
-            <div class="form-control-group">
-                <label class="form-control-label">Registered Email</label>
-                <input type="email" id="otpRequestEmail" class="form-input-field" placeholder="email@findit.com">
-            </div>
+    </div> <!-- CLOSES mobile-viewport-screen -->
+</div> <!-- CLOSES mobile-hardware-shell -->
 
-            <div style="display: flex; gap: 8px; margin-top: 12px;">
-                <button class="action-button-base action-button-secondary" onclick="closeOtpRecoveryModal()">Cancel</button>
-                <button class="action-button-base action-button-primary" onclick="sendRecoveryOtpCode()">Send OTP</button>
-            </div>
-        </div>
-
-        <!-- STEP 2: VERIFY OTP & RESET PASSWORD -->
-        <div id="otpStep2Container" style="display: none;">
-            <h3 style="font-size: 15px; margin-bottom: 4px;">Verify OTP Code</h3>
-            <p style="font-size: 11px; color: var(--color-seafoam); margin-bottom: 12px;" id="otpSentNoticeText">OTP sent to email</p>
-
-            <div class="form-control-group">
-                <label class="form-control-label">6-Digit OTP Code</label>
-                <input type="text" id="otpCodeInput" class="form-input-field" maxlength="6" placeholder="123456" style="letter-spacing: 0.2em; text-align: center; font-size: 16px; font-weight: bold;">
-            </div>
-
-            <div class="form-control-group">
-                <label class="form-control-label">New Password</label>
-                <div class="password-toggle-wrapper">
-                    <input type="password" id="otpNewPassword" class="form-input-field" placeholder="NewPassword@123">
-                    <span class="password-visibility-toggle" onclick="togglePasswordInputVisibility('otpNewPassword')">
-                        <svg class="svg-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                    </span>
-                </div>
-            </div>
-
-            <div style="display: flex; gap: 8px; margin-top: 12px;">
-                <button class="action-button-base action-button-secondary" onclick="closeOtpRecoveryModal()">Cancel</button>
-                <button class="action-button-base action-button-primary" onclick="verifyOtpAndResetPassword()">Reset Password</button>
-            </div>
-        </div>
-
-        <div id="otpFeedbackBanner" class="system-feedback-banner"></div>
-    </div>
-</div>
-</div> <!-- ADD THIS LINE: Closes mobile-viewport-screen -->
-</div> <!-- ADD THIS LINE: Closes mobile-hardware-shell -->
 <script>
     // =========================================================================
     // 1. SUPABASE CLIENT INITIALIZATION
@@ -702,33 +699,32 @@
     }
 
     function renderUserAuthTraceLogs() {
-    const container = document.getElementById('userAuthTraceLogContainer');
-    if (!container) return;
+        const container = document.getElementById('userAuthTraceLogContainer');
+        if (!container) return;
 
-    // Strict role check: do not render logs if user is not an admin
-    if (!AppState.currentUser || AppState.currentUser.role !== 'admin') {
-        container.innerHTML = '';
-        return;
+        if (!AppState.currentUser || AppState.currentUser.role !== 'admin') {
+            container.innerHTML = '';
+            return;
+        }
+
+        if (AppState.userAuthTraceLogs.length === 0) {
+            container.innerHTML = '<div style="font-size: 10px; color: var(--color-text-muted);">No sign-in/out activity recorded.</div>';
+            return;
+        }
+
+        container.innerHTML = AppState.userAuthTraceLogs.map(log => {
+            const isLogin = log.eventType === 'LOGIN';
+            const badgeColor = isLogin ? '#2DD4BF' : '#FF6B4A';
+            return `
+                <div class="log-item">
+                    <span style="font-weight: 800; color: ${badgeColor};">[${log.eventType}]</span>
+                    <strong>${log.userEmail}</strong> 
+                    <span class="badge-tag-status badge-tag-${log.userRole}" style="font-size: 8px; padding: 1px 5px; margin-left: 4px;">${log.userRole}</span>
+                    <div class="log-time">${log.timestamp}</div>
+                </div>
+            `;
+        }).join('');
     }
-
-    if (AppState.userAuthTraceLogs.length === 0) {
-        container.innerHTML = '<div style="font-size: 10px; color: var(--color-text-muted);">No sign-in/out activity recorded.</div>';
-        return;
-    }
-
-    container.innerHTML = AppState.userAuthTraceLogs.map(log => {
-        const isLogin = log.eventType === 'LOGIN';
-        const badgeColor = isLogin ? '#2DD4BF' : '#FF6B4A';
-        return `
-            <div class="log-item">
-                <span style="font-weight: 800; color: ${badgeColor};">[${log.eventType}]</span>
-                <strong>${log.userEmail}</strong> 
-                <span class="badge-tag-status badge-tag-${log.userRole}" style="font-size: 8px; padding: 1px 5px; margin-left: 4px;">${log.userRole}</span>
-                <div class="log-time">${log.timestamp}</div>
-            </div>
-        `;
-    }).join('');
-}
 
     function updateSystemHardwareClock() {
         const now = new Date();
@@ -794,7 +790,6 @@
 
         localStorage.setItem('findit_user', JSON.stringify(AppState.currentUser));
 
-        // RECORD LOGIN IN TRACE LOGS
         await recordUserAuthTraceLog(user.user_id, user.email, user.role, 'LOGIN');
 
         setupInterfaceForUserRole();
@@ -851,38 +846,37 @@
     }
 
     function setupInterfaceForUserRole() {
-    if (!AppState.currentUser) return;
-    const currentRole = AppState.currentUser.role || 'user';
-    
-    document.getElementById('displayAuthenticatedUserName').innerText = AppState.currentUser.full_name;
-    document.getElementById('displayAuthenticatedUserEmail').innerText = AppState.currentUser.email;
-    document.getElementById('userRoleDisplayTag').innerText = currentRole.toUpperCase();
-
-    const consoleTab = document.getElementById('adminTabNavItem');
-    const consoleBadge = document.getElementById('consoleRoleBadge');
-    const authLogCard = document.getElementById('userAuthLogCard');
-
-    if (currentRole === 'admin' || currentRole === 'staff') {
-        consoleTab.style.display = 'flex';
-        if (consoleBadge) {
-            consoleBadge.innerText = currentRole.toUpperCase();
-            consoleBadge.className = `badge-tag-status badge-tag-${currentRole}`;
-        }
+        if (!AppState.currentUser) return;
+        const currentRole = AppState.currentUser.role || 'user';
         
-        // Hide sign-in/out log card for staff, show only for admin
-        if (authLogCard) {
-            authLogCard.style.display = (currentRole === 'admin') ? 'flex' : 'none';
-        }
+        document.getElementById('displayAuthenticatedUserName').innerText = AppState.currentUser.full_name;
+        document.getElementById('displayAuthenticatedUserEmail').innerText = AppState.currentUser.email;
+        document.getElementById('userRoleDisplayTag').innerText = currentRole.toUpperCase();
 
-        fetchItemTraceLogsFromSupabase();
-        
-        if (currentRole === 'admin') {
-            fetchUserAuthTraceLogsFromSupabase();
+        const consoleTab = document.getElementById('adminTabNavItem');
+        const consoleBadge = document.getElementById('consoleRoleBadge');
+        const authLogCard = document.getElementById('userAuthLogCard');
+
+        if (currentRole === 'admin' || currentRole === 'staff') {
+            consoleTab.style.display = 'flex';
+            if (consoleBadge) {
+                consoleBadge.innerText = currentRole.toUpperCase();
+                consoleBadge.className = `badge-tag-status badge-tag-${currentRole}`;
+            }
+            
+            if (authLogCard) {
+                authLogCard.style.display = (currentRole === 'admin') ? 'flex' : 'none';
+            }
+
+            fetchItemTraceLogsFromSupabase();
+            
+            if (currentRole === 'admin') {
+                fetchUserAuthTraceLogsFromSupabase();
+            }
+        } else {
+            consoleTab.style.display = 'none';
         }
-    } else {
-        consoleTab.style.display = 'none';
     }
-}
 
     function showBanner(bannerId, text, type) {
         const banner = document.getElementById(bannerId);
@@ -990,12 +984,9 @@
         const item = AppState.itemsData.find(i => i.id === id);
         if (item) {
             item.status = newStatus;
-            
             await db.from('items').update({ status: newStatus }).eq('item_id', id);
-            
             const staffEmail = AppState.currentUser ? AppState.currentUser.email : "Staff Member";
             addItemTraceLog(id, item.title, `Status updated to ${newStatus}`, staffEmail);
-
             fetchItemsFromSupabase();
             showToastNotification(`Report #${id} verified as ${newStatus}`);
         }
@@ -1004,13 +995,10 @@
     async function deleteReportByAdmin(id) {
         const item = AppState.itemsData.find(i => i.id === id);
         const userEmail = AppState.currentUser ? AppState.currentUser.email : "Admin";
-        
         if (item) {
             addItemTraceLog(id, item.title, "Report deleted from system", userEmail);
         }
-
         await db.from('items').delete().eq('item_id', id);
-
         fetchItemsFromSupabase();
         showToastNotification(`Report #${id} removed.`);
     }
@@ -1038,11 +1026,9 @@
         if (!error && data) {
             const newItem = data[0];
             addItemTraceLog(newItem.item_id, title, `New report created (${category.toUpperCase()})`, userEmail);
-
             document.getElementById('reportTitleInput').value = '';
             document.getElementById('reportLocationInput').value = '';
             document.getElementById('reportDescInput').value = '';
-
             fetchItemsFromSupabase();
             showToastNotification("Report submitted for Staff review!");
             switchActiveTab('feedViewScreen', document.querySelectorAll('.nav-tab-item')[0]);
@@ -1054,11 +1040,9 @@
         document.getElementById('modalItemTitle').innerText = item.title;
         document.getElementById('modalItemLocation').innerText = "📍 " + item.location;
         document.getElementById('modalItemDesc').innerText = item.description;
-        
         const badge = document.getElementById('modalItemBadge');
         badge.innerText = item.category;
         badge.className = `badge-tag-status badge-tag-${item.category}`;
-
         document.getElementById('itemDetailModalOverlay').style.display = 'flex';
     }
 
@@ -1093,7 +1077,6 @@
 
         closeItemDetailModal();
         fetchItemsFromSupabase();
-
         showToastNotification("Item status updated to Claimable!");
         switchActiveTab('trackViewScreen', document.querySelectorAll('.nav-tab-item')[2]);
     }
@@ -1104,7 +1087,6 @@
     async function executeBackendLogoutProcess() {
         dismissSignoutConfirmationModal();
 
-        // RECORD LOGOUT IN TRACE LOGS
         if (AppState.currentUser) {
             await recordUserAuthTraceLog(AppState.currentUser.user_id, AppState.currentUser.email, AppState.currentUser.role, 'LOGOUT');
         }
@@ -1119,7 +1101,6 @@
 
         document.getElementById('bottomTabBarContainer').style.display = 'none';
         document.getElementById('loginViewScreen').style.display = 'block';
-
         showToastNotification("Signed out");
     }
 
@@ -1129,107 +1110,109 @@
         toast.classList.add('visible');
         setTimeout(() => toast.classList.remove('visible'), 3000);
     }
-// =========================================================================
-// ACCOUNT RECOVERY (OTP) LOGIC
-// =========================================================================
-function openOtpRecoveryModal() {
-    document.getElementById('otpStep1Container').style.display = 'block';
-    document.getElementById('otpStep2Container').style.display = 'none';
-    document.getElementById('otpFeedbackBanner').style.display = 'none';
-    document.getElementById('otpRecoveryModalOverlay').style.display = 'flex';
-}
 
-function closeOtpRecoveryModal() {
-    document.getElementById('otpRecoveryModalOverlay').style.display = 'none';
-}
-
-async function sendRecoveryOtpCode() {
-    const email = document.getElementById('otpRequestEmail').value.trim();
-    if (!email) {
-        showBanner('otpFeedbackBanner', "Please enter your registered email.", "error");
-        return;
+    // =========================================================================
+    // 4. ACCOUNT RECOVERY (OTP) LOGIC
+    // =========================================================================
+    function openOtpRecoveryModal() {
+        document.getElementById('otpStep1Container').style.display = 'block';
+        document.getElementById('otpStep2Container').style.display = 'none';
+        document.getElementById('otpFeedbackBanner').style.display = 'none';
+        document.getElementById('otpRecoveryModalOverlay').style.display = 'flex';
     }
 
-    // 1. Verify user exists in database
-    const { data: users, error } = await db.from('users').select('user_id').eq('email', email).limit(1);
-    if (error || !users || users.length === 0) {
-        showBanner('otpFeedbackBanner', "No account found with this email.", "error");
-        return;
+    function closeOtpRecoveryModal() {
+        document.getElementById('otpRecoveryModalOverlay').style.display = 'none';
     }
 
-    // 2. Generate random 6-digit OTP code
-    const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
-    const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString(); // 10 minutes expiry
+    async function sendRecoveryOtpCode() {
+        const email = document.getElementById('otpRequestEmail').value.trim();
+        if (!email) {
+            showBanner('otpFeedbackBanner', "Please enter your registered email.", "error");
+            return;
+        }
 
-    // 3. Save OTP record to Supabase
-    const { error: otpErr } = await db.from('password_resets').insert([{
-        email: email,
-        otp_code: generatedOtp,
-        expires_at: expiresAt
-    }]);
+        const { data: users, error } = await db.from('users').select('user_id').eq('email', email).limit(1);
+        if (error || !users || users.length === 0) {
+            showBanner('otpFeedbackBanner', "No account found with this email.", "error");
+            return;
+        }
 
-    if (otpErr) {
-        showBanner('otpFeedbackBanner', "Failed to generate OTP. Try again.", "error");
-        return;
+        const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
+        const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
+
+        const { error: otpErr } = await db.from('password_resets').insert([{
+            email: email,
+            otp_code: generatedOtp,
+            expires_at: expiresAt
+        }]);
+
+        if (otpErr) {
+            showBanner('otpFeedbackBanner', "Failed to generate OTP. Try again.", "error");
+            return;
+        }
+
+        document.getElementById('otpSentNoticeText').innerText = `Demo OTP Code: ${generatedOtp} (Expires in 10 mins)`;
+        document.getElementById('otpStep1Container').style.display = 'none';
+        document.getElementById('otpStep2Container').style.display = 'block';
+        document.getElementById('otpFeedbackBanner').style.display = 'none';
+
+        showToastNotification(`OTP Code Generated: ${generatedOtp}`);
     }
 
-    // Display OTP code on screen for testing
-    document.getElementById('otpSentNoticeText').innerText = `Demo OTP Code: ${generatedOtp} (Expires in 10 mins)`;
-    document.getElementById('otpStep1Container').style.display = 'none';
-    document.getElementById('otpStep2Container').style.display = 'block';
-    document.getElementById('otpFeedbackBanner').style.display = 'none';
+    async function verifyOtpAndResetPassword() {
+        const email = document.getElementById('otpRequestEmail').value.trim();
+        const otpInput = document.getElementById('otpCodeInput').value.trim();
+        const newPassword = document.getElementById('otpNewPassword').value.trim();
 
-    showToastNotification(`OTP Code Generated: ${generatedOtp}`);
-}
+        if (!email || !otpInput || !newPassword) {
+            showBanner('otpFeedbackBanner', "Please complete all fields.", "error");
+            return;
+        }
 
-async function verifyOtpAndResetPassword() {
-    const email = document.getElementById('otpRequestEmail').value.trim();
-    const otpInput = document.getElementById('otpCodeInput').value.trim();
-    const newPassword = document.getElementById('otpNewPassword').value.trim();
+        if (!validateIASPassword(newPassword)) {
+            showBanner('otpFeedbackBanner', "Password must be >= 8 chars with Uppercase, Lowercase, Number & Special Char.", "error");
+            return;
+        }
 
-    if (!otpInput || !newPassword) {
-        showBanner('otpFeedbackBanner', "Please enter both the OTP code and your new password.", "error");
-        return;
-    }
+        // 1. Verify OTP
+        const { data: records, error } = await db.from('password_resets')
+            .select('*')
+            .eq('email', email)
+            .eq('otp_code', otpInput)
+            .gte('expires_at', new Date().toISOString())
+            .order('created_at', { ascending: false })
+            .limit(1);
 
-    if (!validateIASPassword(newPassword)) {
-        showBanner('otpFeedbackBanner', "Password must be >= 8 chars with Uppercase, Lowercase, Number & Special Char.", "error");
-        return;
-    }
+        if (error || !records || records.length === 0) {
+            showBanner('otpFeedbackBanner', "Invalid or expired OTP code.", "error");
+            return;
+        }
 
-    // 1. Check valid unexpired OTP
-    const { data: records, error } = await db.from('password_resets')
-        .select('*')
-        .eq('email', email)
-        .eq('otp_code', otpInput)
-        .gte('expires_at', new Date().toISOString())
-        .order('created_at', { ascending: false })
-        .limit(1);
+        // 2. Perform UPDATE with .select() to verify returned rows
+        const { data: updateData, error: updateErr } = await db.from('users')
+            .update({ 
+                password_hash: newPassword,
+                last_password_reset: new Date().toISOString()
+            })
+            .eq('email', email)
+            .select();
 
-    if (error || !records || records.length === 0) {
-        showBanner('otpFeedbackBanner', "Invalid or expired OTP code.", "error");
-        return;
-    }
+        if (updateErr || !updateData || updateData.length === 0) {
+            console.error("Update Error:", updateErr);
+            showBanner('otpFeedbackBanner', "Failed to update password. Check RLS policies.", "error");
+            return;
+        }
 
-    // 2. Update password_hash AND set last_password_reset timestamp in users table
-    const { error: updateErr } = await db.from('users').update({ 
-        password_hash: newPassword,
-        last_password_reset: new Date().toISOString()
-    }).eq('email', email);
+        // 3. Clean up OTP record
+        await db.from('password_resets').delete().eq('id', records[0].id);
 
-    if (updateErr) {
-        showBanner('otpFeedbackBanner', "Failed to reset password. Try again.", "error");
-        return;
-    }
+        closeOtpRecoveryModal();
+        document.getElementById('inputUserEmail').value = email;
+        document.getElementById('inputUserPassword').value = newPassword;
+        showToastNotification("Password reset successful! You can now log in.");
+    }     
 
-    // 3. Clean up used OTP record
-    await db.from('password_resets').delete().eq('id', records[0].id);
-
-    closeOtpRecoveryModal();
-    document.getElementById('inputUserEmail').value = email;
-    document.getElementById('inputUserPassword').value = newPassword;
-    showToastNotification("Password reset successful! You can now log in.");
-}     
     window.addEventListener('DOMContentLoaded', () => {
         if (AppState.currentUser) {
             setupInterfaceForUserRole();
