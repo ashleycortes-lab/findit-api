@@ -432,7 +432,10 @@
                     <label class="form-control-label">Description</label>
                     <textarea id="reportDescInput" class="form-textarea-field" rows="2" placeholder="Details..."></textarea>
                 </div>
-
+                <div class="form-control-group">
+                    <label class="form-control-label">Attach Item Image</label>
+                    <input type="file" id="reportImageInput" class="form-input-field" accept="image/*" capture="environment" style="padding: 6px;">
+                </div>
                 <button class="action-button-base action-button-primary" onclick="handleNewReportSubmission()">Submit Report</button>
             </div>
 
@@ -903,31 +906,36 @@
     }
 
     function renderFeedItems() {
-        const container = document.getElementById('feedItemsContainer');
-        if (!container) return;
-        container.innerHTML = '';
+    const container = document.getElementById('feedItemsContainer');
+    if (!container) return;
+    container.innerHTML = '';
 
-        AppState.itemsData.forEach(item => {
-            const card = document.createElement('div');
-            card.className = 'info-card-container';
-            card.onclick = () => openItemDetailModal(item);
+    AppState.itemsData.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'info-card-container';
+        card.onclick = () => openItemDetailModal(item);
 
-            const isLost = item.category === 'lost';
-            const iconSvg = isLost 
-                ? `<svg class="svg-icon-lg" viewBox="0 0 24 24"><path d="M21 2l-2 2m-3 1l-4 4m2 2l-2 2m-2-2l-4 4a5 5 0 1 1-7-7l4-4a5 5 0 0 1 7 7z"/></svg>`
-                : `<svg class="svg-icon-lg" viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>`;
+        const isLost = item.category === 'lost';
+        const defaultIconSvg = isLost 
+            ? `<svg class="svg-icon-lg" viewBox="0 0 24 24"><path d="M21 2l-2 2m-3 1l-4 4m2 2l-2 2m-2-2l-4 4a5 5 0 1 1-7-7l4-4a5 5 0 0 1 7 7z"/></svg>`
+            : `<svg class="svg-icon-lg" viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>`;
 
-            card.innerHTML = `
-                <div class="info-card-thumbnail">${iconSvg}</div>
-                <div class="info-card-meta">
-                    <div class="info-card-title">${item.title}</div>
-                    <div class="info-card-location">📍 ${item.location}</div>
-                    <span class="badge-tag-status badge-tag-${item.category}">${item.category}</span>
-                </div>
-            `;
-            container.appendChild(card);
-        });
-    }
+        // Use uploaded image if present, otherwise fall back to default icon
+        const thumbnailContent = item.image_url 
+            ? `<img src="${item.image_url}" style="width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius-medium);">`
+            : defaultIconSvg;
+
+        card.innerHTML = `
+            <div class="info-card-thumbnail">${thumbnailContent}</div>
+            <div class="info-card-meta">
+                <div class="info-card-title">${item.title}</div>
+                <div class="info-card-location">📍 ${item.location}</div>
+                <span class="badge-tag-status badge-tag-${item.category}">${item.category}</span>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
 
     function filterFeedCards() {
         const searchVal = document.getElementById('feedSearchInput').value.toLowerCase();
@@ -1004,52 +1012,91 @@
     }
 
     async function handleNewReportSubmission() {
-        const title = document.getElementById('reportTitleInput').value.trim();
-        const location = document.getElementById('reportLocationInput').value.trim();
-        const category = document.getElementById('reportCategorySelect').value;
-        const desc = document.getElementById('reportDescInput').value.trim();
-        const userEmail = AppState.currentUser ? AppState.currentUser.email : "Guest";
+    const title = document.getElementById('reportTitleInput').value.trim();
+    const location = document.getElementById('reportLocationInput').value.trim();
+    const category = document.getElementById('reportCategorySelect').value;
+    const desc = document.getElementById('reportDescInput').value.trim();
+    const imageFileInput = document.getElementById('reportImageInput');
+    const userEmail = AppState.currentUser ? AppState.currentUser.email : "Guest";
 
-        if (!title || !location) {
-            alert('Please fill in both Title and Location.');
-            return;
-        }
+    if (!title || !location) {
+        alert('Please fill in both Title and Location.');
+        return;
+    }
 
-        const { data, error } = await db.from('items').insert([{
-            title: title,
-            location: location,
-            report_type: category,
-            description: desc || "No description provided.",
-            status: 'Pending'
-        }]).select();
+    let imageUrl = null;
 
-        if (!error && data) {
-            const newItem = data[0];
-            addItemTraceLog(newItem.item_id, title, `New report created (${category.toUpperCase()})`, userEmail);
-            document.getElementById('reportTitleInput').value = '';
-            document.getElementById('reportLocationInput').value = '';
-            document.getElementById('reportDescInput').value = '';
-            fetchItemsFromSupabase();
-            showToastNotification("Report submitted for Staff review!");
-            switchActiveTab('feedViewScreen', document.querySelectorAll('.nav-tab-item')[0]);
+    // 1. Upload image if selected
+    if (imageFileInput && imageFileInput.files.length > 0) {
+        const file = imageFileInput.files[0];
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
+        const filePath = `items/${fileName}`;
+
+        const { data: uploadData, error: uploadErr } = await db.storage
+            .from('item_images')
+            .upload(filePath, file);
+
+        if (uploadErr) {
+            console.error("Image upload error:", uploadErr);
+            alert("Image upload failed, submitting without image.");
+        } else {
+            // Get Public URL
+            const { data: publicUrlData } = db.storage
+                .from('item_images')
+                .getPublicUrl(filePath);
+
+            imageUrl = publicUrlData.publicUrl;
         }
     }
+
+    // 2. Insert item into database with image_url
+    const { data, error } = await db.from('items').insert([{
+        title: title,
+        location: location,
+        report_type: category,
+        description: desc || "No description provided.",
+        image_url: imageUrl,
+        status: 'Pending'
+    }]).select();
+
+    if (!error && data) {
+        const newItem = data[0];
+        addItemTraceLog(newItem.item_id, title, `New report created (${category.toUpperCase()})`, userEmail);
+
+        // Reset inputs
+        document.getElementById('reportTitleInput').value = '';
+        document.getElementById('reportLocationInput').value = '';
+        document.getElementById('reportDescInput').value = '';
+        document.getElementById('reportImageInput').value = '';
+
+        fetchItemsFromSupabase();
+        showToastNotification("Report submitted for Staff review!");
+        switchActiveTab('feedViewScreen', document.querySelectorAll('.nav-tab-item')[0]);
+    }
+}
 
     function openItemDetailModal(item) {
-        AppState.selectedItemId = item.id;
-        document.getElementById('modalItemTitle').innerText = item.title;
-        document.getElementById('modalItemLocation').innerText = "📍 " + item.location;
-        document.getElementById('modalItemDesc').innerText = item.description;
-        const badge = document.getElementById('modalItemBadge');
-        badge.innerText = item.category;
-        badge.className = `badge-tag-status badge-tag-${item.category}`;
-        document.getElementById('itemDetailModalOverlay').style.display = 'flex';
+    AppState.selectedItemId = item.id;
+    document.getElementById('modalItemTitle').innerText = item.title;
+    document.getElementById('modalItemLocation').innerText = "📍 " + item.location;
+    
+    const descContainer = document.getElementById('modalItemDesc');
+    if (item.image_url) {
+        descContainer.innerHTML = `
+            <img src="${item.image_url}" style="width: 100%; max-height: 160px; object-fit: cover; border-radius: 8px; margin-bottom: 8px; border: var(--glass-border);">
+            <p>${item.description}</p>
+        `;
+    } else {
+        descContainer.innerText = item.description;
     }
+    
+    const badge = document.getElementById('modalItemBadge');
+    badge.innerText = item.category;
+    badge.className = `badge-tag-status badge-tag-${item.category}`;
 
-    function closeItemDetailModal() { 
-        document.getElementById('itemDetailModalOverlay').style.display = 'none'; 
-        AppState.selectedItemId = null;
-    }
+    document.getElementById('itemDetailModalOverlay').style.display = 'flex';
+}
 
     async function triggerClaimAction() {
         const currentUserRole = AppState.currentUser ? AppState.currentUser.role : 'user';
