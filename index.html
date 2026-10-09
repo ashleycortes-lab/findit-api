@@ -620,22 +620,23 @@
     // 2. DATA FETCHING PROCEDURES (SUPABASE DIRECT)
     // =========================================================================
     async function fetchItemsFromSupabase() {
-        const { data, error } = await db.from('items').select('*').order('created_at', { ascending: false });
-        if (!error && data) {
-            AppState.itemsData = data.map(item => ({
-                id: item.item_id,
-                title: item.title,
-                location: item.location,
-                category: item.report_type,
-                description: item.description,
-                date: item.created_at ? item.created_at.split('T')[0] : new Date().toISOString().split('T')[0],
-                status: item.status
-            }));
-            renderFeedItems();
-            renderTrackerItems();
-            renderAdminManageItems();
-        }
+    const { data, error } = await db.from('items').select('*').order('created_at', { ascending: false });
+    if (!error && data) {
+        AppState.itemsData = data.map(item => ({
+            id: item.item_id,
+            title: item.title,
+            location: item.location,
+            category: item.report_type,
+            description: item.description,
+            image_url: item.image_url, // Ensures image URL is passed to AppState
+            date: item.created_at ? item.created_at.split('T')[0] : new Date().toISOString().split('T')[0],
+            status: item.status
+        }));
+        renderFeedItems();
+        renderTrackerItems();
+        renderAdminManageItems();
     }
+}
 
     async function fetchItemTraceLogsFromSupabase() {
         const { data, error } = await db.from('item_trace_logs').select('*').order('created_at', { ascending: false });
@@ -910,6 +911,11 @@
     if (!container) return;
     container.innerHTML = '';
 
+    if (AppState.itemsData.length === 0) {
+        container.innerHTML = '<div style="font-size: 11px; color: var(--color-text-muted); text-align: center; padding: 20px;">No items reported yet.</div>';
+        return;
+    }
+
     AppState.itemsData.forEach(item => {
         const card = document.createElement('div');
         card.className = 'info-card-container';
@@ -920,9 +926,9 @@
             ? `<svg class="svg-icon-lg" viewBox="0 0 24 24"><path d="M21 2l-2 2m-3 1l-4 4m2 2l-2 2m-2-2l-4 4a5 5 0 1 1-7-7l4-4a5 5 0 0 1 7 7z"/></svg>`
             : `<svg class="svg-icon-lg" viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>`;
 
-        // Use uploaded image if present, otherwise fall back to default icon
+        // Display uploaded picture if available; fallback to vector icon
         const thumbnailContent = item.image_url 
-            ? `<img src="${item.image_url}" style="width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius-medium);">`
+            ? `<img src="${item.image_url}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius-medium);">`
             : defaultIconSvg;
 
         card.innerHTML = `
