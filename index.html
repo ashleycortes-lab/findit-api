@@ -212,20 +212,32 @@
         .feedback-success { background: rgba(45, 212, 191, 0.15); color: var(--color-seafoam); border: 1px solid var(--color-seafoam); }
 
         /* GLASS OVERLAY MODAL */
-        .confirmation-modal-overlay {
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(8px); display: none; justify-content: center;
-            align-items: center; padding: 20px; z-index: 100;
+        /* Update overlay to fit strictly inside the viewport screen */
+.confirmation-modal-overlay {
+    position: absolute; 
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(8px); 
+    display: none; 
+    justify-content: center;
+    align-items: center; 
+    padding: 16px; 
+    z-index: 100;
         }
 
-        .confirmation-modal-dialog {
-            background: var(--glass-bg-surface);
-            backdrop-filter: var(--glass-blur);
-            border: var(--glass-border);
-            padding: 20px; border-radius: var(--radius-card);
-            text-align: center; width: 100%; box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-        }
+        /* Constrain dialog maximum width to the phone frame width */
+.confirmation-modal-dialog {
+    background: var(--glass-bg-surface);
+    backdrop-filter: var(--glass-blur);
+    border: var(--glass-border);
+    padding: 16px; 
+    border-radius: var(--radius-card);
+    text-align: center; 
+    width: 100%; 
+    max-width: 320px; /* Limits width so it doesn't stretch full-screen */
+    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+    box-sizing: border-box;
+}
 
         .toast-notification-popup {
             position: absolute; top: 50px; left: 50%; transform: translateX(-50%) translateY(-20px);
@@ -575,6 +587,8 @@
         <div id="otpFeedbackBanner" class="system-feedback-banner"></div>
     </div>
 </div>
+</div> <!-- ADD THIS LINE: Closes mobile-viewport-screen -->
+</div> <!-- ADD THIS LINE: Closes mobile-hardware-shell -->
 <script>
     // =========================================================================
     // 1. SUPABASE CLIENT INITIALIZATION
