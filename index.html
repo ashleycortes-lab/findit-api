@@ -1108,7 +1108,104 @@
         toast.classList.add('visible');
         setTimeout(() => toast.classList.remove('visible'), 3000);
     }
+// =========================================================================
+// ACCOUNT RECOVERY (OTP) LOGIC
+// =========================================================================
+function openOtpRecoveryModal() {
+    document.getElementById('otpStep1Container').style.display = 'block';
+    document.getElementById('otpStep2Container').style.display = 'none';
+    document.getElementById('otpFeedbackBanner').style.display = 'none';
+    document.getElementById('otpRecoveryModalOverlay').style.display = 'flex';
+}
 
+function closeOtpRecoveryModal() {
+    document.getElementById('otpRecoveryModalOverlay').style.display = 'none';
+}
+
+async function sendRecoveryOtpCode() {
+    const email = document.getElementById('otpRequestEmail').value.trim();
+    if (!email) {
+        showBanner('otpFeedbackBanner', "Please enter your registered email.", "error");
+        return;
+    }
+
+    // 1. Verify user exists in database
+    const { data: users, error } = await db.from('users').select('user_id').eq('email', email).limit(1);
+    if (error || !users || users.length === 0) {
+        showBanner('otpFeedbackBanner', "No account found with this email.", "error");
+        return;
+    }
+
+    // 2. Generate random 6-digit OTP code
+    const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString(); // 10 minutes expiry
+
+    // 3. Save OTP record to Supabase
+    const { error: otpErr } = await db.from('password_resets').insert([{
+        email: email,
+        otp_code: generatedOtp,
+        expires_at: expiresAt
+    }]);
+
+    if (otpErr) {
+        showBanner('otpFeedbackBanner', "Failed to generate OTP. Try again.", "error");
+        return;
+    }
+
+    // Display OTP code on screen for testing
+    document.getElementById('otpSentNoticeText').innerText = `Demo OTP Code: ${generatedOtp} (Expires in 10 mins)`;
+    document.getElementById('otpStep1Container').style.display = 'none';
+    document.getElementById('otpStep2Container').style.display = 'block';
+    document.getElementById('otpFeedbackBanner').style.display = 'none';
+
+    showToastNotification(`OTP Code Generated: ${generatedOtp}`);
+}
+
+async function verifyOtpAndResetPassword() {
+    const email = document.getElementById('otpRequestEmail').value.trim();
+    const otpInput = document.getElementById('otpCodeInput').value.trim();
+    const newPassword = document.getElementById('otpNewPassword').value.trim();
+
+    if (!otpInput || !newPassword) {
+        showBanner('otpFeedbackBanner', "Please enter both the OTP code and your new password.", "error");
+        return;
+    }
+
+    if (!validateIASPassword(newPassword)) {
+        showBanner('otpFeedbackBanner', "Password must be >= 8 chars with Uppercase, Lowercase, Number & Special Char.", "error");
+        return;
+    }
+
+    // 1. Check valid unexpired OTP
+    const { data: records, error } = await db.from('password_resets')
+        .select('*')
+        .eq('email', email)
+        .eq('otp_code', otpInput)
+        .gte('expires_at', new Date().toISOString())
+        .order('created_at', { ascending: false })
+        .limit(1);
+
+    if (error || !records || records.length === 0) {
+        showBanner('otpFeedbackBanner', "Invalid or expired OTP code.", "error");
+        return;
+    }
+
+    // 2. Update password in public.users table
+    const { error: updateErr } = await db.from('users').update({ password_hash: newPassword }).eq('email', email);
+
+    if (updateErr) {
+        showBanner('otpFeedbackBanner', "Failed to reset password. Try again.", "error");
+        return;
+    }
+
+    // 3. Clean up used OTP record
+    await db.from('password_resets').delete().eq('id', records[0].id);
+
+    closeOtpRecoveryModal();
+    document.getElementById('inputUserEmail').value = email;
+    document.getElementById('inputUserPassword').value = newPassword;
+    showToastNotification("Password reset successful! You can now log in.");
+}     
     window.addEventListener('DOMContentLoaded', () => {
         if (AppState.currentUser) {
             setupInterfaceForUserRole();
