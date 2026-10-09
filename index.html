@@ -68,11 +68,15 @@
         }
 
         .mobile-viewport-screen {
-            background: var(--bg-viewport);
-            width: 100%; height: 100%; border-radius: 34px;
-            overflow: hidden; display: flex; flex-direction: column;
-            position: relative;
-        }
+    background: var(--bg-viewport);
+    width: 100%; 
+    height: 100%; 
+    border-radius: 34px;
+    overflow: hidden; 
+    display: flex; 
+    flex-direction: column;
+    position: relative; /* REQUIRED: keeps overlays locked inside the phone screen */
+}
 
         /* GLASSMORPHIC STATUS BAR */
         .mobile-status-bar {
@@ -215,7 +219,10 @@
         /* Update overlay to fit strictly inside the viewport screen */
 .confirmation-modal-overlay {
     position: absolute; 
-    top: 0; left: 0; right: 0; bottom: 0;
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%;
     background: rgba(15, 23, 42, 0.85);
     backdrop-filter: blur(8px); 
     display: none; 
@@ -223,7 +230,8 @@
     align-items: center; 
     padding: 16px; 
     z-index: 100;
-        }
+    box-sizing: border-box;
+}
 
         /* Constrain dialog maximum width to the phone frame width */
 .confirmation-modal-dialog {
@@ -234,7 +242,6 @@
     border-radius: var(--radius-card);
     text-align: center; 
     width: 100%; 
-    max-width: 320px; /* Limits width so it doesn't stretch full-screen */
     box-shadow: 0 25px 50px rgba(0,0,0,0.5);
     box-sizing: border-box;
 }
