@@ -314,7 +314,7 @@
                 </button>
                 
                 <span class="auth-toggle-link" onclick="toggleAuthView('register')">Don't have an account? Register</span>
-
+                <span class="auth-toggle-link" style="display: block; margin-top: 8px;" onclick="openOtpRecoveryModal()">Forgot Password? Recover with OTP</span>
                 <div id="loginFeedbackBanner" class="system-feedback-banner"></div>
             </div>
 
@@ -526,7 +526,55 @@
 
     </div>
 </div>
+<!-- PASTE PART 2 HERE -->
+<div id="otpRecoveryModalOverlay" class="confirmation-modal-overlay">
+    <div class="confirmation-modal-dialog" style="text-align: left;">
+        
+        <!-- STEP 1: REQUEST OTP -->
+        <div id="otpStep1Container">
+            <h3 style="font-size: 15px; margin-bottom: 4px;">Account Recovery</h3>
+            <p style="font-size: 11px; color: var(--color-text-muted); margin-bottom: 12px;">Enter your email address to receive a 6-digit OTP code.</p>
+            
+            <div class="form-control-group">
+                <label class="form-control-label">Registered Email</label>
+                <input type="email" id="otpRequestEmail" class="form-input-field" placeholder="email@findit.com">
+            </div>
 
+            <div style="display: flex; gap: 8px; margin-top: 12px;">
+                <button class="action-button-base action-button-secondary" onclick="closeOtpRecoveryModal()">Cancel</button>
+                <button class="action-button-base action-button-primary" onclick="sendRecoveryOtpCode()">Send OTP</button>
+            </div>
+        </div>
+
+        <!-- STEP 2: VERIFY OTP & RESET PASSWORD -->
+        <div id="otpStep2Container" style="display: none;">
+            <h3 style="font-size: 15px; margin-bottom: 4px;">Verify OTP Code</h3>
+            <p style="font-size: 11px; color: var(--color-seafoam); margin-bottom: 12px;" id="otpSentNoticeText">OTP sent to email</p>
+
+            <div class="form-control-group">
+                <label class="form-control-label">6-Digit OTP Code</label>
+                <input type="text" id="otpCodeInput" class="form-input-field" maxlength="6" placeholder="123456" style="letter-spacing: 0.2em; text-align: center; font-size: 16px; font-weight: bold;">
+            </div>
+
+            <div class="form-control-group">
+                <label class="form-control-label">New Password</label>
+                <div class="password-toggle-wrapper">
+                    <input type="password" id="otpNewPassword" class="form-input-field" placeholder="NewPassword@123">
+                    <span class="password-visibility-toggle" onclick="togglePasswordInputVisibility('otpNewPassword')">
+                        <svg class="svg-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </span>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 8px; margin-top: 12px;">
+                <button class="action-button-base action-button-secondary" onclick="closeOtpRecoveryModal()">Cancel</button>
+                <button class="action-button-base action-button-primary" onclick="verifyOtpAndResetPassword()">Reset Password</button>
+            </div>
+        </div>
+
+        <div id="otpFeedbackBanner" class="system-feedback-banner"></div>
+    </div>
+</div>
 <script>
     // =========================================================================
     // 1. SUPABASE CLIENT INITIALIZATION
