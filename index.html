@@ -311,15 +311,22 @@
                 <h2 class="screen-title" style="font-size: 22px;">FINDIT</h2>
                 <p class="screen-subtitle">Supabase Direct Authentication</p>
 
-                <div class="form-control-group">
-                    <label class="form-control-label">User Email Address</label>
-                    <input type="email" id="inputUserEmail" class="form-input-field" value="admin@findit.com" placeholder="Enter email">
+                <!-- QUICK ROLE SELECTOR BUTTONS -->
+                <div style="display: flex; gap: 6px; margin-bottom: 12px; justify-content: center;">
+                    <button type="button" class="action-button-base" style="padding: 6px 10px; font-size: 10px; background: rgba(129, 140, 248, 0.2); color: #A5B4FC; border: 1px solid rgba(129, 140, 248, 0.4);" onclick="quickFillRoleCredentials('admin@findit.com', 'Password123')">🔑 Admin</button>
+                    <button type="button" class="action-button-base" style="padding: 6px 10px; font-size: 10px; background: rgba(251, 191, 36, 0.2); color: #FBBF24; border: 1px solid rgba(251, 191, 36, 0.4);" onclick="quickFillRoleCredentials('staff1@findit.com', 'Password123')">📋 Staff</button>
+                    <button type="button" class="action-button-base" style="padding: 6px 10px; font-size: 10px; background: rgba(45, 212, 191, 0.2); color: #2DD4BF; border: 1px solid rgba(45, 212, 191, 0.4);" onclick="quickFillRoleCredentials('user@findit.com', 'Password123')">👤 User</button>
                 </div>
 
                 <div class="form-control-group">
-                    <label class="form-control-label">Account Password</label>
+                    <label class="form-control-label" for="inputUserEmail">User Email Address</label>
+                    <input type="email" id="inputUserEmail" name="inputUserEmail" class="form-input-field" value="admin@findit.com" placeholder="Enter email">
+                </div>
+
+                <div class="form-control-group">
+                    <label class="form-control-label" for="inputUserPassword">Account Password</label>
                     <div class="password-toggle-wrapper">
-                        <input type="password" id="inputUserPassword" class="form-input-field" value="Password123" placeholder="Enter password">
+                        <input type="password" id="inputUserPassword" name="inputUserPassword" class="form-input-field" value="Password123" placeholder="Enter password">
                         <span class="password-visibility-toggle" onclick="togglePasswordInputVisibility('inputUserPassword')">
                             <svg class="svg-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                         </span>
@@ -341,18 +348,18 @@
                 <p class="screen-subtitle" style="margin-bottom: 12px;">Min. 8 chars, uppercase, lowercase, number & symbol</p>
 
                 <div class="form-control-group">
-                    <label class="form-control-label">Full Name</label>
-                    <input type="text" id="regFullName" class="form-input-field" placeholder="Full Name">
+                    <label class="form-control-label" for="regFullName">Full Name</label>
+                    <input type="text" id="regFullName" name="regFullName" class="form-input-field" placeholder="Full Name">
                 </div>
 
                 <div class="form-control-group">
-                    <label class="form-control-label">Email Address</label>
-                    <input type="email" id="regEmail" class="form-input-field" placeholder="Email">
+                    <label class="form-control-label" for="regEmail">Email Address</label>
+                    <input type="email" id="regEmail" name="regEmail" class="form-input-field" placeholder="Email">
                 </div>
 
                 <div class="form-control-group">
-                    <label class="form-control-label">Choose Account Role</label>
-                    <select id="regRole" class="form-select-field">
+                    <label class="form-control-label" for="regRole">Choose Account Role</label>
+                    <select id="regRole" name="regRole" class="form-select-field">
                         <option value="user" selected>Student / User</option>
                         <option value="staff">Campus Staff (Verification)</option>
                         <option value="admin">System Administrator</option>
@@ -360,9 +367,9 @@
                 </div>
 
                 <div class="form-control-group">
-                    <label class="form-control-label">Password</label>
+                    <label class="form-control-label" for="regPassword">Password</label>
                     <div class="password-toggle-wrapper">
-                        <input type="password" id="regPassword" class="form-input-field" placeholder="Password@123">
+                        <input type="password" id="regPassword" name="regPassword" class="form-input-field" placeholder="Password@123">
                         <span class="password-visibility-toggle" onclick="togglePasswordInputVisibility('regPassword')">
                             <svg class="svg-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                         </span>
@@ -370,9 +377,9 @@
                 </div>
 
                 <div class="form-control-group">
-                    <label class="form-control-label">Confirm Password</label>
+                    <label class="form-control-label" for="regConfirmPassword">Confirm Password</label>
                     <div class="password-toggle-wrapper">
-                        <input type="password" id="regConfirmPassword" class="form-input-field" placeholder="Confirm Password">
+                        <input type="password" id="regConfirmPassword" name="regConfirmPassword" class="form-input-field" placeholder="Confirm Password">
                         <span class="password-visibility-toggle" onclick="togglePasswordInputVisibility('regConfirmPassword')">
                             <svg class="svg-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                         </span>
@@ -399,7 +406,7 @@
                 </div>
 
                 <div class="form-control-group" style="margin-bottom: 12px;">
-                    <input type="text" class="form-input-field" id="feedSearchInput" onkeyup="filterFeedCards()" placeholder="🔍 Search items or locations...">
+                    <input type="text" class="form-input-field" id="feedSearchInput" aria-label="Search items or locations" onkeyup="filterFeedCards()" placeholder="🔍 Search items or locations...">
                 </div>
 
                 <div id="feedItemsContainer"></div>
@@ -411,31 +418,44 @@
                 <p class="screen-subtitle">Submit lost or found items</p>
 
                 <div class="form-control-group">
-                    <label class="form-control-label">Report Category</label>
-                    <select id="reportCategorySelect" class="form-select-field">
+                    <label class="form-control-label" for="reportCategorySelect">Report Category</label>
+                    <select id="reportCategorySelect" name="reportCategorySelect" class="form-select-field">
                         <option value="lost">I Lost an Item</option>
                         <option value="found">I Found an Item</option>
                     </select>
                 </div>
 
                 <div class="form-control-group">
-                    <label class="form-control-label">Item Title</label>
-                    <input type="text" id="reportTitleInput" class="form-input-field" placeholder="e.g. Leather Wallet">
+                    <label class="form-control-label" for="reportTitleInput">Item Title</label>
+                    <input type="text" id="reportTitleInput" name="reportTitleInput" class="form-input-field" placeholder="e.g. Leather Wallet">
                 </div>
 
                 <div class="form-control-group">
-                    <label class="form-control-label">Location</label>
-                    <input type="text" id="reportLocationInput" class="form-input-field" placeholder="e.g. Library 2nd Floor">
+                    <label class="form-control-label" for="reportLocationInput">Location</label>
+                    <input type="text" id="reportLocationInput" name="reportLocationInput" class="form-input-field" placeholder="e.g. Library 2nd Floor">
                 </div>
 
                 <div class="form-control-group">
-                    <label class="form-control-label">Description</label>
-                    <textarea id="reportDescInput" class="form-textarea-field" rows="2" placeholder="Details..."></textarea>
+                    <label class="form-control-label" for="reportDescInput">Description</label>
+                    <textarea id="reportDescInput" name="reportDescInput" class="form-textarea-field" rows="2" placeholder="Details..."></textarea>
                 </div>
-                <div class="form-control-group">
-                    <label class="form-control-label">Attach Item Image</label>
-                    <input type="file" id="reportImageInput" class="form-input-field" accept="image/*" capture="environment" style="padding: 6px;">
+
+                <!-- STYLED PHOTO EVIDENCE PROOF BOX -->
+                <div class="info-card-container" style="flex-direction: column; align-items: flex-start; padding: 12px; margin-bottom: 14px; background: rgba(15, 23, 42, 0.5);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 8px;">
+                        <span style="font-size: 11px; font-weight: 700; color: var(--color-seafoam);">📷 Photo Evidence Proof</span>
+                        <span style="font-size: 10px; color: var(--color-seafoam); cursor: pointer; font-weight: 600;" onclick="triggerCameraCaptureMode()">Switch to Camera</span>
+                    </div>
+                    
+                    <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
+                        <label for="reportImageInput" class="action-button-base action-button-secondary" style="width: auto; padding: 6px 14px; font-size: 11px; margin: 0; cursor: pointer;">
+                            Choose File
+                        </label>
+                        <span id="selectedFileNameDisplay" style="font-size: 11px; color: var(--color-text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1;">No file chosen</span>
+                        <input type="file" id="reportImageInput" name="reportImageInput" accept="image/*" style="display: none;" onchange="updateSelectedFileNameDisplay(this)">
+                    </div>
                 </div>
+
                 <button class="action-button-base action-button-primary" onclick="handleNewReportSubmission()">Submit Report</button>
             </div>
 
@@ -499,7 +519,7 @@
                     <span id="modalItemBadge" class="badge-tag-status">Lost</span>
                 </div>
                 <p id="modalItemLocation" style="font-size: 11px; color: var(--color-text-muted); margin-bottom: 8px;">📍 Location</p>
-                <p id="modalItemDesc" style="font-size: 11px; color: var(--color-text-main); margin-bottom: 14px; background: rgba(15, 23, 42, 0.6); padding: 8px; border-radius: 8px; border: var(--glass-border);">Description...</p>
+                <div id="modalItemDesc" style="font-size: 11px; color: var(--color-text-main); margin-bottom: 14px; background: rgba(15, 23, 42, 0.6); padding: 8px; border-radius: 8px; border: var(--glass-border);">Description...</div>
                 <div style="display: flex; gap: 8px;">
                     <button class="action-button-base action-button-secondary" onclick="closeItemDetailModal()">Close</button>
                     <button id="modalClaimBtn" class="action-button-base action-button-primary" onclick="triggerClaimAction()">Claim Item</button>
@@ -529,8 +549,8 @@
                     <p style="font-size: 11px; color: var(--color-text-muted); margin-bottom: 12px;">Enter your email address to receive a 6-digit OTP code.</p>
                     
                     <div class="form-control-group">
-                        <label class="form-control-label">Registered Email</label>
-                        <input type="email" id="otpRequestEmail" class="form-input-field" placeholder="email@findit.com">
+                        <label class="form-control-label" for="otpRequestEmail">Registered Email</label>
+                        <input type="email" id="otpRequestEmail" name="otpRequestEmail" class="form-input-field" placeholder="email@findit.com">
                     </div>
 
                     <div style="display: flex; gap: 8px; margin-top: 12px;">
@@ -545,14 +565,14 @@
                     <p style="font-size: 11px; color: var(--color-seafoam); margin-bottom: 12px;" id="otpSentNoticeText">OTP sent to email</p>
 
                     <div class="form-control-group">
-                        <label class="form-control-label">6-Digit OTP Code</label>
-                        <input type="text" id="otpCodeInput" class="form-input-field" maxlength="6" placeholder="123456" style="letter-spacing: 0.2em; text-align: center; font-size: 16px; font-weight: bold;">
+                        <label class="form-control-label" for="otpCodeInput">6-Digit OTP Code</label>
+                        <input type="text" id="otpCodeInput" name="otpCodeInput" class="form-input-field" maxlength="6" placeholder="123456" style="letter-spacing: 0.2em; text-align: center; font-size: 16px; font-weight: bold;">
                     </div>
 
                     <div class="form-control-group">
-                        <label class="form-control-label">New Password</label>
+                        <label class="form-control-label" for="otpNewPassword">New Password</label>
                         <div class="password-toggle-wrapper">
-                            <input type="password" id="otpNewPassword" class="form-input-field" placeholder="NewPassword@123">
+                            <input type="password" id="otpNewPassword" name="otpNewPassword" class="form-input-field" placeholder="NewPassword@123">
                             <span class="password-visibility-toggle" onclick="togglePasswordInputVisibility('otpNewPassword')">
                                 <svg class="svg-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                             </span>
@@ -620,23 +640,23 @@
     // 2. DATA FETCHING PROCEDURES (SUPABASE DIRECT)
     // =========================================================================
     async function fetchItemsFromSupabase() {
-    const { data, error } = await db.from('items').select('*').order('created_at', { ascending: false });
-    if (!error && data) {
-        AppState.itemsData = data.map(item => ({
-            id: item.item_id,
-            title: item.title,
-            location: item.location,
-            category: item.report_type,
-            description: item.description,
-            image_url: item.image_url, // Ensures image URL is passed to AppState
-            date: item.created_at ? item.created_at.split('T')[0] : new Date().toISOString().split('T')[0],
-            status: item.status
-        }));
-        renderFeedItems();
-        renderTrackerItems();
-        renderAdminManageItems();
+        const { data, error } = await db.from('items').select('*').order('created_at', { ascending: false });
+        if (!error && data) {
+            AppState.itemsData = data.map(item => ({
+                id: item.item_id,
+                title: item.title,
+                location: item.location,
+                category: item.report_type,
+                description: item.description,
+                image_url: item.image_url,
+                date: item.created_at ? item.created_at.split('T')[0] : new Date().toISOString().split('T')[0],
+                status: item.status
+            }));
+            renderFeedItems();
+            renderTrackerItems();
+            renderAdminManageItems();
+        }
     }
-}
 
     async function fetchItemTraceLogsFromSupabase() {
         const { data, error } = await db.from('item_trace_logs').select('*').order('created_at', { ascending: false });
@@ -682,7 +702,7 @@
             user_id: userId || null,
             user_email: userEmail,
             user_role: userRole || 'user',
-            event_type: eventType // 'LOGIN' or 'LOGOUT'
+            event_type: eventType
         }]);
         fetchUserAuthTraceLogsFromSupabase();
     }
@@ -805,6 +825,29 @@
         showToastNotification("Welcome, " + AppState.currentUser.full_name + "!");
     }
 
+    function quickFillRoleCredentials(email, password) {
+        document.getElementById('inputUserEmail').value = email;
+        document.getElementById('inputUserPassword').value = password;
+        showToastNotification("Selected credentials for " + email);
+    }
+
+    function updateSelectedFileNameDisplay(input) {
+        const display = document.getElementById('selectedFileNameDisplay');
+        if (input.files && input.files.length > 0) {
+            display.innerText = input.files[0].name;
+            display.style.color = 'var(--color-seafoam)';
+        } else {
+            display.innerText = 'No file chosen';
+            display.style.color = 'var(--color-text-muted)';
+        }
+    }
+
+    function triggerCameraCaptureMode() {
+        const fileInput = document.getElementById('reportImageInput');
+        fileInput.setAttribute('capture', 'environment');
+        fileInput.click();
+    }
+
     async function executeBackendRegisterProcess() {
         const fullName = document.getElementById('regFullName').value.trim();
         const email = document.getElementById('regEmail').value.trim();
@@ -907,41 +950,40 @@
     }
 
     function renderFeedItems() {
-    const container = document.getElementById('feedItemsContainer');
-    if (!container) return;
-    container.innerHTML = '';
+        const container = document.getElementById('feedItemsContainer');
+        if (!container) return;
+        container.innerHTML = '';
 
-    if (AppState.itemsData.length === 0) {
-        container.innerHTML = '<div style="font-size: 11px; color: var(--color-text-muted); text-align: center; padding: 20px;">No items reported yet.</div>';
-        return;
+        if (AppState.itemsData.length === 0) {
+            container.innerHTML = '<div style="font-size: 11px; color: var(--color-text-muted); text-align: center; padding: 20px;">No items reported yet.</div>';
+            return;
+        }
+
+        AppState.itemsData.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'info-card-container';
+            card.onclick = () => openItemDetailModal(item);
+
+            const isLost = item.category === 'lost';
+            const defaultIconSvg = isLost 
+                ? `<svg class="svg-icon-lg" viewBox="0 0 24 24"><path d="M21 2l-2 2m-3 1l-4 4m2 2l-2 2m-2-2l-4 4a5 5 0 1 1-7-7l4-4a5 5 0 0 1 7 7z"/></svg>`
+                : `<svg class="svg-icon-lg" viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>`;
+
+            const thumbnailContent = item.image_url 
+                ? `<img src="${item.image_url}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius-medium);">`
+                : defaultIconSvg;
+
+            card.innerHTML = `
+                <div class="info-card-thumbnail">${thumbnailContent}</div>
+                <div class="info-card-meta">
+                    <div class="info-card-title">${item.title}</div>
+                    <div class="info-card-location">📍 ${item.location}</div>
+                    <span class="badge-tag-status badge-tag-${item.category}">${item.category}</span>
+                </div>
+            `;
+            container.appendChild(card);
+        });
     }
-
-    AppState.itemsData.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'info-card-container';
-        card.onclick = () => openItemDetailModal(item);
-
-        const isLost = item.category === 'lost';
-        const defaultIconSvg = isLost 
-            ? `<svg class="svg-icon-lg" viewBox="0 0 24 24"><path d="M21 2l-2 2m-3 1l-4 4m2 2l-2 2m-2-2l-4 4a5 5 0 1 1-7-7l4-4a5 5 0 0 1 7 7z"/></svg>`
-            : `<svg class="svg-icon-lg" viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>`;
-
-        // Display uploaded picture if available; fallback to vector icon
-        const thumbnailContent = item.image_url 
-            ? `<img src="${item.image_url}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius-medium);">`
-            : defaultIconSvg;
-
-        card.innerHTML = `
-            <div class="info-card-thumbnail">${thumbnailContent}</div>
-            <div class="info-card-meta">
-                <div class="info-card-title">${item.title}</div>
-                <div class="info-card-location">📍 ${item.location}</div>
-                <span class="badge-tag-status badge-tag-${item.category}">${item.category}</span>
-            </div>
-        `;
-        container.appendChild(card);
-    });
-}
 
     function filterFeedCards() {
         const searchVal = document.getElementById('feedSearchInput').value.toLowerCase();
@@ -1018,97 +1060,92 @@
     }
 
     async function handleNewReportSubmission() {
-    const title = document.getElementById('reportTitleInput').value.trim();
-    const location = document.getElementById('reportLocationInput').value.trim();
-    const category = document.getElementById('reportCategorySelect').value;
-    const desc = document.getElementById('reportDescInput').value.trim();
-    const imageFileInput = document.getElementById('reportImageInput');
-    const userEmail = AppState.currentUser ? AppState.currentUser.email : "Guest";
+        const title = document.getElementById('reportTitleInput').value.trim();
+        const location = document.getElementById('reportLocationInput').value.trim();
+        const category = document.getElementById('reportCategorySelect').value;
+        const desc = document.getElementById('reportDescInput').value.trim();
+        const imageFileInput = document.getElementById('reportImageInput');
+        const userEmail = AppState.currentUser ? AppState.currentUser.email : "Guest";
 
-    if (!title || !location) {
-        alert('Please fill in both Title and Location.');
-        return;
-    }
+        if (!title || !location) {
+            alert('Please fill in both Title and Location.');
+            return;
+        }
 
-    let imageUrl = null;
+        let imageUrl = null;
 
-    // 1. Upload image if selected
-    if (imageFileInput && imageFileInput.files.length > 0) {
-        const file = imageFileInput.files[0];
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
-        const filePath = `items/${fileName}`;
+        if (imageFileInput && imageFileInput.files.length > 0) {
+            const file = imageFileInput.files[0];
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
+            const filePath = `items/${fileName}`;
 
-        const { data: uploadData, error: uploadErr } = await db.storage
-            .from('item_images')
-            .upload(filePath, file);
-
-        if (uploadErr) {
-            console.error("Image upload error:", uploadErr);
-            alert("Image upload failed, submitting without image.");
-        } else {
-            // Get Public URL
-            const { data: publicUrlData } = db.storage
+            const { data: uploadData, error: uploadErr } = await db.storage
                 .from('item_images')
-                .getPublicUrl(filePath);
+                .upload(filePath, file);
 
-            imageUrl = publicUrlData.publicUrl;
+            if (uploadErr) {
+                console.error("Image upload error:", uploadErr);
+                alert("Image upload failed, submitting without image.");
+            } else {
+                const { data: publicUrlData } = db.storage
+                    .from('item_images')
+                    .getPublicUrl(filePath);
+
+                imageUrl = publicUrlData.publicUrl;
+            }
+        }
+
+        const { data, error } = await db.from('items').insert([{
+            title: title,
+            location: location,
+            report_type: category,
+            description: desc || "No description provided.",
+            image_url: imageUrl,
+            status: 'Pending'
+        }]).select();
+
+        if (!error && data) {
+            const newItem = data[0];
+            addItemTraceLog(newItem.item_id, title, `New report created (${category.toUpperCase()})`, userEmail);
+
+            document.getElementById('reportTitleInput').value = '';
+            document.getElementById('reportLocationInput').value = '';
+            document.getElementById('reportDescInput').value = '';
+            document.getElementById('reportImageInput').value = '';
+
+            fetchItemsFromSupabase();
+            showToastNotification("Report submitted for Staff review!");
+            switchActiveTab('feedViewScreen', document.querySelectorAll('.nav-tab-item')[0]);
         }
     }
 
-    // 2. Insert item into database with image_url
-    const { data, error } = await db.from('items').insert([{
-        title: title,
-        location: location,
-        report_type: category,
-        description: desc || "No description provided.",
-        image_url: imageUrl,
-        status: 'Pending'
-    }]).select();
-
-    if (!error && data) {
-        const newItem = data[0];
-        addItemTraceLog(newItem.item_id, title, `New report created (${category.toUpperCase()})`, userEmail);
-
-        // Reset inputs
-        document.getElementById('reportTitleInput').value = '';
-        document.getElementById('reportLocationInput').value = '';
-        document.getElementById('reportDescInput').value = '';
-        document.getElementById('reportImageInput').value = '';
-
-        fetchItemsFromSupabase();
-        showToastNotification("Report submitted for Staff review!");
-        switchActiveTab('feedViewScreen', document.querySelectorAll('.nav-tab-item')[0]);
-    }
-}
-
     function openItemDetailModal(item) {
-    AppState.selectedItemId = item.id;
-    document.getElementById('modalItemTitle').innerText = item.title;
-    document.getElementById('modalItemLocation').innerText = "📍 " + item.location;
-    
-    const descContainer = document.getElementById('modalItemDesc');
-    if (item.image_url) {
-        descContainer.innerHTML = `
-            <img src="${item.image_url}" style="width: 100%; max-height: 160px; object-fit: cover; border-radius: 8px; margin-bottom: 8px; border: var(--glass-border);">
-            <p>${item.description}</p>
-        `;
-    } else {
-        descContainer.innerText = item.description;
-    }
-    
-    const badge = document.getElementById('modalItemBadge');
-    badge.innerText = item.category;
-    badge.className = `badge-tag-status badge-tag-${item.category}`;
+        AppState.selectedItemId = item.id;
+        document.getElementById('modalItemTitle').innerText = item.title;
+        document.getElementById('modalItemLocation').innerText = "📍 " + item.location;
+        
+        const descContainer = document.getElementById('modalItemDesc');
+        if (item.image_url) {
+            descContainer.innerHTML = `
+                <img src="${item.image_url}" style="width: 100%; max-height: 160px; object-fit: cover; border-radius: 8px; margin-bottom: 8px; border: var(--glass-border);">
+                <p>${item.description}</p>
+            `;
+        } else {
+            descContainer.innerText = item.description;
+        }
+        
+        const badge = document.getElementById('modalItemBadge');
+        badge.innerText = item.category;
+        badge.className = `badge-tag-status badge-tag-${item.category}`;
 
-    document.getElementById('itemDetailModalOverlay').style.display = 'flex';
+        document.getElementById('itemDetailModalOverlay').style.display = 'flex';
     }
 
     function closeItemDetailModal() {
         document.getElementById('itemDetailModalOverlay').style.display = 'none';
         AppState.selectedItemId = null;
     }
-
 
     async function triggerClaimAction() {
         const currentUserRole = AppState.currentUser ? AppState.currentUser.role : 'user';
@@ -1234,7 +1271,6 @@
             return;
         }
 
-        // 1. Verify OTP
         const { data: records, error } = await db.from('password_resets')
             .select('*')
             .eq('email', email)
@@ -1248,7 +1284,6 @@
             return;
         }
 
-        // 2. Perform UPDATE with .select() to verify returned rows
         const { data: updateData, error: updateErr } = await db.from('users')
             .update({ 
                 password_hash: newPassword,
@@ -1263,7 +1298,6 @@
             return;
         }
 
-        // 3. Clean up OTP record
         await db.from('password_resets').delete().eq('id', records[0].id);
 
         closeOtpRecoveryModal();
