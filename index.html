@@ -3,18 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FINDIT - Modern Neumorphic & Glassmorphic System</title>
+    <title>FINDIT - Campus Lost & Found System</title>
     <!-- SUPABASE JS CLIENT SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* =====================================================================================
-           1. MODERN NEUMORPHIC & GLASSMORPHIC DESIGN SYSTEM
-           ===================================================================================== */
         :root {
             --bg-dark-slate: #161D27;
             --bg-viewport: #1A2330;
             --color-deep-teal: #0D9488;
-            --color-deep-teal-hover: #111827;
             --color-seafoam: #2DD4BF;
             --color-coral-spark: #FF6B4A;
             --color-coral-light: rgba(255, 107, 74, 0.15);
@@ -28,13 +24,11 @@
             --radius-card: 20px;
             --radius-pill: 9999px;
 
-            /* Neumorphic Shadow Tokens */
             --neu-flat-shadow: 6px 6px 14px #121822, -6px -6px 14px #222E3E;
             --neu-pressed-shadow: inset 4px 4px 8px #121822, inset -4px -4px 8px #222E3E;
             --neu-button-shadow: 5px 5px 10px #121822, -5px -5px 10px #222E3E;
             --neu-button-active: inset 3px 3px 6px #121822, inset -3px -3px 6px #222E3E;
 
-            /* Glassmorphism Surface Tokens */
             --glass-bg-surface: rgba(30, 41, 59, 0.65);
             --glass-border: 1px solid rgba(255, 255, 255, 0.12);
             --glass-blur: blur(14px);
@@ -57,7 +51,6 @@
             font-size: 14px; line-height: 1.5;
         }
 
-        /* HARDWARE PHONE SHELL WITH GLASS FRAME */
         .mobile-hardware-shell {
             background: #111620;
             width: 380px; height: 740px; max-height: 94vh;
@@ -70,29 +63,21 @@
 
         .mobile-viewport-screen {
             background: var(--bg-viewport);
-            width: 100%; 
-            height: 100%; 
-            border-radius: 34px;
-            overflow: hidden; 
-            display: flex; 
-            flex-direction: column;
-            position: relative;
+            width: 100%; height: 100%; 
+            border-radius: 34px; overflow: hidden; 
+            display: flex; flex-direction: column; position: relative;
         }
 
         /* DESKTOP ADMIN MODE OVERRIDE */
         body.desktop-admin-mode .mobile-hardware-shell {
-            width: 100vw !important;
-            height: 100vh !important;
-            max-height: 100vh !important;
-            border-radius: 0 !important;
-            padding: 0 !important;
-            box-shadow: none !important;
+            width: 100vw !important; height: 100vh !important;
+            max-height: 100vh !important; border-radius: 0 !important;
+            padding: 0 !important; box-shadow: none !important;
             background: var(--bg-dark-slate);
         }
 
         body.desktop-admin-mode .mobile-viewport-screen {
-            border-radius: 0 !important;
-            background: var(--bg-dark-slate);
+            border-radius: 0 !important; background: var(--bg-dark-slate);
         }
 
         body.desktop-admin-mode .mobile-status-bar,
@@ -101,61 +86,44 @@
         }
 
         body.desktop-admin-mode .main-app-content-area {
-            max-width: 1350px;
-            margin: 0 auto;
-            width: 100%;
-            padding: 24px 32px;
+            max-width: 1350px; margin: 0 auto; width: 100%; padding: 24px 32px;
         }
 
-        body.desktop-admin-mode #adminControlViewScreen {
-            display: block !important;
-        }
+        body.desktop-admin-mode #adminControlViewScreen { display: block !important; }
 
-        /* ADMIN DESKTOP GRID LAYOUT */
+        /* DASHBOARD GRID SYSTEM: STACKS IN MOBILE FRAME, MULTI-COLUMN IN DESKTOP ADMIN MODE */
         .admin-dashboard-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        body.desktop-admin-mode .admin-dashboard-grid {
             display: grid;
             grid-template-columns: repeat(12, 1fr);
             gap: 16px;
-            margin-top: 16px;
         }
 
-        .admin-col-12 { grid-column: span 12; }
-        .admin-col-6 { grid-column: span 6; }
-        .admin-col-4 { grid-column: span 4; }
-        .admin-col-3 { grid-column: span 3; }
+        body.desktop-admin-mode .admin-col-12 { grid-column: span 12; }
+        body.desktop-admin-mode .admin-col-6 { grid-column: span 6; }
+        body.desktop-admin-mode .admin-col-4 { grid-column: span 4; }
+        body.desktop-admin-mode .admin-col-3 { grid-column: span 3; }
 
-        @media (max-width: 900px) {
-            .admin-col-6, .admin-col-4, .admin-col-3 {
-                grid-column: span 12;
-            }
-        }
-
-        /* METRIC CARDS */
         .metric-card-box {
-            background: var(--glass-bg-surface);
-            backdrop-filter: var(--glass-blur);
-            border: var(--glass-border);
-            border-radius: var(--radius-card);
-            padding: 14px 18px;
-            box-shadow: var(--neu-flat-shadow);
+            background: var(--glass-bg-surface); backdrop-filter: var(--glass-blur);
+            border: var(--glass-border); border-radius: var(--radius-card);
+            padding: 12px 14px; box-shadow: var(--neu-flat-shadow);
+            flex: 1;
         }
-        .metric-card-num {
-            font-size: 22px;
-            font-weight: 800;
-            color: var(--color-seafoam);
-            margin-top: 4px;
-        }
+        .metric-card-num { font-size: 20px; font-weight: 800; color: var(--color-seafoam); margin-top: 2px; }
 
-        /* GLASSMORPHIC STATUS BAR */
         .mobile-status-bar {
-            height: 40px;
-            background: rgba(22, 29, 39, 0.7);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
+            height: 40px; background: rgba(22, 29, 39, 0.7);
+            backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
             display: flex; justify-content: space-between; align-items: center;
             padding: 0 18px; font-size: 11px; font-weight: 700;
-            color: var(--color-text-main);
-            border-bottom: var(--glass-border);
+            color: var(--color-text-main); border-bottom: var(--glass-border);
             z-index: 30; flex-shrink: 0;
         }
 
@@ -174,9 +142,7 @@
         body.desktop-admin-mode h2.screen-title { font-size: 24px; }
 
         p.screen-subtitle { color: var(--color-seafoam); font-size: 11px; margin-bottom: 16px; font-weight: 500; }
-        body.desktop-admin-mode p.screen-subtitle { font-size: 12px; }
 
-        /* NEUMORPHIC INPUT FIELDS */
         .form-control-group { margin-bottom: 12px; text-align: left; }
         .form-control-label {
             font-size: 10px; color: var(--color-text-muted); font-weight: 700;
@@ -187,8 +153,7 @@
             width: 100%; padding: 9px 12px; border: none;
             border-radius: var(--radius-medium); outline: none; font-size: 12px;
             background: var(--bg-viewport); color: var(--color-text-main);
-            box-shadow: var(--neu-pressed-shadow);
-            transition: border-color var(--transition-smooth);
+            box-shadow: var(--neu-pressed-shadow); transition: border-color var(--transition-smooth);
         }
 
         .form-input-field:focus, .form-select-field:focus, .form-textarea-field:focus {
@@ -201,48 +166,36 @@
             cursor: pointer; color: var(--color-seafoam); display: flex; align-items: center;
         }
 
-        /* NEUMORPHIC & GLASSMORPHIC BUTTONS */
         .action-button-base {
             width: 100%; padding: 12px; border: var(--glass-border); border-radius: var(--radius-medium);
             font-size: 12px; font-weight: 800; cursor: pointer; display: flex;
             justify-content: center; align-items: center; gap: 8px; user-select: none;
-            transition: all var(--transition-smooth);
-            letter-spacing: 0.03em;
+            transition: all var(--transition-smooth); letter-spacing: 0.03em;
         }
         
         .action-button-primary {
-            background: linear-gradient(135deg, #0D9488, #0F766E);
-            color: #FFFFFF;
+            background: linear-gradient(135deg, #0D9488, #0F766E); color: #FFFFFF;
             box-shadow: 0 8px 20px rgba(13, 148, 136, 0.35), var(--neu-button-shadow);
         }
         .action-button-primary:active { box-shadow: var(--neu-button-active); transform: scale(0.98); }
 
         .action-button-danger {
-            background: linear-gradient(135deg, #FF6B4A, #DC2626);
-            color: #FFFFFF;
+            background: linear-gradient(135deg, #FF6B4A, #DC2626); color: #FFFFFF;
             box-shadow: 0 8px 20px rgba(255, 107, 74, 0.35);
         }
 
         .action-button-secondary {
-            background: var(--glass-bg-surface);
-            color: var(--color-text-main);
-            backdrop-filter: var(--glass-blur);
-            box-shadow: var(--neu-button-shadow);
+            background: var(--glass-bg-surface); color: var(--color-text-main);
+            backdrop-filter: var(--glass-blur); box-shadow: var(--neu-button-shadow);
         }
 
-        /* GLASSMORPHIC CARDS */
         .info-card-container {
-            background: var(--glass-bg-surface);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border: var(--glass-border);
-            border-radius: var(--radius-card); padding: 12px;
-            margin-bottom: 12px;
-            box-shadow: var(--neu-flat-shadow);
+            background: var(--glass-bg-surface); backdrop-filter: var(--glass-blur);
+            border: var(--glass-border); border-radius: var(--radius-card); padding: 12px;
+            margin-bottom: 12px; box-shadow: var(--neu-flat-shadow);
             display: flex; gap: 12px; align-items: center; cursor: pointer;
-            transition: transform var(--transition-smooth);
+            transition: transform var(--transition-smooth); width: 100%;
         }
-        .info-card-container:active { transform: scale(0.98); }
 
         .info-card-thumbnail {
             width: 44px; height: 44px; border-radius: var(--radius-medium);
@@ -265,15 +218,11 @@
         .badge-tag-staff { background: rgba(251, 191, 36, 0.18); color: #FBBF24; border: 1px solid rgba(251, 191, 36, 0.4); }
         .badge-tag-user { background: rgba(45, 212, 191, 0.18); color: var(--color-seafoam); border: 1px solid rgba(45, 212, 191, 0.4); }
 
-        /* GLASSMORPHIC BOTTOM TAB NAVIGATION */
         .bottom-navigation-bar {
-            height: 64px;
-            background: rgba(22, 29, 39, 0.75);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border-top: var(--glass-border);
-            display: flex; justify-content: space-around; align-items: center;
-            padding-bottom: 4px; z-index: 30; flex-shrink: 0;
+            height: 64px; background: rgba(22, 29, 39, 0.75);
+            backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+            border-top: var(--glass-border); display: flex; justify-content: space-around;
+            align-items: center; padding-bottom: 4px; z-index: 30; flex-shrink: 0;
         }
         .nav-tab-item {
             display: flex; flex-direction: column; align-items: center;
@@ -286,34 +235,18 @@
         .feedback-error { background: var(--color-coral-light); color: var(--color-coral-spark); border: 1px solid var(--color-coral-spark); }
         .feedback-success { background: rgba(45, 212, 191, 0.15); color: var(--color-seafoam); border: 1px solid var(--color-seafoam); }
 
-        /* FIXED GLASS OVERLAY MODALS */
         .confirmation-modal-overlay {
-            position: fixed; /* Fixed so modal covers entire screen in desktop mode */
-            top: 0; 
-            left: 0; 
-            width: 100vw; 
-            height: 100vh;
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(8px); 
-            display: none; 
-            justify-content: center;
-            align-items: center; 
-            padding: 16px; 
-            z-index: 1000;
-            box-sizing: border-box;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px);
+            display: none; justify-content: center; align-items: center;
+            padding: 16px; z-index: 1000; box-sizing: border-box;
         }
 
         .confirmation-modal-dialog {
-            background: var(--glass-bg-surface);
-            backdrop-filter: var(--glass-blur);
-            border: var(--glass-border);
-            padding: 20px; 
-            border-radius: var(--radius-card);
-            text-align: center; 
-            width: 100%; 
-            max-width: 420px; /* FIXED STRETCHING IN DESKTOP MODE */
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-            box-sizing: border-box;
+            background: var(--glass-bg-surface); backdrop-filter: var(--glass-blur);
+            border: var(--glass-border); padding: 20px; border-radius: var(--radius-card);
+            text-align: center; width: 100%; max-width: 420px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5); box-sizing: border-box;
         }
 
         .toast-notification-popup {
@@ -328,8 +261,14 @@
 
         .auth-toggle-link { display: inline-block; margin-top: 10px; font-size: 11px; color: var(--color-seafoam); font-weight: 700; cursor: pointer; text-decoration: underline; }
 
-        .log-item { background: rgba(15, 23, 42, 0.5); border: var(--glass-border); padding: 8px 10px; border-radius: var(--radius-small); margin-bottom: 6px; font-size: 11px; }
+        .log-item { background: rgba(15, 23, 42, 0.5); border: var(--glass-border); padding: 8px 10px; border-radius: var(--radius-small); margin-bottom: 6px; font-size: 11px; width: 100%; }
         .log-time { color: var(--color-text-muted); font-size: 9px; margin-top: 2px; }
+
+        .announcement-banner-box {
+            background: linear-gradient(135deg, rgba(13, 148, 136, 0.25), rgba(45, 212, 191, 0.1));
+            border: 1px solid var(--color-seafoam); border-radius: var(--radius-medium);
+            padding: 10px 12px; margin-bottom: 12px; font-size: 11px; color: var(--color-text-main);
+        }
 
         @keyframes fadeInSlideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
         .app-view-screen { animation: fadeInSlideUp var(--transition-smooth) forwards; }
@@ -405,16 +344,13 @@
                     </div>
                 </div>
 
-                <button id="loginSubmitBtn" class="action-button-base action-button-primary" style="margin-top: 10px;" onclick="executeBackendLoginProcess()">
-                    LOG IN
-                </button>
-                
+                <button id="loginSubmitBtn" class="action-button-base action-button-primary" style="margin-top: 10px;" onclick="executeBackendLoginProcess()">LOG IN</button>
                 <span class="auth-toggle-link" onclick="toggleAuthView('register')">Don't have an account? Register</span>
                 <span class="auth-toggle-link" style="display: block; margin-top: 8px;" onclick="openOtpRecoveryModal()">Forgot Password? Recover with OTP</span>
                 <div id="loginFeedbackBanner" class="system-feedback-banner"></div>
             </div>
 
-            <!-- VIEW 1.5: REGISTER WITH USER / STAFF / ADMIN ROLES -->
+            <!-- VIEW 1.5: REGISTER -->
             <div id="registerViewScreen" class="app-view-screen" style="display: none; text-align: center;">
                 <h2 class="screen-title" style="font-size: 18px;">Create Account</h2>
                 <p class="screen-subtitle" style="margin-bottom: 12px;">Min. 8 chars, uppercase, lowercase, number & symbol</p>
@@ -458,18 +394,14 @@
                     </div>
                 </div>
 
-                <button class="action-button-base action-button-primary" style="margin-top: 4px;" onclick="executeBackendRegisterProcess()">
-                    REGISTER
-                </button>
-
+                <button class="action-button-base action-button-primary" style="margin-top: 4px;" onclick="executeBackendRegisterProcess()">REGISTER</button>
                 <span class="auth-toggle-link" onclick="toggleAuthView('login')">Already registered? Log in</span>
-
                 <div id="registerFeedbackBanner" class="system-feedback-banner"></div>
             </div>
 
             <!-- VIEW 2: FEED -->
             <div id="feedViewScreen" class="app-view-screen" style="display: none;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                     <div>
                         <h2 class="screen-title">Campus Feed</h2>
                         <p class="screen-subtitle" style="margin-bottom: 0;">Real-time reported items</p>
@@ -477,8 +409,11 @@
                     <span class="badge-tag-status badge-tag-found">Live Stream</span>
                 </div>
 
+                <!-- LIVE ANNOUNCEMENT DISPLAY BANNER -->
+                <div id="liveAnnouncementContainer" class="announcement-banner-box" style="display: none;"></div>
+
                 <div class="form-control-group" style="margin-bottom: 12px;">
-                    <input type="text" class="form-input-field" id="feedSearchInput" aria-label="Search items or locations" onkeyup="filterFeedCards()" placeholder="🔍 Search items or locations...">
+                    <input type="text" class="form-input-field" id="feedSearchInput" aria-label="Search items or locations" onkeyup="filterFeedCards()" placeholder="🔍 Search items, locations, rewards...">
                 </div>
 
                 <div id="feedItemsContainer"></div>
@@ -499,7 +434,7 @@
 
                 <div class="form-control-group">
                     <label class="form-control-label" for="reportTitleInput">Item Title</label>
-                    <input type="text" id="reportTitleInput" name="reportTitleInput" class="form-input-field" placeholder="e.g. Leather Wallet">
+                    <input type="text" id="reportTitleInput" name="reportTitleInput" class="form-input-field" placeholder="e.g. Leather Wallet / Keys">
                 </div>
 
                 <div class="form-control-group">
@@ -508,21 +443,23 @@
                 </div>
 
                 <div class="form-control-group">
+                    <label class="form-control-label" for="reportRewardInput">Reward / Bounty Tag (Optional)</label>
+                    <input type="text" id="reportRewardInput" name="reportRewardInput" class="form-input-field" placeholder="e.g. ₱500 Reward / Free Coffee">
+                </div>
+
+                <div class="form-control-group">
                     <label class="form-control-label" for="reportDescInput">Description</label>
                     <textarea id="reportDescInput" name="reportDescInput" class="form-textarea-field" rows="2" placeholder="Details..."></textarea>
                 </div>
 
-                <!-- STYLED PHOTO EVIDENCE PROOF BOX -->
+                <!-- PHOTO EVIDENCE PROOF BOX -->
                 <div class="info-card-container" style="flex-direction: column; align-items: flex-start; padding: 12px; margin-bottom: 14px; background: rgba(15, 23, 42, 0.5);">
                     <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 8px;">
                         <span style="font-size: 11px; font-weight: 700; color: var(--color-seafoam);">📷 Photo Evidence Proof</span>
                         <span style="font-size: 10px; color: var(--color-seafoam); cursor: pointer; font-weight: 600;" onclick="triggerCameraCaptureMode()">Switch to Camera</span>
                     </div>
-                    
                     <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
-                        <label for="reportImageInput" class="action-button-base action-button-secondary" style="width: auto; padding: 6px 14px; font-size: 11px; margin: 0; cursor: pointer;">
-                            Choose File
-                        </label>
+                        <label for="reportImageInput" class="action-button-base action-button-secondary" style="width: auto; padding: 6px 14px; font-size: 11px; margin: 0; cursor: pointer;">Choose File</label>
                         <span id="selectedFileNameDisplay" style="font-size: 11px; color: var(--color-text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1;">No file chosen</span>
                         <input type="file" id="reportImageInput" name="reportImageInput" accept="image/*" style="display: none;" onchange="updateSelectedFileNameDisplay(this)">
                     </div>
@@ -538,43 +475,52 @@
                 <div id="trackerListContainer"></div>
             </div>
 
-            <!-- VIEW 5: MANAGEMENT & AUDIT LOG CONSOLE (ADMIN DESKTOP DASHBOARD & STAFF CONSOLE) -->
+            <!-- VIEW 5: MANAGEMENT & AUDIT LOG CONSOLE -->
             <div id="adminControlViewScreen" class="app-view-screen" style="display: none;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                     <div>
-                        <h2 class="screen-title">Management Console</h2>
-                        <p class="screen-subtitle" style="margin-bottom: 0;">Verification, User Accounts & Audit Trail</p>
+                        <h2 class="screen-title" id="consoleTitle">Management Console</h2>
+                        <p class="screen-subtitle" id="consoleSubtitle" style="margin-bottom: 0;">Verification & Traceability Log</p>
                     </div>
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <span id="consoleRoleBadge" class="badge-tag-status badge-tag-admin">ADMIN</span>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <button id="exportCsvBtn" class="action-button-base action-button-secondary" style="padding: 6px 12px; font-size: 10px; width: auto; display: none;" onclick="exportAuditLogsToCSV()">📥 Export Logs CSV</button>
+                        <span id="consoleRoleBadge" class="badge-tag-status badge-tag-staff">STAFF</span>
                         <button class="action-button-base action-button-danger" style="padding: 6px 12px; font-size: 10px; width: auto;" onclick="displaySignoutConfirmationModal()">LOG OUT</button>
                     </div>
                 </div>
 
-                <!-- ADMIN SYSTEM METRICS DASHBOARD -->
-                <div class="admin-dashboard-grid" style="margin-bottom: 12px;">
-                    <div class="admin-col-3 metric-card-box">
-                        <div style="font-size: 10px; color: var(--color-text-muted); font-weight: bold; text-transform: uppercase;">Total Items Reported</div>
+                <!-- METRICS SUMMARY CARDS -->
+                <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                    <div class="metric-card-box">
+                        <div style="font-size: 9px; color: var(--color-text-muted); font-weight: bold; text-transform: uppercase;">Total Items</div>
                         <div class="metric-card-num" id="statTotalItems">0</div>
                     </div>
-                    <div class="admin-col-3 metric-card-box">
-                        <div style="font-size: 10px; color: var(--color-text-muted); font-weight: bold; text-transform: uppercase;">Resolved & Claimed</div>
+                    <div class="metric-card-box">
+                        <div style="font-size: 9px; color: var(--color-text-muted); font-weight: bold; text-transform: uppercase;">Resolved</div>
                         <div class="metric-card-num" id="statResolvedItems" style="color: #2DD4BF;">0</div>
                     </div>
-                    <div class="admin-col-3 metric-card-box">
-                        <div style="font-size: 10px; color: var(--color-text-muted); font-weight: bold; text-transform: uppercase;">Registered Accounts</div>
+                    <div class="metric-card-box" id="metricUsersBox" style="display: none;">
+                        <div style="font-size: 9px; color: var(--color-text-muted); font-weight: bold; text-transform: uppercase;">Users</div>
                         <div class="metric-card-num" id="statTotalUsers" style="color: #38BDF8;">0</div>
                     </div>
-                    <div class="admin-col-3 metric-card-box">
-                        <div style="font-size: 10px; color: var(--color-text-muted); font-weight: bold; text-transform: uppercase;">Security Audits</div>
+                    <div class="metric-card-box" id="metricAuditsBox" style="display: none;">
+                        <div style="font-size: 9px; color: var(--color-text-muted); font-weight: bold; text-transform: uppercase;">Audits</div>
                         <div class="metric-card-num" id="statSecurityAudits" style="color: #FBBF24;">0</div>
                     </div>
                 </div>
 
+                <!-- ADMIN-ONLY: BROADCAST CARD -->
+                <div id="adminBroadcastCard" class="info-card-container" style="flex-direction: column; align-items: flex-start; margin-bottom: 12px; display: none;">
+                    <strong style="font-size: 11px; color: var(--color-seafoam);">📢 Publish Campus Broadcast Notice</strong>
+                    <div style="display: flex; gap: 8px; width: 100%; margin-top: 6px;">
+                        <input type="text" id="inputBroadcastMessage" class="form-input-field" placeholder="e.g. Lost & Found office is open Monday-Friday 8AM-5PM at Student Center.">
+                        <button class="action-button-base action-button-primary" style="width: 130px; padding: 6px; font-size: 10px;" onclick="publishCampusBroadcastNotice()">Publish Notice</button>
+                    </div>
+                </div>
+
                 <div class="admin-dashboard-grid">
-                    
-                    <!-- USER ACCOUNT MANAGEMENT CONSOLE (ADMIN ONLY) -->
-                    <div id="userManagementCard" class="admin-col-6 info-card-container" style="flex-direction: column; align-items: flex-start;">
+                    <!-- ADMIN-ONLY: USER MANAGEMENT CARD -->
+                    <div id="userManagementCard" class="admin-col-6 info-card-container" style="flex-direction: column; align-items: flex-start; display: none;">
                         <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 6px;">
                             <strong style="font-size: 11px; color: #38BDF8;">👥 User Account & Role Control</strong>
                             <button class="action-button-base action-button-secondary" style="width: auto; padding: 2px 8px; font-size: 9px;" onclick="fetchUsersFromSupabase()">Refresh Users</button>
@@ -582,27 +528,26 @@
                         <div id="userManagementListContainer" style="width: 100%; max-height: 180px; overflow-y: auto; margin-top: 4px;"></div>
                     </div>
 
-                    <!-- SYSTEM SECURITY & ADMIN AUDIT TRAIL LOG (ADMIN ONLY) -->
-                    <div id="systemAuditLogCard" class="admin-col-6 info-card-container" style="flex-direction: column; align-items: flex-start;">
+                    <!-- ADMIN-ONLY: SYSTEM AUDIT LOG CARD -->
+                    <div id="systemAuditLogCard" class="admin-col-6 info-card-container" style="flex-direction: column; align-items: flex-start; display: none;">
                         <strong style="font-size: 11px; color: #FBBF24;">🛡️ System Audit & Security Trail Log</strong>
                         <div id="systemAuditTraceLogContainer" style="width: 100%; max-height: 180px; overflow-y: auto; margin-top: 6px;"></div>
                     </div>
 
-                    <!-- USER LOGIN / LOGOUT AUTHENTICATION TRACE (ADMIN ONLY) -->
-                    <div id="userAuthLogCard" class="admin-col-6 info-card-container" style="flex-direction: column; align-items: flex-start;">
+                    <!-- ADMIN-ONLY: USER AUTH ACTIVITY CARD -->
+                    <div id="userAuthLogCard" class="admin-col-6 info-card-container" style="flex-direction: column; align-items: flex-start; display: none;">
                         <strong style="font-size: 11px; color: #38BDF8;">🔑 User Sign-In & Sign-Out Activity Log</strong>
                         <div id="userAuthTraceLogContainer" style="width: 100%; max-height: 180px; overflow-y: auto; margin-top: 6px;"></div>
                     </div>
 
-                    <!-- ITEM TRACE LOG MODULE -->
+                    <!-- SHARED FOR STAFF & ADMIN: ITEM TRACE LOG MODULE -->
                     <div class="admin-col-6 info-card-container" style="flex-direction: column; align-items: flex-start;">
                         <strong style="font-size: 11px; color: var(--color-seafoam);">📌 Item Movement & Status Trail (Tracing Log)</strong>
                         <div id="itemTraceLogContainer" style="width: 100%; max-height: 180px; overflow-y: auto; margin-top: 6px;"></div>
                     </div>
-
                 </div>
 
-                <strong style="font-size: 11px; color: var(--color-text-muted); display: block; margin: 16px 0 6px;">🛠️ Verify Item Status (Staff & Admin Action)</strong>
+                <strong style="font-size: 11px; color: var(--color-text-muted); display: block; margin: 16px 0 6px;">🛠️ Verify Item Status & Assign Storage Locker (Staff & Admin Action)</strong>
                 <div id="adminManageItemsContainer"></div>
             </div>
 
@@ -625,14 +570,16 @@
 
         </div>
 
-        <!-- ITEM DETAIL MODAL -->
+        <!-- MODAL OVERLAYS -->
         <div id="itemDetailModalOverlay" class="confirmation-modal-overlay">
             <div class="confirmation-modal-dialog" style="text-align: left;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                     <h3 id="modalItemTitle" style="font-size: 15px;">Item Details</h3>
                     <span id="modalItemBadge" class="badge-tag-status">Lost</span>
                 </div>
-                <p id="modalItemLocation" style="font-size: 11px; color: var(--color-text-muted); margin-bottom: 8px;">📍 Location</p>
+                <p id="modalItemLocation" style="font-size: 11px; color: var(--color-text-muted); margin-bottom: 4px;">📍 Location</p>
+                <p id="modalItemReward" style="font-size: 11px; color: var(--color-coral-spark); font-weight: bold; margin-bottom: 8px;">🎁 Reward: None</p>
+                <p id="modalItemLocker" style="font-size: 10px; color: #FBBF24; margin-bottom: 8px;">📦 Office Locker Storage: Unassigned</p>
                 <div id="modalItemDesc" style="font-size: 11px; color: var(--color-text-main); margin-bottom: 14px; background: rgba(15, 23, 42, 0.6); padding: 8px; border-radius: 8px; border: var(--glass-border);">Description...</div>
                 <div style="display: flex; gap: 8px;">
                     <button class="action-button-base action-button-secondary" onclick="closeItemDetailModal()">Close</button>
@@ -641,7 +588,6 @@
             </div>
         </div>
 
-        <!-- LOGOUT MODAL -->
         <div id="signoutConfirmationModalOverlay" class="confirmation-modal-overlay">
             <div class="confirmation-modal-dialog">
                 <h3 style="font-size: 15px; margin-bottom: 4px;">Sign Out Confirmation</h3>
@@ -653,36 +599,28 @@
             </div>
         </div>
 
-        <!-- ACCOUNT RECOVERY (OTP) MODAL -->
         <div id="otpRecoveryModalOverlay" class="confirmation-modal-overlay">
             <div class="confirmation-modal-dialog" style="text-align: left;">
-                
-                <!-- STEP 1: REQUEST OTP -->
                 <div id="otpStep1Container">
                     <h3 style="font-size: 15px; margin-bottom: 4px;">Account Recovery</h3>
                     <p style="font-size: 11px; color: var(--color-text-muted); margin-bottom: 12px;">Enter your email address to receive a 6-digit OTP code.</p>
-                    
                     <div class="form-control-group">
                         <label class="form-control-label" for="otpRequestEmail">Registered Email</label>
                         <input type="email" id="otpRequestEmail" name="otpRequestEmail" class="form-input-field" placeholder="email@findit.com">
                     </div>
-
                     <div style="display: flex; gap: 8px; margin-top: 12px;">
                         <button class="action-button-base action-button-secondary" onclick="closeOtpRecoveryModal()">Cancel</button>
                         <button class="action-button-base action-button-primary" onclick="sendRecoveryOtpCode()">Send OTP</button>
                     </div>
                 </div>
 
-                <!-- STEP 2: VERIFY OTP & RESET PASSWORD -->
                 <div id="otpStep2Container" style="display: none;">
                     <h3 style="font-size: 15px; margin-bottom: 4px;">Verify OTP Code</h3>
                     <p style="font-size: 11px; color: var(--color-seafoam); margin-bottom: 12px;" id="otpSentNoticeText">OTP sent to email</p>
-
                     <div class="form-control-group">
                         <label class="form-control-label" for="otpCodeInput">6-Digit OTP Code</label>
                         <input type="text" id="otpCodeInput" name="otpCodeInput" class="form-input-field" maxlength="6" placeholder="123456" style="letter-spacing: 0.2em; text-align: center; font-size: 16px; font-weight: bold;">
                     </div>
-
                     <div class="form-control-group">
                         <label class="form-control-label" for="otpNewPassword">New Password</label>
                         <div class="password-toggle-wrapper">
@@ -692,13 +630,11 @@
                             </span>
                         </div>
                     </div>
-
                     <div style="display: flex; gap: 8px; margin-top: 12px;">
                         <button class="action-button-base action-button-secondary" onclick="closeOtpRecoveryModal()">Cancel</button>
                         <button class="action-button-base action-button-primary" onclick="verifyOtpAndResetPassword()">Reset Password</button>
                     </div>
                 </div>
-
                 <div id="otpFeedbackBanner" class="system-feedback-banner"></div>
             </div>
         </div>
@@ -727,13 +663,10 @@
             </div>
         </div>
 
-    </div> <!-- CLOSES mobile-viewport-screen -->
-</div> <!-- CLOSES mobile-hardware-shell -->
+    </div>
+</div>
 
 <script>
-    // =========================================================================
-    // 1. SUPABASE CLIENT INITIALIZATION
-    // =========================================================================
     const SUPABASE_URL = "https://pyxuzpvpqkzfdatyejui.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5eHV6cHZwcWt6ZmRhdHllanVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyMjcyNzcsImV4cCI6MjEwNjgwMzI3N30.AmwLf-Ct2ckSRRhTkIA-z1IYL5n9n0hQABxLLoUt8Fk";
     
@@ -752,9 +685,7 @@
         itemsData: []
     };
 
-    // =========================================================================
-    // 2. DATA FETCHING & LOGGING PROCEDURES (SUPABASE DIRECT)
-    // =========================================================================
+    /* SUPABASE DATA FETCHERS */
     async function fetchItemsFromSupabase() {
         const { data, error } = await db.from('items').select('*').order('created_at', { ascending: false });
         if (!error && data) {
@@ -765,6 +696,9 @@
                 category: item.report_type,
                 description: item.description,
                 image_url: item.image_url,
+                reward_amount: item.reward_amount || 'None',
+                locker_location: item.locker_location || 'Unassigned',
+                user_email: item.user_email || 'Anonymous',
                 date: item.created_at ? item.created_at.split('T')[0] : new Date().toISOString().split('T')[0],
                 status: item.status
             }));
@@ -826,8 +760,17 @@
             }));
             renderSystemAuditLogs();
             renderAdminMetrics();
-        } else if (error) {
-            console.warn("Table 'system_audit_logs' might not exist yet in Supabase SQL editor.", error);
+        }
+    }
+
+    async function fetchAnnouncementsFromSupabase() {
+        const { data, error } = await db.from('system_announcements').select('*').eq('active', true).order('created_at', { ascending: false }).limit(1);
+        const container = document.getElementById('liveAnnouncementContainer');
+        if (!error && data && data.length > 0) {
+            container.innerHTML = `<strong>📢 Campus Notice:</strong> ${data[0].message}`;
+            container.style.display = 'block';
+        } else {
+            container.style.display = 'none';
         }
     }
 
@@ -861,7 +804,89 @@
         fetchSystemAuditLogsFromSupabase();
     }
 
-    /* RENDER LOGS & METRICS */
+    /* ACTION HANDLERS */
+    async function publishCampusBroadcastNotice() {
+        const message = document.getElementById('inputBroadcastMessage').value.trim();
+        if (!message) return;
+
+        await db.from('system_announcements').update({ active: false }).neq('announcement_id', 0);
+        await db.from('system_announcements').insert([{
+            message: message,
+            active: true,
+            created_by: AppState.currentUser.email
+        }]);
+
+        await addSystemAuditLog('BROADCAST_PUBLISHED', 'All Users', `Notice: "${message}"`);
+        document.getElementById('inputBroadcastMessage').value = '';
+        fetchAnnouncementsFromSupabase();
+        showToastNotification("Campus Broadcast published!");
+    }
+
+    function exportAuditLogsToCSV() {
+        if (AppState.systemAuditLogs.length === 0) {
+            showToastNotification("No audit logs to export!");
+            return;
+        }
+
+        let csvContent = "data:text/csv;charset=utf-8,ID,Event Type,Target User,Details,Performed By,Timestamp\n";
+        AppState.systemAuditLogs.forEach(l => {
+            csvContent += `"${l.id}","${l.eventType}","${l.targetUser}","${l.details}","${l.performedBy}","${l.timestamp}"\n`;
+        });
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `FindIt_Security_Audit_Logs_${Date.now()}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        addSystemAuditLog('AUDIT_LOG_EXPORT', 'Admin Console', 'Exported CSV Security Audit Logs');
+    }
+
+    async function markUserOwnReportResolved(itemId, title) {
+        await db.from('items').update({ status: 'Resolved' }).eq('item_id', itemId);
+        await addItemTraceLog(itemId, title, "Marked as Resolved by Owner", AppState.currentUser.email);
+        fetchItemsFromSupabase();
+        showToastNotification("Report marked as Resolved!");
+    }
+
+    async function updateItemLockerLocation(itemId, lockerValue) {
+    const trimmedLocker = lockerValue.trim() || 'Unassigned';
+    const numericItemId = Number(itemId);
+    const item = AppState.itemsData.find(i => Number(i.id) === numericItemId);
+
+    if (!item) return;
+
+    // Prevent duplicate logs if value is identical
+    if (item.locker_location === trimmedLocker) {
+        showToastNotification(`Locker # is already set to ${trimmedLocker}`);
+        return;
+    }
+
+    // Persist update to Supabase
+    const { error } = await db
+        .from('items')
+        .update({ locker_location: trimmedLocker })
+        .eq('item_id', numericItemId);
+
+    if (error) {
+        console.error("Supabase Update Error:", error);
+        showToastNotification(`Error: ${error.message}`);
+        return;
+    }
+
+    // Update state & trace log upon successful update
+    item.locker_location = trimmedLocker;
+    const staffEmail = AppState.currentUser ? AppState.currentUser.email : "Staff";
+    await addItemTraceLog(numericItemId, item.title, `Assigned storage location: ${trimmedLocker}`, staffEmail);
+
+    renderTrackerItems();
+    renderAdminManageItems();
+    showToastNotification(`Locker fixed to: ${trimmedLocker}`);
+}
+
+    /* RENDER FUNCTIONS */
     function renderAdminMetrics() {
         const totalItemsEl = document.getElementById('statTotalItems');
         const resolvedItemsEl = document.getElementById('statResolvedItems');
@@ -893,29 +918,21 @@
     function renderUserAuthTraceLogs() {
         const container = document.getElementById('userAuthTraceLogContainer');
         if (!container) return;
-
-        if (!AppState.currentUser || AppState.currentUser.role !== 'admin') {
-            container.innerHTML = '';
-            return;
-        }
+        if (!AppState.currentUser || AppState.currentUser.role !== 'admin') return;
 
         if (AppState.userAuthTraceLogs.length === 0) {
             container.innerHTML = '<div style="font-size: 10px; color: var(--color-text-muted);">No sign-in/out activity recorded.</div>';
             return;
         }
 
-        container.innerHTML = AppState.userAuthTraceLogs.map(log => {
-            const isLogin = log.eventType === 'LOGIN';
-            const badgeColor = isLogin ? '#2DD4BF' : '#FF6B4A';
-            return `
-                <div class="log-item">
-                    <span style="font-weight: 800; color: ${badgeColor};">[${log.eventType}]</span>
-                    <strong>${log.userEmail}</strong> 
-                    <span class="badge-tag-status badge-tag-${log.userRole}" style="font-size: 8px; padding: 1px 5px; margin-left: 4px;">${log.userRole}</span>
-                    <div class="log-time">${log.timestamp}</div>
-                </div>
-            `;
-        }).join('');
+        container.innerHTML = AppState.userAuthTraceLogs.map(log => `
+            <div class="log-item">
+                <span style="font-weight: 800; color: ${log.eventType === 'LOGIN' ? '#2DD4BF' : '#FF6B4A'};">[${log.eventType}]</span>
+                <strong>${log.userEmail}</strong> 
+                <span class="badge-tag-status badge-tag-${log.userRole}" style="font-size: 8px; padding: 1px 5px; margin-left: 4px;">${log.userRole}</span>
+                <div class="log-time">${log.timestamp}</div>
+            </div>
+        `).join('');
     }
 
     function renderSystemAuditLogs() {
@@ -923,7 +940,7 @@
         if (!container) return;
 
         if (AppState.systemAuditLogs.length === 0) {
-            container.innerHTML = '<div style="font-size: 10px; color: var(--color-text-muted);">No security/admin audit events. Execute an action (Block User, Change Role, or Delete Report) to record an audit entry.</div>';
+            container.innerHTML = '<div style="font-size: 10px; color: var(--color-text-muted);">No security audit logs recorded yet.</div>';
             return;
         }
 
@@ -942,7 +959,7 @@
         if (!container) return;
 
         if (AppState.usersList.length === 0) {
-            container.innerHTML = '<div style="font-size: 10px; color: var(--color-text-muted);">No registered users found.</div>';
+            container.innerHTML = '<div style="font-size: 10px; color: var(--color-text-muted);">No registered users.</div>';
             return;
         }
 
@@ -966,6 +983,118 @@
         `).join('');
     }
 
+    function renderFeedItems() {
+        const container = document.getElementById('feedItemsContainer');
+        if (!container) return;
+        container.innerHTML = '';
+
+        if (AppState.itemsData.length === 0) {
+            container.innerHTML = '<div style="font-size: 11px; color: var(--color-text-muted); text-align: center; padding: 20px;">No items reported yet.</div>';
+            return;
+        }
+
+        AppState.itemsData.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'info-card-container';
+            card.onclick = () => openItemDetailModal(item);
+
+            const isLost = item.category === 'lost';
+            const defaultIconSvg = isLost 
+                ? `<svg class="svg-icon-lg" viewBox="0 0 24 24"><path d="M21 2l-2 2m-3 1l-4 4m2 2l-2 2m-2-2l-4 4a5 5 0 1 1-7-7l4-4a5 5 0 0 1 7 7z"/></svg>`
+                : `<svg class="svg-icon-lg" viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>`;
+
+            const thumbnailContent = item.image_url 
+                ? `<img src="${item.image_url}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius-medium);">`
+                : defaultIconSvg;
+
+            const rewardBadge = (item.reward_amount && item.reward_amount !== 'None') 
+                ? `<span class="badge-tag-status" style="background: rgba(255,107,74,0.2); color:#FF6B4A; border:1px solid rgba(255,107,74,0.4); margin-left: 4px;">🎁 ${item.reward_amount}</span>`
+                : '';
+
+            card.innerHTML = `
+                <div class="info-card-thumbnail">${thumbnailContent}</div>
+                <div class="info-card-meta">
+                    <div class="info-card-title">${item.title}</div>
+                    <div class="info-card-location">📍 ${item.location}</div>
+                    <div style="margin-top: 4px;">
+                        <span class="badge-tag-status badge-tag-${item.category}">${item.category}</span>
+                        ${rewardBadge}
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function renderTrackerItems() {
+        const container = document.getElementById('trackerListContainer');
+        if (!container) return;
+
+        container.innerHTML = AppState.itemsData.map(item => {
+            const isOwner = AppState.currentUser && AppState.currentUser.email === item.user_email;
+            const selfResolveBtn = (isOwner && item.status !== 'Resolved') 
+                ? `<button style="margin-top: 6px; background: rgba(45,212,191,0.2); color: #2DD4BF; border: 1px solid rgba(45,212,191,0.4); padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer;" onclick="markUserOwnReportResolved(${item.id}, '${item.title}')">Mark as Resolved / Found</button>`
+                : '';
+
+            return `
+                <div class="info-card-container" style="flex-direction: column; align-items: flex-start;">
+                    <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                        <strong style="font-size: 12px; color: var(--color-text-main);">${item.title}</strong>
+                        <span class="badge-tag-status badge-tag-${item.category}">${item.category}</span>
+                    </div>
+                    <div style="font-size: 10px; color: var(--color-text-muted); margin-top: 2px;">${item.date} | ${item.location} | Storage: ${item.locker_location}</div>
+                    <div style="margin-top: 8px; width: 100%; background: rgba(45, 212, 191, 0.12); padding: 6px 10px; border-radius: var(--radius-small); font-size: 10px; color: var(--color-seafoam); font-weight: bold; border: 1px solid rgba(45, 212, 191, 0.25);">
+                        Status: ${item.status}
+                    </div>
+                    ${selfResolveBtn}
+                </div>
+            `;
+        }).join('');
+    }
+
+    function renderAdminManageItems() {
+    const container = document.getElementById('adminManageItemsContainer');
+    if (!container) return;
+
+    const isAdmin = AppState.currentUser && AppState.currentUser.role === 'admin';
+
+    container.innerHTML = AppState.itemsData.map(item => {
+        const deleteBtn = isAdmin 
+            ? `<button style="background: rgba(255,107,74,0.2); color: var(--color-coral-spark); border: 1px solid rgba(255,107,74,0.4); padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer;" onclick="deleteReportByAdmin(${item.id})">Delete</button>`
+            : '';
+
+        return `
+            <div class="info-card-container" style="flex-direction: column; align-items: flex-start; padding: 10px; gap: 8px;">
+                <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <strong style="font-size: 12px; color: var(--color-text-main);">${item.title}</strong>
+                        <span style="font-size: 10px; color: var(--color-text-muted); display: block;">Reported by: ${item.user_email}</span>
+                    </div>
+                    ${deleteBtn}
+                </div>
+
+                <div style="display: flex; gap: 8px; align-items: center; width: 100%; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 4px;">
+                        <span style="font-size: 10px; color: var(--color-text-muted);">Status:</span>
+                        <select class="form-select-field" style="padding: 4px 6px; font-size: 10px; width: auto;" onchange="updateItemStatusByAdmin(${item.id}, this.value)">
+                            <option value="Pending" ${item.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                            <option value="Claimable" ${item.status === 'Claimable' ? 'selected' : ''}>Verified Claimable</option>
+                            <option value="Found" ${item.status === 'Found' ? 'selected' : ''}>Verified Found</option>
+                            <option value="Resolved" ${item.status === 'Resolved' ? 'selected' : ''}>Resolved & Claimed</option>
+                        </select>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 4px; flex: 1;">
+                        <span style="font-size: 10px; color: var(--color-text-muted);">Locker #:</span>
+                        <input type="text" id="locker_input_${item.id}" class="form-input-field" style="padding: 4px 6px; font-size: 10px; width: 65px;" value="${item.locker_location === 'Unassigned' ? '' : item.locker_location}" placeholder="e.g. 5">
+                        <button class="action-button-base action-button-primary" style="padding: 4px 8px; font-size: 9px; width: auto;" onclick="updateItemLockerLocation(${item.id}, document.getElementById('locker_input_${item.id}').value)">Save</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
     async function updateUserRoleByAdmin(userId, newRole, userEmail) {
         const { error } = await db.from('users').update({ role: newRole }).eq('user_id', userId);
         if (!error) {
@@ -983,6 +1112,161 @@
             fetchUsersFromSupabase();
             showToastNotification(`User ${userEmail} is now ${newStatus}`);
         }
+    }
+
+    async function updateItemStatusByAdmin(id, newStatus) {
+        const item = AppState.itemsData.find(i => i.id === id);
+        if (item) {
+            item.status = newStatus;
+            await db.from('items').update({ status: newStatus }).eq('item_id', id);
+            const staffEmail = AppState.currentUser ? AppState.currentUser.email : "Staff Member";
+            addItemTraceLog(id, item.title, `Status updated to ${newStatus}`, staffEmail);
+            addSystemAuditLog('ITEM_STATUS_CHANGE', staffEmail, `Item #${id} (${item.title}) set to ${newStatus}`);
+            fetchItemsFromSupabase();
+            showToastNotification(`Report #${id} verified as ${newStatus}`);
+        }
+    }
+
+    async function deleteReportByAdmin(id) {
+        const item = AppState.itemsData.find(i => i.id === id);
+        const userEmail = AppState.currentUser ? AppState.currentUser.email : "Admin";
+        if (item) {
+            addItemTraceLog(id, item.title, "Report deleted from system", userEmail);
+            addSystemAuditLog('REPORT_DELETED', userEmail, `Item #${id} (${item.title}) deleted`);
+        }
+        await db.from('items').delete().eq('item_id', id);
+        fetchItemsFromSupabase();
+        showToastNotification(`Report #${id} removed.`);
+    }
+
+    async function handleNewReportSubmission() {
+        const title = document.getElementById('reportTitleInput').value.trim();
+        const location = document.getElementById('reportLocationInput').value.trim();
+        const category = document.getElementById('reportCategorySelect').value;
+        const reward = document.getElementById('reportRewardInput').value.trim();
+        const desc = document.getElementById('reportDescInput').value.trim();
+        const imageFileInput = document.getElementById('reportImageInput');
+        const userEmail = AppState.currentUser ? AppState.currentUser.email : "Guest";
+
+        if (!title || !location) {
+            alert('Please fill in both Title and Location.');
+            return;
+        }
+
+        let imageUrl = null;
+
+        if (imageFileInput && imageFileInput.files.length > 0) {
+            const file = imageFileInput.files[0];
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
+            const filePath = `items/${fileName}`;
+
+            const { data: uploadData, error: uploadErr } = await db.storage
+                .from('item_images')
+                .upload(filePath, file);
+
+            if (!uploadErr) {
+                const { data: publicUrlData } = db.storage
+                    .from('item_images')
+                    .getPublicUrl(filePath);
+                imageUrl = publicUrlData.publicUrl;
+            }
+        }
+
+        const { data, error } = await db.from('items').insert([{
+            title: title,
+            location: location,
+            report_type: category,
+            reward_amount: reward || 'None',
+            description: desc || "No description provided.",
+            image_url: imageUrl,
+            user_email: userEmail,
+            status: 'Pending'
+        }]).select();
+
+        if (!error && data) {
+            const newItem = data[0];
+            addItemTraceLog(newItem.item_id, title, `New report created (${category.toUpperCase()})`, userEmail);
+
+            document.getElementById('reportTitleInput').value = '';
+            document.getElementById('reportLocationInput').value = '';
+            document.getElementById('reportRewardInput').value = '';
+            document.getElementById('reportDescInput').value = '';
+            document.getElementById('reportImageInput').value = '';
+
+            fetchItemsFromSupabase();
+            showToastNotification("Report submitted for Staff review!");
+            switchActiveTab('feedViewScreen', document.querySelectorAll('.nav-tab-item')[0]);
+        }
+    }
+
+    function openItemDetailModal(item) {
+        AppState.selectedItemId = item.id;
+        document.getElementById('modalItemTitle').innerText = item.title;
+        document.getElementById('modalItemLocation').innerText = "📍 " + item.location;
+        document.getElementById('modalItemReward').innerText = "🎁 Reward: " + (item.reward_amount || 'None');
+        document.getElementById('modalItemLocker').innerText = "📦 Office Locker Storage: " + (item.locker_location || 'Unassigned');
+
+        const descContainer = document.getElementById('modalItemDesc');
+        if (item.image_url) {
+            descContainer.innerHTML = `
+                <img src="${item.image_url}" style="width: 100%; max-height: 160px; object-fit: cover; border-radius: 8px; margin-bottom: 8px; border: var(--glass-border);">
+                <p>${item.description}</p>
+            `;
+        } else {
+            descContainer.innerText = item.description;
+        }
+        
+        const badge = document.getElementById('modalItemBadge');
+        badge.innerText = item.category;
+        badge.className = `badge-tag-status badge-tag-${item.category}`;
+
+        document.getElementById('itemDetailModalOverlay').style.display = 'flex';
+    }
+
+    function closeItemDetailModal() {
+        document.getElementById('itemDetailModalOverlay').style.display = 'none';
+        AppState.selectedItemId = null;
+    }
+
+    async function triggerClaimAction() {
+        const currentUserRole = AppState.currentUser ? AppState.currentUser.role : 'user';
+
+        if (currentUserRole === 'user') {
+            closeItemDetailModal();
+            showToastNotification("Claim request logged! Staff must inspect and verify item.");
+            if (AppState.selectedItemId) {
+                const targetItem = AppState.itemsData.find(i => i.id === AppState.selectedItemId);
+                if (targetItem) {
+                    addItemTraceLog(targetItem.id, targetItem.title, "User initiated claim request (Pending Staff Check)", AppState.currentUser.email);
+                }
+            }
+            return;
+        }
+
+        if (AppState.selectedItemId) {
+            const targetItem = AppState.itemsData.find(i => i.id === AppState.selectedItemId);
+            if (targetItem) {
+                await db.from('items').update({ status: 'Claimable', report_type: 'found' }).eq('item_id', targetItem.id);
+                const actor = AppState.currentUser ? AppState.currentUser.email : "Staff Member";
+                addItemTraceLog(targetItem.id, targetItem.title, "Verified as Found & Claimable by Staff", actor);
+            }
+        }
+
+        closeItemDetailModal();
+        fetchItemsFromSupabase();
+        showToastNotification("Item status updated to Claimable!");
+        switchActiveTab('trackViewScreen', document.querySelectorAll('.nav-tab-item')[2]);
+    }
+
+    function filterFeedCards() {
+        const searchVal = document.getElementById('feedSearchInput').value.toLowerCase();
+        const cards = document.querySelectorAll('#feedItemsContainer .info-card-container');
+        cards.forEach(card => {
+            const title = card.querySelector('.info-card-title').innerText.toLowerCase();
+            const location = card.querySelector('.info-card-location').innerText.toLowerCase();
+            card.style.display = (title.includes(searchVal) || location.includes(searchVal)) ? 'flex' : 'none';
+        });
     }
 
     function updateSystemHardwareClock() {
@@ -1003,9 +1287,6 @@
         return regex.test(password);
     }
 
-    // =========================================================================
-    // 3. AUTHENTICATION PROCEDURES (SUPABASE DIRECT)
-    // =========================================================================
     async function executeBackendLoginProcess() {
         const now = Date.now();
         if (now < AppState.lockoutUntil) {
@@ -1054,7 +1335,6 @@
         };
 
         localStorage.setItem('findit_user', JSON.stringify(AppState.currentUser));
-
         await recordUserAuthTraceLog(user.user_id, user.email, user.role, 'LOGIN');
 
         if (user.role === 'admin') {
@@ -1063,6 +1343,7 @@
 
         setupInterfaceForUserRole();
         fetchItemsFromSupabase();
+        fetchAnnouncementsFromSupabase();
 
         document.getElementById('loginViewScreen').style.display = 'none';
         
@@ -1154,9 +1435,17 @@
 
         const consoleTab = document.getElementById('adminTabNavItem');
         const consoleBadge = document.getElementById('consoleRoleBadge');
-        const authLogCard = document.getElementById('userAuthLogCard');
+        
+        // Admin vs Staff Role Elements
+        const exportCsvBtn = document.getElementById('exportCsvBtn');
+        const adminBroadcastCard = document.getElementById('adminBroadcastCard');
         const userMgmtCard = document.getElementById('userManagementCard');
         const systemAuditCard = document.getElementById('systemAuditLogCard');
+        const authLogCard = document.getElementById('userAuthLogCard');
+        const metricUsersBox = document.getElementById('metricUsersBox');
+        const metricAuditsBox = document.getElementById('metricAuditsBox');
+        const consoleTitle = document.getElementById('consoleTitle');
+        const consoleSubtitle = document.getElementById('consoleSubtitle');
 
         if (currentRole === 'admin') {
             document.body.classList.add('desktop-admin-mode');
@@ -1165,24 +1454,31 @@
         }
 
         if (currentRole === 'admin' || currentRole === 'staff') {
-            if (currentRole === 'staff') {
-                consoleTab.style.display = 'flex';
-            } else {
-                consoleTab.style.display = 'none';
-            }
+            const isAdmin = (currentRole === 'admin');
 
+            // Navigation Tab visibility for Staff vs Full Screen Desktop for Admin
+            consoleTab.style.display = isAdmin ? 'none' : 'flex';
+            
             if (consoleBadge) {
                 consoleBadge.innerText = currentRole.toUpperCase();
                 consoleBadge.className = `badge-tag-status badge-tag-${currentRole}`;
             }
-            
-            if (authLogCard) authLogCard.style.display = (currentRole === 'admin') ? 'flex' : 'none';
-            if (userMgmtCard) userMgmtCard.style.display = (currentRole === 'admin') ? 'flex' : 'none';
-            if (systemAuditCard) systemAuditCard.style.display = (currentRole === 'admin') ? 'flex' : 'none';
+
+            if (consoleTitle) consoleTitle.innerText = isAdmin ? "Admin Dashboard Console" : "Staff Verification Console";
+            if (consoleSubtitle) consoleSubtitle.innerText = isAdmin ? "Verification, User Accounts & Audit Trail" : "Item Verification & Storage Locker Control";
+
+            // Strict Role Separation: Hide Admin features from Staff
+            if (exportCsvBtn) exportCsvBtn.style.display = isAdmin ? 'inline-flex' : 'none';
+            if (adminBroadcastCard) adminBroadcastCard.style.display = isAdmin ? 'flex' : 'none';
+            if (userMgmtCard) userMgmtCard.style.display = isAdmin ? 'flex' : 'none';
+            if (systemAuditCard) systemAuditCard.style.display = isAdmin ? 'flex' : 'none';
+            if (authLogCard) authLogCard.style.display = isAdmin ? 'flex' : 'none';
+            if (metricUsersBox) metricUsersBox.style.display = isAdmin ? 'block' : 'none';
+            if (metricAuditsBox) metricAuditsBox.style.display = isAdmin ? 'block' : 'none';
 
             fetchItemTraceLogsFromSupabase();
             
-            if (currentRole === 'admin') {
+            if (isAdmin) {
                 fetchUsersFromSupabase();
                 fetchUserAuthTraceLogsFromSupabase();
                 fetchSystemAuditLogsFromSupabase();
@@ -1216,236 +1512,6 @@
         input.type = (input.type === 'password') ? 'text' : 'password';
     }
 
-    function renderFeedItems() {
-        const container = document.getElementById('feedItemsContainer');
-        if (!container) return;
-        container.innerHTML = '';
-
-        if (AppState.itemsData.length === 0) {
-            container.innerHTML = '<div style="font-size: 11px; color: var(--color-text-muted); text-align: center; padding: 20px;">No items reported yet.</div>';
-            return;
-        }
-
-        AppState.itemsData.forEach(item => {
-            const card = document.createElement('div');
-            card.className = 'info-card-container';
-            card.onclick = () => openItemDetailModal(item);
-
-            const isLost = item.category === 'lost';
-            const defaultIconSvg = isLost 
-                ? `<svg class="svg-icon-lg" viewBox="0 0 24 24"><path d="M21 2l-2 2m-3 1l-4 4m2 2l-2 2m-2-2l-4 4a5 5 0 1 1-7-7l4-4a5 5 0 0 1 7 7z"/></svg>`
-                : `<svg class="svg-icon-lg" viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>`;
-
-            const thumbnailContent = item.image_url 
-                ? `<img src="${item.image_url}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius-medium);">`
-                : defaultIconSvg;
-
-            card.innerHTML = `
-                <div class="info-card-thumbnail">${thumbnailContent}</div>
-                <div class="info-card-meta">
-                    <div class="info-card-title">${item.title}</div>
-                    <div class="info-card-location">📍 ${item.location}</div>
-                    <span class="badge-tag-status badge-tag-${item.category}">${item.category}</span>
-                </div>
-            `;
-            container.appendChild(card);
-        });
-    }
-
-    function filterFeedCards() {
-        const searchVal = document.getElementById('feedSearchInput').value.toLowerCase();
-        const cards = document.querySelectorAll('#feedItemsContainer .info-card-container');
-        cards.forEach(card => {
-            const title = card.querySelector('.info-card-title').innerText.toLowerCase();
-            const location = card.querySelector('.info-card-location').innerText.toLowerCase();
-            card.style.display = (title.includes(searchVal) || location.includes(searchVal)) ? 'flex' : 'none';
-        });
-    }
-
-    function renderTrackerItems() {
-        const container = document.getElementById('trackerListContainer');
-        if (!container) return;
-
-        container.innerHTML = AppState.itemsData.map(item => `
-            <div class="info-card-container" style="flex-direction: column; align-items: flex-start;">
-                <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
-                    <strong style="font-size: 12px; color: var(--color-text-main);">${item.title}</strong>
-                    <span class="badge-tag-status badge-tag-${item.category}">${item.category}</span>
-                </div>
-                <div style="font-size: 10px; color: var(--color-text-muted); margin-top: 2px;">${item.date} | ${item.location}</div>
-                <div style="margin-top: 8px; width: 100%; background: rgba(45, 212, 191, 0.12); padding: 6px 10px; border-radius: var(--radius-small); font-size: 10px; color: var(--color-seafoam); font-weight: bold; border: 1px solid rgba(45, 212, 191, 0.25);">
-                    Status: ${item.status}
-                </div>
-            </div>
-        `).join('');
-    }
-
-    function renderAdminManageItems() {
-        const container = document.getElementById('adminManageItemsContainer');
-        if (!container) return;
-
-        container.innerHTML = AppState.itemsData.map(item => `
-            <div class="info-card-container" style="flex-direction: column; align-items: flex-start; padding: 10px;">
-                <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                    <strong style="font-size: 12px; color: var(--color-text-main);">${item.title}</strong>
-                    <button style="background: rgba(255,107,74,0.2); color: var(--color-coral-spark); border: 1px solid rgba(255,107,74,0.4); padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer;" onclick="deleteReportByAdmin(${item.id})">Delete</button>
-                </div>
-                <div style="display: flex; gap: 8px; align-items: center; width: 100%;">
-                    <span style="font-size: 10px; color: var(--color-text-muted);">Staff Verification:</span>
-                    <select class="form-select-field" style="padding: 4px 8px; font-size: 10px; width: auto;" onchange="updateItemStatusByAdmin(${item.id}, this.value)">
-                        <option value="Pending" ${item.status === 'Pending' ? 'selected' : ''}>Pending</option>
-                        <option value="Claimable" ${item.status === 'Claimable' ? 'selected' : ''}>Verified Claimable</option>
-                        <option value="Found" ${item.status === 'Found' ? 'selected' : ''}>Verified Found</option>
-                        <option value="Resolved" ${item.status === 'Resolved' ? 'selected' : ''}>Resolved & Claimed</option>
-                    </select>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    async function updateItemStatusByAdmin(id, newStatus) {
-        const item = AppState.itemsData.find(i => i.id === id);
-        if (item) {
-            item.status = newStatus;
-            await db.from('items').update({ status: newStatus }).eq('item_id', id);
-            const staffEmail = AppState.currentUser ? AppState.currentUser.email : "Staff Member";
-            addItemTraceLog(id, item.title, `Status updated to ${newStatus}`, staffEmail);
-            addSystemAuditLog('ITEM_STATUS_CHANGE', staffEmail, `Item #${id} (${item.title}) set to ${newStatus}`);
-            fetchItemsFromSupabase();
-            showToastNotification(`Report #${id} verified as ${newStatus}`);
-        }
-    }
-
-    async function deleteReportByAdmin(id) {
-        const item = AppState.itemsData.find(i => i.id === id);
-        const userEmail = AppState.currentUser ? AppState.currentUser.email : "Admin";
-        if (item) {
-            addItemTraceLog(id, item.title, "Report deleted from system", userEmail);
-            addSystemAuditLog('REPORT_DELETED', userEmail, `Item #${id} (${item.title}) deleted`);
-        }
-        await db.from('items').delete().eq('item_id', id);
-        fetchItemsFromSupabase();
-        showToastNotification(`Report #${id} removed.`);
-    }
-
-    async function handleNewReportSubmission() {
-        const title = document.getElementById('reportTitleInput').value.trim();
-        const location = document.getElementById('reportLocationInput').value.trim();
-        const category = document.getElementById('reportCategorySelect').value;
-        const desc = document.getElementById('reportDescInput').value.trim();
-        const imageFileInput = document.getElementById('reportImageInput');
-        const userEmail = AppState.currentUser ? AppState.currentUser.email : "Guest";
-
-        if (!title || !location) {
-            alert('Please fill in both Title and Location.');
-            return;
-        }
-
-        let imageUrl = null;
-
-        if (imageFileInput && imageFileInput.files.length > 0) {
-            const file = imageFileInput.files[0];
-            const fileExt = file.name.split('.').pop();
-            const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
-            const filePath = `items/${fileName}`;
-
-            const { data: uploadData, error: uploadErr } = await db.storage
-                .from('item_images')
-                .upload(filePath, file);
-
-            if (uploadErr) {
-                console.error("Image upload error:", uploadErr);
-                alert("Image upload failed, submitting without image.");
-            } else {
-                const { data: publicUrlData } = db.storage
-                    .from('item_images')
-                    .getPublicUrl(filePath);
-
-                imageUrl = publicUrlData.publicUrl;
-            }
-        }
-
-        const { data, error } = await db.from('items').insert([{
-            title: title,
-            location: location,
-            report_type: category,
-            description: desc || "No description provided.",
-            image_url: imageUrl,
-            status: 'Pending'
-        }]).select();
-
-        if (!error && data) {
-            const newItem = data[0];
-            addItemTraceLog(newItem.item_id, title, `New report created (${category.toUpperCase()})`, userEmail);
-
-            document.getElementById('reportTitleInput').value = '';
-            document.getElementById('reportLocationInput').value = '';
-            document.getElementById('reportDescInput').value = '';
-            document.getElementById('reportImageInput').value = '';
-
-            fetchItemsFromSupabase();
-            showToastNotification("Report submitted for Staff review!");
-            switchActiveTab('feedViewScreen', document.querySelectorAll('.nav-tab-item')[0]);
-        }
-    }
-
-    function openItemDetailModal(item) {
-        AppState.selectedItemId = item.id;
-        document.getElementById('modalItemTitle').innerText = item.title;
-        document.getElementById('modalItemLocation').innerText = "📍 " + item.location;
-        
-        const descContainer = document.getElementById('modalItemDesc');
-        if (item.image_url) {
-            descContainer.innerHTML = `
-                <img src="${item.image_url}" style="width: 100%; max-height: 160px; object-fit: cover; border-radius: 8px; margin-bottom: 8px; border: var(--glass-border);">
-                <p>${item.description}</p>
-            `;
-        } else {
-            descContainer.innerText = item.description;
-        }
-        
-        const badge = document.getElementById('modalItemBadge');
-        badge.innerText = item.category;
-        badge.className = `badge-tag-status badge-tag-${item.category}`;
-
-        document.getElementById('itemDetailModalOverlay').style.display = 'flex';
-    }
-
-    function closeItemDetailModal() {
-        document.getElementById('itemDetailModalOverlay').style.display = 'none';
-        AppState.selectedItemId = null;
-    }
-
-    async function triggerClaimAction() {
-        const currentUserRole = AppState.currentUser ? AppState.currentUser.role : 'user';
-
-        if (currentUserRole === 'user') {
-            closeItemDetailModal();
-            showToastNotification("Claim request logged! Staff must inspect and verify item.");
-            if (AppState.selectedItemId) {
-                const targetItem = AppState.itemsData.find(i => i.id === AppState.selectedItemId);
-                if (targetItem) {
-                    addItemTraceLog(targetItem.id, targetItem.title, "User initiated claim request (Pending Staff Check)", AppState.currentUser.email);
-                }
-            }
-            return;
-        }
-
-        if (AppState.selectedItemId) {
-            const targetItem = AppState.itemsData.find(i => i.id === AppState.selectedItemId);
-            if (targetItem) {
-                await db.from('items').update({ status: 'Claimable', report_type: 'found' }).eq('item_id', targetItem.id);
-                const actor = AppState.currentUser ? AppState.currentUser.email : "Staff Member";
-                addItemTraceLog(targetItem.id, targetItem.title, "Verified as Found & Claimable by Staff", actor);
-            }
-        }
-
-        closeItemDetailModal();
-        fetchItemsFromSupabase();
-        showToastNotification("Item status updated to Claimable!");
-        switchActiveTab('trackViewScreen', document.querySelectorAll('.nav-tab-item')[2]);
-    }
-
     function displaySignoutConfirmationModal() { document.getElementById('signoutConfirmationModalOverlay').style.display = 'flex'; }
     function dismissSignoutConfirmationModal() { document.getElementById('signoutConfirmationModalOverlay').style.display = 'none'; }
 
@@ -1477,9 +1543,6 @@
         setTimeout(() => toast.classList.remove('visible'), 3000);
     }
 
-    // =========================================================================
-    // 4. ACCOUNT RECOVERY (OTP) LOGIC
-    // =========================================================================
     function openOtpRecoveryModal() {
         document.getElementById('otpStep1Container').style.display = 'block';
         document.getElementById('otpStep2Container').style.display = 'none';
@@ -1507,16 +1570,7 @@
         const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
         const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
 
-        const { error: otpErr } = await db.from('password_resets').insert([{
-            email: email,
-            otp_code: generatedOtp,
-            expires_at: expiresAt
-        }]);
-
-        if (otpErr) {
-            showBanner('otpFeedbackBanner', "Failed to generate OTP. Try again.", "error");
-            return;
-        }
+        await db.from('password_resets').insert([{ email: email, otp_code: generatedOtp, expires_at: expiresAt }]);
 
         document.getElementById('otpSentNoticeText').innerText = `Demo OTP Code: ${generatedOtp} (Expires in 10 mins)`;
         document.getElementById('otpStep1Container').style.display = 'none';
@@ -1554,20 +1608,7 @@
             return;
         }
 
-        const { data: updateData, error: updateErr } = await db.from('users')
-            .update({ 
-                password_hash: newPassword,
-                last_password_reset: new Date().toISOString()
-            })
-            .eq('email', email)
-            .select();
-
-        if (updateErr || !updateData || updateData.length === 0) {
-            console.error("Update Error:", updateErr);
-            showBanner('otpFeedbackBanner', "Failed to update password. Check RLS policies.", "error");
-            return;
-        }
-
+        await db.from('users').update({ password_hash: newPassword, last_password_reset: new Date().toISOString() }).eq('email', email);
         await db.from('password_resets').delete().eq('id', records[0].id);
 
         closeOtpRecoveryModal();
@@ -1580,6 +1621,7 @@
         if (AppState.currentUser) {
             setupInterfaceForUserRole();
             fetchItemsFromSupabase();
+            fetchAnnouncementsFromSupabase();
             document.getElementById('loginViewScreen').style.display = 'none';
             if (AppState.currentUser.role === 'admin') {
                 document.getElementById('adminControlViewScreen').style.display = 'block';
@@ -1589,6 +1631,7 @@
             }
         } else {
             fetchItemsFromSupabase();
+            fetchAnnouncementsFromSupabase();
         }
     });
 </script>
