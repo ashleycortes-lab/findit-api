@@ -91,7 +91,6 @@
 
         body.desktop-admin-mode #adminControlViewScreen { display: block !important; }
 
-        /* DASHBOARD GRID SYSTEM: STACKS IN MOBILE FRAME, MULTI-COLUMN IN DESKTOP ADMIN MODE */
         .admin-dashboard-grid {
             display: flex;
             flex-direction: column;
@@ -845,97 +844,20 @@
     }
 
     async function markUserOwnReportResolved(itemId, title) {
-        await db.from('items').update({ status: 'Resolved', locker_location: 'Unassigned' }).eq('item_id', itemId);
-        await addItemTraceLog(itemId, title, "Marked as Resolved by Owner & Locker released", AppState.currentUser.email);
+        await db.from('items').update({ status: 'Resolved' }).eq('item_id', itemId);
+        await addItemTraceLog(itemId, title, "Marked as Resolved by Owner", AppState.currentUser.email);
         fetchItemsFromSupabase();
         showToastNotification("Report marked as Resolved!");
     }
 
-    // 1. UPDATE LOCKER LOCATION WITH STRICT OCCUPANCY CHECK
     async function updateItemLockerLocation(itemId, lockerValue) {
-        const trimmedLocker = lockerValue.trim() || 'Unassigned';
-        const numericItemId = Number(itemId);
-        const item = AppState.itemsData.find(i => Number(i.id) === numericItemId);
-
-        if (!item) return;
-
-        // A. OCCUPANCY CHECK FIRST: Block if another active item occupies this locker
-        if (trimmedLocker !== 'Unassigned') {
-            const occupiedByOther = AppState.itemsData.find(other => 
-                Number(other.id) !== numericItemId && 
-                other.locker_location.toLowerCase() === trimmedLocker.toLowerCase() &&
-                other.status !== 'Resolved'
-            );
-
-            if (occupiedByOther) {
-                showToastNotification(`❌ Locker #${trimmedLocker} is already occupied by "${occupiedByOther.title}"!`);
-                // Reset input box back to current value
-                const inputEl = document.getElementById(`locker_input_${itemId}`);
-                if (inputEl) inputEl.value = (item.locker_location === 'Unassigned') ? '' : item.locker_location;
-                return;
-            }
-        }
-
-        // B. UNCHANGED CHECK SECOND: Check if this item already holds this exact locker
-        if (item.locker_location === trimmedLocker) {
-            showToastNotification(`Locker # is already set to ${trimmedLocker}`);
-            return;
-        }
-
-        // C. Save to Supabase Database
-        const { error } = await db
-            .from('items')
-            .update({ locker_location: trimmedLocker })
-            .eq('item_id', numericItemId);
-
-        if (error) {
-            console.error("Supabase Error:", error);
-            showToastNotification(`❌ DB Error: Locker #${trimmedLocker} is already taken!`);
-            // Reset input box
-            const inputEl = document.getElementById(`locker_input_${itemId}`);
-            if (inputEl) inputEl.value = (item.locker_location === 'Unassigned') ? '' : item.locker_location;
-            return;
-        }
-
-        // D. Update Local State & Trace Log
-        item.locker_location = trimmedLocker;
+        await db.from('items').update({ locker_location: lockerValue }).eq('item_id', itemId);
+        const item = AppState.itemsData.find(i => i.id === itemId);
         const staffEmail = AppState.currentUser ? AppState.currentUser.email : "Staff";
-        await addItemTraceLog(numericItemId, item.title, `Assigned storage location: Locker #${trimmedLocker}`, staffEmail);
-
-        renderTrackerItems();
-        renderAdminManageItems();
-        showToastNotification(`Locker #${trimmedLocker} fixed to ${item.title}`);
-    }
-
-    // 2. UPDATE STATUS & AUTO-RELEASE LOCKER WHEN RESOLVED
-    async function updateItemStatusByAdmin(id, newStatus) {
-        const numericItemId = Number(id);
-        const item = AppState.itemsData.find(i => Number(i.id) === numericItemId);
-        
-        if (!item) return;
-
-        // Automatically free up locker storage if item is marked as Resolved
-        const updatedLocker = (newStatus === 'Resolved') ? 'Unassigned' : item.locker_location;
-
-        const { error } = await db
-            .from('items')
-            .update({ status: newStatus, locker_location: updatedLocker })
-            .eq('item_id', numericItemId);
-
-        if (!error) {
-            item.status = newStatus;
-            item.locker_location = updatedLocker;
-            
-            const staffEmail = AppState.currentUser ? AppState.currentUser.email : "Staff Member";
-            const logMsg = (newStatus === 'Resolved') 
-                ? `Status updated to Resolved & Locker released` 
-                : `Status updated to ${newStatus}`;
-                
-            await addItemTraceLog(numericItemId, item.title, logMsg, staffEmail);
-            
-            fetchItemsFromSupabase();
-            showToastNotification(`Report #${id} updated to ${newStatus}`);
+        if (item) {
+            addItemTraceLog(itemId, item.title, `Assigned storage location: ${lockerValue}`, staffEmail);
         }
+        showToastNotification(`Stored in ${lockerValue}`);
     }
 
     /* RENDER FUNCTIONS */
@@ -958,16 +880,13 @@
             container.innerHTML = '<div style="font-size: 10px; color: var(--color-text-muted);">No item trace history recorded.</div>';
             return;
         }
-        container.innerHTML = AppState.itemTraceLogs.map(log => {
-            const displayTitle = (log.title && log.title !== 'Item') ? log.title : `Item #${log.itemId}`;
-            return `
-                <div class="log-item">
-                    <div style="font-weight: 700; color: #FBBF24;">Item #${log.itemId} - ${displayTitle}</div>
-                    <div style="color: var(--color-text-main); margin-top: 2px;">${log.action}</div>
-                    <div class="log-time">Updated by: <strong>${log.updatedBy}</strong> | ${log.timestamp}</div>
-                </div>
-            `;
-        }).join('');
+        container.innerHTML = AppState.itemTraceLogs.map(log => `
+            <div class="log-item">
+                <div style="font-weight: 700; color: #FBBF24;">Item #${log.itemId} - ${log.title}</div>
+                <div style="color: var(--color-text-main); margin-top: 2px;">${log.action}</div>
+                <div class="log-time">Updated by: <strong>${log.updatedBy}</strong> | ${log.timestamp}</div>
+            </div>
+        `).join('');
     }
 
     function renderUserAuthTraceLogs() {
@@ -1043,12 +962,22 @@
         if (!container) return;
         container.innerHTML = '';
 
-        if (AppState.itemsData.length === 0) {
-            container.innerHTML = '<div style="font-size: 11px; color: var(--color-text-muted); text-align: center; padding: 20px;">No items reported yet.</div>';
+        const currentRole = AppState.currentUser ? AppState.currentUser.role : 'user';
+
+        // Filter out 'Resolved' items for regular users in Campus Feed
+        const displayItems = AppState.itemsData.filter(item => {
+            if (currentRole === 'user') {
+                return item.status !== 'Resolved';
+            }
+            return true; // Staff and Admin accounts see all items including Resolved
+        });
+
+        if (displayItems.length === 0) {
+            container.innerHTML = '<div style="font-size: 11px; color: var(--color-text-muted); text-align: center; padding: 20px;">No active items reported yet.</div>';
             return;
         }
 
-        AppState.itemsData.forEach(item => {
+        displayItems.forEach(item => {
             const card = document.createElement('div');
             card.className = 'info-card-container';
             card.onclick = () => openItemDetailModal(item);
@@ -1118,12 +1047,9 @@
                 ? `<button style="background: rgba(255,107,74,0.2); color: var(--color-coral-spark); border: 1px solid rgba(255,107,74,0.4); padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer;" onclick="deleteReportByAdmin(${item.id})">Delete</button>`
                 : '';
 
-            const isResolved = item.status === 'Resolved';
-            const lockerVal = (item.locker_location === 'Unassigned' || isResolved) ? '' : item.locker_location;
-
             return `
-                <div class="info-card-container" style="flex-direction: column; align-items: flex-start; padding: 10px; gap: 8px;">
-                    <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                <div class="info-card-container" style="flex-direction: column; align-items: flex-start; padding: 10px;">
+                    <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                         <div>
                             <strong style="font-size: 12px; color: var(--color-text-main);">${item.title}</strong>
                             <span style="font-size: 10px; color: var(--color-text-muted); display: block;">Reported by: ${item.user_email}</span>
@@ -1142,10 +1068,9 @@
                             </select>
                         </div>
 
-                        <div style="display: flex; align-items: center; gap: 4px; flex: 1;">
+                        <div style="display: flex; align-items: center; gap: 4px;">
                             <span style="font-size: 10px; color: var(--color-text-muted);">Locker #:</span>
-                            <input type="text" id="locker_input_${item.id}" class="form-input-field" style="padding: 4px 6px; font-size: 10px; width: 65px;" value="${lockerVal}" ${isResolved ? 'disabled placeholder="Released"' : 'placeholder="e.g. 5"'}>
-                            <button class="action-button-base action-button-primary" style="padding: 4px 8px; font-size: 9px; width: auto; ${isResolved ? 'opacity: 0.4; cursor: not-allowed;' : ''}" ${isResolved ? 'disabled' : ''} onclick="updateItemLockerLocation(${item.id}, document.getElementById('locker_input_${item.id}').value)">Save</button>
+                            <input type="text" class="form-input-field" style="padding: 3px 6px; font-size: 10px; width: 85px;" value="${item.locker_location}" onchange="updateItemLockerLocation(${item.id}, this.value)" placeholder="e.g. B-4">
                         </div>
                     </div>
                 </div>
@@ -1169,6 +1094,19 @@
             await addSystemAuditLog('USER_STATUS_TOGGLE', userEmail, `Account status set to ${newStatus.toUpperCase()}`);
             fetchUsersFromSupabase();
             showToastNotification(`User ${userEmail} is now ${newStatus}`);
+        }
+    }
+
+    async function updateItemStatusByAdmin(id, newStatus) {
+        const item = AppState.itemsData.find(i => i.id === id);
+        if (item) {
+            item.status = newStatus;
+            await db.from('items').update({ status: newStatus }).eq('item_id', id);
+            const staffEmail = AppState.currentUser ? AppState.currentUser.email : "Staff Member";
+            addItemTraceLog(id, item.title, `Status updated to ${newStatus}`, staffEmail);
+            addSystemAuditLog('ITEM_STATUS_CHANGE', staffEmail, `Item #${id} (${item.title}) set to ${newStatus}`);
+            fetchItemsFromSupabase();
+            showToastNotification(`Report #${id} verified as ${newStatus}`);
         }
     }
 
@@ -1481,7 +1419,6 @@
         const consoleTab = document.getElementById('adminTabNavItem');
         const consoleBadge = document.getElementById('consoleRoleBadge');
         
-        // Admin vs Staff Role Elements
         const exportCsvBtn = document.getElementById('exportCsvBtn');
         const adminBroadcastCard = document.getElementById('adminBroadcastCard');
         const userMgmtCard = document.getElementById('userManagementCard');
@@ -1501,7 +1438,6 @@
         if (currentRole === 'admin' || currentRole === 'staff') {
             const isAdmin = (currentRole === 'admin');
 
-            // Navigation Tab visibility for Staff vs Full Screen Desktop for Admin
             consoleTab.style.display = isAdmin ? 'none' : 'flex';
             
             if (consoleBadge) {
@@ -1512,7 +1448,6 @@
             if (consoleTitle) consoleTitle.innerText = isAdmin ? "Admin Dashboard Console" : "Staff Verification Console";
             if (consoleSubtitle) consoleSubtitle.innerText = isAdmin ? "Verification, User Accounts & Audit Trail" : "Item Verification & Storage Locker Control";
 
-            // Strict Role Separation: Hide Admin features from Staff
             if (exportCsvBtn) exportCsvBtn.style.display = isAdmin ? 'inline-flex' : 'none';
             if (adminBroadcastCard) adminBroadcastCard.style.display = isAdmin ? 'flex' : 'none';
             if (userMgmtCard) userMgmtCard.style.display = isAdmin ? 'flex' : 'none';
@@ -1531,6 +1466,9 @@
         } else {
             consoleTab.style.display = 'none';
         }
+
+        // Refresh feed view to apply role-specific status filters
+        renderFeedItems();
     }
 
     function showBanner(bannerId, text, type) {
