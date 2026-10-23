@@ -425,7 +425,7 @@
 
                 <div class="form-control-group">
                     <label class="form-control-label" for="reportCategorySelect">Report Category</label>
-                    <select id="reportCategorySelect" name="reportCategorySelect" class="form-select-field">
+                    <select id="reportCategorySelect" name="reportCategorySelect" class="form-select-field" onchange="toggleRewardInputVisibility()">
                         <option value="lost">I Lost an Item</option>
                         <option value="found">I Found an Item</option>
                     </select>
@@ -441,7 +441,7 @@
                     <input type="text" id="reportLocationInput" name="reportLocationInput" class="form-input-field" placeholder="e.g. Library 2nd Floor">
                 </div>
 
-                <div class="form-control-group">
+                <div class="form-control-group" id="reportRewardGroup">
                     <label class="form-control-label" for="reportRewardInput">Reward / Bounty Tag (Optional)</label>
                     <input type="text" id="reportRewardInput" name="reportRewardInput" class="form-input-field" placeholder="e.g. ₱500 Reward / Free Coffee">
                 </div>
@@ -683,6 +683,22 @@
         usersList: [],
         itemsData: []
     };
+
+    /* CATEGORY TOGGLE FOR REWARD FIELD */
+    function toggleRewardInputVisibility() {
+        const categorySelect = document.getElementById('reportCategorySelect');
+        const rewardGroup = document.getElementById('reportRewardGroup');
+        const rewardInput = document.getElementById('reportRewardInput');
+
+        if (categorySelect && rewardGroup) {
+            if (categorySelect.value === 'found') {
+                rewardGroup.style.display = 'none';
+                if (rewardInput) rewardInput.value = '';
+            } else {
+                rewardGroup.style.display = 'block';
+            }
+        }
+    }
 
     /* SUPABASE DATA FETCHERS */
     async function fetchItemsFromSupabase() {
@@ -1160,7 +1176,7 @@
             title: title,
             location: location,
             report_type: category,
-            reward_amount: reward || 'None',
+            reward_amount: (category === 'found') ? 'None' : (reward || 'None'),
             description: desc || "No description provided.",
             image_url: imageUrl,
             user_email: userEmail,
@@ -1177,6 +1193,7 @@
             document.getElementById('reportDescInput').value = '';
             document.getElementById('reportImageInput').value = '';
 
+            toggleRewardInputVisibility();
             fetchItemsFromSupabase();
             showToastNotification("Report submitted for Staff review!");
             switchActiveTab('feedViewScreen', document.querySelectorAll('.nav-tab-item')[0]);
@@ -1467,7 +1484,6 @@
             consoleTab.style.display = 'none';
         }
 
-        // Refresh feed view to apply role-specific status filters
         renderFeedItems();
     }
 
@@ -1601,6 +1617,7 @@
     }     
 
     window.addEventListener('DOMContentLoaded', () => {
+        toggleRewardInputVisibility();
         if (AppState.currentUser) {
             setupInterfaceForUserRole();
             fetchItemsFromSupabase();
