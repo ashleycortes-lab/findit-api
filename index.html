@@ -2425,7 +2425,8 @@
     }
 
     function buildLockerSelectOptions(currentItem, allItems) {
-        let options = `<option value="Unassigned" ${(!currentItem.locker_location || currentItem.locker_location === 'Unassigned') ? 'selected' : ''}>-- Unassigned --</option>`;
+        const isResolved = currentItem.status === 'Resolved';
+        let options = `<option value="Unassigned" ${(!currentItem.locker_location || currentItem.locker_location === 'Unassigned' || isResolved) ? 'selected' : ''}>-- Unassigned --</option>`;
 
         const TOTAL_LOCKERS = 30;
         const lockerList = [];
@@ -2439,7 +2440,7 @@
         }
 
         lockerList.forEach(num => {
-            const isAssignedToThisItem = String(currentItem.locker_location) === num;
+            const isAssignedToThisItem = !isResolved && String(currentItem.locker_location) === num;
             const conflictItem = allItems.find(i => 
                 i.id !== currentItem.id && 
                 i.status !== 'Resolved' && 
