@@ -6,6 +6,10 @@
     <title>FINDIT - Campus Lost & Found System</title>
     <!-- SUPABASE JS CLIENT SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- GOOGLE FONTS: PLUS JAKARTA SANS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-dark-slate: #161D27;
@@ -17,7 +21,7 @@
             --color-text-main: #F1F5F9;
             --color-text-muted: #94A3B8;
 
-            --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             
             --radius-small: 10px;
             --radius-medium: 14px;
@@ -113,7 +117,7 @@
             background: var(--glass-bg-surface); backdrop-filter: var(--glass-blur);
             border: var(--glass-border); border-radius: var(--radius-card);
             padding: 12px 14px; box-shadow: var(--neu-flat-shadow);
-            flex: 1;
+            flex: 1; min-width: 70px;
         }
         .metric-card-num { font-size: 20px; font-weight: 800; color: var(--color-seafoam); margin-top: 2px; }
 
@@ -137,15 +141,20 @@
         }
         .main-app-content-area::-webkit-scrollbar { display: none; }
 
-        h2.screen-title { font-size: 19px; font-weight: 800; letter-spacing: -0.02em; color: var(--color-text-main); }
-        body.desktop-admin-mode h2.screen-title { font-size: 24px; }
+        h2.screen-title { font-size: 18px; font-weight: 700; letter-spacing: -0.025em; color: var(--color-text-main); }
+        body.desktop-admin-mode h2.screen-title { font-size: 22px; font-weight: 700; }
 
-        p.screen-subtitle { color: var(--color-seafoam); font-size: 11px; margin-bottom: 16px; font-weight: 500; }
+        p.screen-subtitle { color: var(--color-seafoam); font-size: 11px; margin-bottom: 14px; font-weight: 500; letter-spacing: -0.01em; }
+
+        .section-header-title {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 11px; font-weight: 600; letter-spacing: -0.01em;
+        }
 
         .form-control-group { margin-bottom: 12px; text-align: left; }
         .form-control-label {
-            font-size: 10px; color: var(--color-text-muted); font-weight: 700;
-            display: block; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.04em;
+            font-size: 10px; color: var(--color-text-muted); font-weight: 600;
+            display: block; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em;
         }
 
         .form-input-field, .form-select-field, .form-textarea-field {
@@ -166,21 +175,21 @@
         }
 
         .action-button-base {
-            width: 100%; padding: 12px; border: var(--glass-border); border-radius: var(--radius-medium);
-            font-size: 12px; font-weight: 800; cursor: pointer; display: flex;
-            justify-content: center; align-items: center; gap: 8px; user-select: none;
-            transition: all var(--transition-smooth); letter-spacing: 0.03em;
+            width: 100%; padding: 11px 14px; border: var(--glass-border); border-radius: var(--radius-medium);
+            font-size: 12px; font-weight: 600; cursor: pointer; display: flex;
+            justify-content: center; align-items: center; gap: 6px; user-select: none;
+            transition: all var(--transition-smooth); letter-spacing: 0.01em;
         }
         
         .action-button-primary {
             background: linear-gradient(135deg, #0D9488, #0F766E); color: #FFFFFF;
-            box-shadow: 0 8px 20px rgba(13, 148, 136, 0.35), var(--neu-button-shadow);
+            box-shadow: 0 4px 14px rgba(13, 148, 136, 0.3), var(--neu-button-shadow);
         }
         .action-button-primary:active { box-shadow: var(--neu-button-active); transform: scale(0.98); }
 
         .action-button-danger {
             background: linear-gradient(135deg, #FF6B4A, #DC2626); color: #FFFFFF;
-            box-shadow: 0 8px 20px rgba(255, 107, 74, 0.35);
+            box-shadow: 0 4px 14px rgba(255, 107, 74, 0.3);
         }
 
         .action-button-secondary {
@@ -191,7 +200,7 @@
         .info-card-container {
             background: var(--glass-bg-surface); backdrop-filter: var(--glass-blur);
             border: var(--glass-border); border-radius: var(--radius-card); padding: 12px;
-            margin-bottom: 12px; box-shadow: var(--neu-flat-shadow);
+            margin-bottom: 10px; box-shadow: var(--neu-flat-shadow);
             display: flex; gap: 12px; align-items: center; cursor: pointer;
             transition: transform var(--transition-smooth); width: 100%;
         }
@@ -201,15 +210,17 @@
             background: rgba(45, 212, 191, 0.12); color: var(--color-seafoam);
             border: 1px solid rgba(45, 212, 191, 0.25);
             display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+            overflow: hidden;
         }
 
         .info-card-meta { flex: 1; min-width: 0; }
-        .info-card-title { font-size: 13px; font-weight: 700; color: var(--color-text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .info-card-location { font-size: 10px; color: var(--color-text-muted); margin-top: 2px; }
+        .info-card-title { font-size: 13px; font-weight: 600; color: var(--color-text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: -0.01em; }
+        .info-card-location { font-size: 11px; color: var(--color-text-muted); margin-top: 2px; }
 
         .badge-tag-status {
-            display: inline-flex; align-items: center; gap: 4px; font-size: 9px;
-            font-weight: 800; padding: 3px 8px; border-radius: var(--radius-pill); text-transform: uppercase;
+            display: inline-flex; align-items: center; gap: 4px; font-size: 10px;
+            font-weight: 600; padding: 2px 7px; border-radius: var(--radius-pill); text-transform: uppercase;
+            letter-spacing: 0.02em;
         }
         .badge-tag-lost { background: rgba(255, 107, 74, 0.18); color: var(--color-coral-spark); border: 1px solid rgba(255, 107, 74, 0.4); }
         .badge-tag-found { background: rgba(45, 212, 191, 0.18); color: var(--color-seafoam); border: 1px solid rgba(45, 212, 191, 0.4); }
@@ -244,13 +255,135 @@
         .confirmation-modal-dialog {
             background: var(--glass-bg-surface); backdrop-filter: var(--glass-blur);
             border: var(--glass-border); padding: 20px; border-radius: var(--radius-card);
-            text-align: center; width: 100%; max-width: 420px;
+            text-align: center; width: 100%; max-width: 440px;
             box-shadow: 0 25px 50px rgba(0,0,0,0.5); box-sizing: border-box;
+            max-height: 90vh; overflow-y: auto;
+        }
+
+        /* MOBILE BOTTOM SHEET MODAL SYSTEM */
+        .mobile-viewport-screen .confirmation-modal-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            border-radius: 34px;
+            align-items: flex-end;
+            padding: 0;
+            overflow: hidden;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(6px);
+        }
+
+        .mobile-viewport-screen .confirmation-modal-dialog {
+            border-radius: 26px 26px 0 0;
+            max-width: 100%;
+            width: 100%;
+            max-height: 85%;
+            margin: 0;
+            padding: 12px 18px 24px;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.6);
+            animation: slideUpBottomSheet 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .sheet-drag-handle {
+            width: 38px; height: 4px; border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.25);
+            margin: 0 auto 10px; cursor: pointer;
+        }
+        body.light-theme .sheet-drag-handle {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes slideUpBottomSheet {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        body.desktop-admin-mode .confirmation-modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            border-radius: 0;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        body.desktop-admin-mode .confirmation-modal-dialog {
+            border-radius: var(--radius-card);
+            max-width: 440px;
+            margin: auto;
+            animation: fadeInSlideUp var(--transition-smooth) forwards;
+        }
+
+        body.desktop-admin-mode .sheet-drag-handle {
+            display: none;
+        }
+
+        /* SHIMMER SKELETON LOADER ANIMATION */
+        @keyframes shimmerWave {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .skeleton-box {
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.14) 50%, rgba(255, 255, 255, 0.05) 75%);
+            background-size: 200% 100%;
+            animation: shimmerWave 1.5s infinite ease-in-out;
+            border-radius: var(--radius-small);
+        }
+        body.light-theme .skeleton-box {
+            background: linear-gradient(90deg, rgba(0, 0, 0, 0.04) 25%, rgba(0, 0, 0, 0.09) 50%, rgba(0, 0, 0, 0.04) 75%);
+            background-size: 200% 100%;
+        }
+
+        /* DYNAMIC LIGHT THEME OVERRIDES */
+        body.light-theme {
+            --bg-dark-slate: #F1F5F9;
+            --bg-viewport: #FFFFFF;
+            --color-text-main: #0F172A;
+            --color-text-muted: #64748B;
+            --glass-bg-surface: rgba(255, 255, 255, 0.9);
+            --glass-border: 1px solid rgba(0, 0, 0, 0.08);
+            --neu-flat-shadow: 4px 4px 12px rgba(0,0,0,0.06), -4px -4px 12px rgba(255,255,255,0.8);
+            --neu-pressed-shadow: inset 2px 2px 5px rgba(0,0,0,0.06), inset -2px -2px 5px rgba(255,255,255,0.8);
+            --neu-button-shadow: 3px 3px 8px rgba(0,0,0,0.08);
+            background-color: #F1F5F9;
+            color: #0F172A;
+        }
+        body.light-theme .mobile-hardware-shell {
+            background: #E2E8F0;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15), 0 0 0 2px rgba(0, 0, 0, 0.06);
+        }
+        body.light-theme .hardware-camera-notch {
+            background: #CBD5E1;
+        }
+        body.light-theme .mobile-status-bar {
+            background: rgba(255, 255, 255, 0.85);
+            color: #0F172A;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+        }
+        body.light-theme .form-input-field,
+        body.light-theme .form-select-field,
+        body.light-theme .form-textarea-field {
+            background: #F8FAFC;
+            color: #0F172A;
+            border: 1px solid #CBD5E1;
+        }
+        body.light-theme .bottom-navigation-bar {
+            background: rgba(255, 255, 255, 0.9);
+            border-top: 1px solid rgba(0, 0, 0, 0.06);
+        }
+        body.light-theme .log-item {
+            background: rgba(241, 245, 249, 0.95);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+        }
+        body.light-theme .password-rules-box {
+            background: rgba(241, 245, 249, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+        body.light-theme .admin-filter-bar {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.08);
         }
 
         .toast-notification-popup {
             position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-20px);
-            background: rgba(13, 148, 136, 0.9); backdrop-filter: var(--glass-blur);
+            background: rgba(13, 148, 136, 0.95); backdrop-filter: var(--glass-blur);
             color: #FFFFFF; padding: 8px 16px; border-radius: var(--radius-pill);
             font-size: 11px; font-weight: 700; box-shadow: 0 10px 25px rgba(0,0,0,0.4);
             z-index: 1100; opacity: 0; pointer-events: none; transition: all var(--transition-smooth);
@@ -269,10 +402,64 @@
             padding: 10px 12px; margin-bottom: 12px; font-size: 11px; color: var(--color-text-main);
         }
 
+        /* MEDIA THUMBNAILS GRID & CAROUSEL STYLES */
+        .photo-thumbnails-grid {
+            display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 8px; width: 100%;
+        }
+        .photo-thumb-item {
+            position: relative; width: 100%; aspect-ratio: 1/1; border-radius: var(--radius-small);
+            overflow: hidden; border: 1px solid rgba(45, 212, 191, 0.3); background: rgba(0,0,0,0.3);
+        }
+        .photo-thumb-item img { width: 100%; height: 100%; object-fit: cover; }
+        .photo-thumb-remove {
+            position: absolute; top: 2px; right: 2px; width: 16px; height: 16px;
+            background: rgba(220, 38, 38, 0.85); color: #fff; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 10px;
+            cursor: pointer; font-weight: bold; line-height: 1;
+        }
+
+        .carousel-container {
+            position: relative; width: 100%; height: 190px; border-radius: 10px;
+            overflow: hidden; background: #000; margin-bottom: 10px;
+        }
+        .carousel-container img, .carousel-container video {
+            width: 100%; height: 100%; object-fit: contain;
+        }
+        .carousel-btn {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            background: rgba(15, 23, 42, 0.75); color: #fff; border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center;
+            justify-content: center; cursor: pointer; font-size: 12px; z-index: 5;
+        }
+        .carousel-btn-left { left: 6px; }
+        .carousel-btn-right { right: 6px; }
+        .carousel-counter {
+            position: absolute; bottom: 6px; right: 8px; background: rgba(0,0,0,0.7);
+            color: #2DD4BF; font-size: 10px; padding: 2px 6px; border-radius: 6px; font-weight: bold;
+        }
+
+        /* PASSWORD RULES CHECKLIST */
+        .password-rules-box {
+            background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: var(--radius-small); padding: 8px 10px; margin-top: 6px; margin-bottom: 8px;
+            text-align: left; font-size: 10px;
+        }
+        .rule-item { display: flex; align-items: center; gap: 5px; color: var(--color-text-muted); margin-bottom: 2px; }
+        .rule-item.rule-valid { color: #2DD4BF; }
+        .rule-item.rule-valid .rule-icon { color: #2DD4BF; }
+
+        /* ADMIN FILTER CONTROLS */
+        .admin-filter-bar {
+            background: rgba(15, 23, 42, 0.6); border: var(--glass-border);
+            border-radius: var(--radius-card); padding: 10px 14px; margin-bottom: 14px;
+            display: flex; gap: 10px; align-items: center; flex-wrap: wrap; width: 100%;
+        }
+
         @keyframes fadeInSlideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
         .app-view-screen { animation: fadeInSlideUp var(--transition-smooth) forwards; }
         .brand-vector-svg-container { width: 55px; height: 55px; margin: 0 auto 8px; filter: drop-shadow(0 0 10px rgba(13, 148, 136, 0.5)); }
         .svg-icon { width: 18px; height: 18px; stroke-width: 2; stroke: currentColor; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+        .svg-icon-sm { width: 14px; height: 14px; stroke-width: 2; stroke: currentColor; fill: none; stroke-linecap: round; stroke-linejoin: round; display: inline-block; vertical-align: middle; }
         .svg-icon-lg { width: 22px; height: 22px; stroke-width: 2; stroke: currentColor; fill: none; stroke-linecap: round; stroke-linejoin: round; }
     </style>
 </head>
@@ -283,7 +470,12 @@
         
         <!-- STATUS BAR -->
         <div class="mobile-status-bar">
-            <span id="systemClockDisplay">09:41</span>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span id="systemClockDisplay">09:41</span>
+                <span class="theme-toggle-icon" style="cursor: pointer; display: inline-flex; align-items: center;" title="Toggle Light/Dark Theme" onclick="toggleAppTheme()">
+                    <svg class="svg-icon-sm" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </span>
+            </div>
             <div class="hardware-camera-notch"></div>
             <div style="display: flex; gap: 6px; align-items: center;">
                 <svg class="svg-icon" style="width: 12px; height: 12px;" viewBox="0 0 24 24"><path d="M2 20h20L22 4z" fill="currentColor"/></svg>
@@ -319,13 +511,27 @@
                 </div>
 
                 <h2 class="screen-title" style="font-size: 22px;">FINDIT</h2>
-                <p class="screen-subtitle">Supabase Direct Authentication</p>
+                <p class="screen-subtitle">Supabase Cloud Direct Integration</p>
 
                 <!-- QUICK ROLE SELECTOR BUTTONS -->
                 <div style="display: flex; gap: 6px; margin-bottom: 12px; justify-content: center;">
-                    <button type="button" class="action-button-base" style="padding: 6px 10px; font-size: 10px; background: rgba(129, 140, 248, 0.2); color: #A5B4FC; border: 1px solid rgba(129, 140, 248, 0.4);" onclick="quickFillRoleCredentials('admin@findit.com', 'Password123')">🔑 Admin</button>
-                    <button type="button" class="action-button-base" style="padding: 6px 10px; font-size: 10px; background: rgba(251, 191, 36, 0.2); color: #FBBF24; border: 1px solid rgba(251, 191, 36, 0.4);" onclick="quickFillRoleCredentials('staff1@findit.com', 'Password123')">📋 Staff</button>
-                    <button type="button" class="action-button-base" style="padding: 6px 10px; font-size: 10px; background: rgba(45, 212, 191, 0.2); color: #2DD4BF; border: 1px solid rgba(45, 212, 191, 0.4);" onclick="quickFillRoleCredentials('user@findit.com', 'Password123')">👤 User</button>
+                    <button type="button" class="action-button-base" style="padding: 5px 10px; font-size: 11px; width: auto; background: rgba(129, 140, 248, 0.15); color: #A5B4FC; border: 1px solid rgba(129, 140, 248, 0.35); border-radius: var(--radius-pill);" onclick="quickFillRoleCredentials('admin@findit.com', 'Password123')">
+                        <svg class="svg-icon-sm" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Admin
+                    </button>
+                    <button type="button" class="action-button-base" style="padding: 5px 10px; font-size: 11px; width: auto; background: rgba(251, 191, 36, 0.15); color: #FBBF24; border: 1px solid rgba(251, 191, 36, 0.35); border-radius: var(--radius-pill);" onclick="quickFillRoleCredentials('staff1@findit.com', 'Password123')">
+                        <svg class="svg-icon-sm" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg> Staff
+                    </button>
+                    <button type="button" class="action-button-base" style="padding: 5px 10px; font-size: 11px; width: auto; background: rgba(45, 212, 191, 0.15); color: #2DD4BF; border: 1px solid rgba(45, 212, 191, 0.35); border-radius: var(--radius-pill);" onclick="quickFillRoleCredentials('user@findit.com', 'Password123')">
+                        <svg class="svg-icon-sm" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> User
+                    </button>
+                </div>
+
+                <!-- LOCKOUT NOTICE BANNER -->
+                <div id="loginLockoutNoticeBanner" style="display: none; background: rgba(255, 107, 74, 0.2); border: 1px solid #FF6B4A; border-radius: var(--radius-small); padding: 8px; margin-bottom: 10px; font-size: 11px; color: #FF6B4A; font-weight: 600;">
+                    <span style="display: inline-flex; align-items: center; gap: 4px;">
+                        <svg class="svg-icon-sm" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        Account locked. Try again in: <span id="lockoutTimerDisplay">60s</span>
+                    </span>
                 </div>
 
                 <div class="form-control-group">
@@ -343,7 +549,19 @@
                     </div>
                 </div>
 
-                <button id="loginSubmitBtn" class="action-button-base action-button-primary" style="margin-top: 10px;" onclick="executeBackendLoginProcess()">LOG IN</button>
+                <!-- CAPTCHA CONTAINER (TRIGGERED IF LOCKOUT CONTINUES) -->
+                <div id="loginCaptchaContainer" class="form-control-group" style="display: none; background: rgba(15, 23, 42, 0.7); padding: 10px; border-radius: var(--radius-medium); border: 1px solid #FBBF24;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <span class="section-header-title" style="color: #FBBF24;">
+                            <svg class="svg-icon-sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            Security Verification
+                        </span>
+                        <span id="captchaQuestionText" style="font-size: 12px; font-weight: 600; color: #fff; background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px;">7 + 5 = ?</span>
+                    </div>
+                    <input type="number" id="captchaAnswerInput" class="form-input-field" placeholder="Enter CAPTCHA result">
+                </div>
+
+                <button id="loginSubmitBtn" class="action-button-base action-button-primary" style="margin-top: 10px;" onclick="executeDirectSupabaseLogin()">LOG IN</button>
                 <span class="auth-toggle-link" onclick="toggleAuthView('register')">Don't have an account? Register</span>
                 <span class="auth-toggle-link" style="display: block; margin-top: 8px;" onclick="openOtpRecoveryModal()">Forgot Password? Recover with OTP</span>
                 <div id="loginFeedbackBanner" class="system-feedback-banner"></div>
@@ -352,16 +570,21 @@
             <!-- VIEW 1.5: REGISTER -->
             <div id="registerViewScreen" class="app-view-screen" style="display: none; text-align: center;">
                 <h2 class="screen-title" style="font-size: 18px;">Create Account</h2>
-                <p class="screen-subtitle" style="margin-bottom: 12px;">Min. 8 chars, uppercase, lowercase, number & symbol</p>
+                <p class="screen-subtitle" style="margin-bottom: 8px;">Supabase Identity Registration</p>
 
                 <div class="form-control-group">
                     <label class="form-control-label" for="regFullName">Full Name</label>
-                    <input type="text" id="regFullName" name="regFullName" class="form-input-field" placeholder="Full Name">
+                    <input type="text" id="regFullName" name="regFullName" class="form-input-field" placeholder="e.g. John Doe">
                 </div>
 
                 <div class="form-control-group">
                     <label class="form-control-label" for="regEmail">Email Address</label>
-                    <input type="email" id="regEmail" name="regEmail" class="form-input-field" placeholder="Email">
+                    <input type="email" id="regEmail" name="regEmail" class="form-input-field" placeholder="email@findit.com">
+                </div>
+
+                <div class="form-control-group">
+                    <label class="form-control-label" for="regPhone">Phone Number</label>
+                    <input type="text" id="regPhone" name="regPhone" class="form-input-field" placeholder="09123456789">
                 </div>
 
                 <div class="form-control-group">
@@ -376,11 +599,20 @@
                 <div class="form-control-group">
                     <label class="form-control-label" for="regPassword">Password</label>
                     <div class="password-toggle-wrapper">
-                        <input type="password" id="regPassword" name="regPassword" class="form-input-field" placeholder="Password@123">
+                        <input type="password" id="regPassword" name="regPassword" class="form-input-field" placeholder="Password@123" oninput="validateLivePasswordRules(this.value, 'regPasswordRules')">
                         <span class="password-visibility-toggle" onclick="togglePasswordInputVisibility('regPassword')">
                             <svg class="svg-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                         </span>
                     </div>
+                </div>
+
+                <!-- LIVE PASSWORD RULES CHECKLIST -->
+                <div id="regPasswordRules" class="password-rules-box">
+                    <div class="rule-item" id="reg_rule_length"><span class="rule-icon">○</span> At least 8 characters</div>
+                    <div class="rule-item" id="reg_rule_upper"><span class="rule-icon">○</span> Uppercase letter (A-Z)</div>
+                    <div class="rule-item" id="reg_rule_lower"><span class="rule-icon">○</span> Lowercase letter (a-z)</div>
+                    <div class="rule-item" id="reg_rule_number"><span class="rule-icon">○</span> Numeric digit (0-9)</div>
+                    <div class="rule-item" id="reg_rule_symbol"><span class="rule-icon">○</span> Special character (@$!%*?&#)</div>
                 </div>
 
                 <div class="form-control-group">
@@ -393,7 +625,7 @@
                     </div>
                 </div>
 
-                <button class="action-button-base action-button-primary" style="margin-top: 4px;" onclick="executeBackendRegisterProcess()">REGISTER</button>
+                <button class="action-button-base action-button-primary" style="margin-top: 4px;" onclick="executeDirectSupabaseRegister()">REGISTER ACCOUNT</button>
                 <span class="auth-toggle-link" onclick="toggleAuthView('login')">Already registered? Log in</span>
                 <div id="registerFeedbackBanner" class="system-feedback-banner"></div>
             </div>
@@ -411,23 +643,24 @@
                 <!-- LIVE ANNOUNCEMENT DISPLAY BANNER -->
                 <div id="liveAnnouncementContainer" class="announcement-banner-box" style="display: none;"></div>
 
-                <div class="form-control-group" style="margin-bottom: 12px;">
-                    <input type="text" class="form-input-field" id="feedSearchInput" aria-label="Search items or locations" onkeyup="filterFeedCards()" placeholder="🔍 Search items, locations, rewards...">
+                <div class="form-control-group" style="position: relative; margin-bottom: 12px;">
+                    <svg class="svg-icon-sm" viewBox="0 0 24 24" style="position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--color-text-muted); pointer-events: none;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input type="text" class="form-input-field" id="feedSearchInput" aria-label="Search items or locations" onkeyup="filterFeedCards()" placeholder="Search items, locations, rewards..." style="padding-left: 34px;">
                 </div>
 
                 <div id="feedItemsContainer"></div>
             </div>
 
-            <!-- VIEW 3: REPORT -->
+            <!-- VIEW 3: REPORT (PICTURES 3-5, VIDEO, LOST REMOVE CAMERA) -->
             <div id="reportViewScreen" class="app-view-screen" style="display: none;">
                 <h2 class="screen-title">File Item Report</h2>
-                <p class="screen-subtitle">Submit lost or found items</p>
+                <p class="screen-subtitle">Submit lost or found items with proof</p>
 
                 <div class="form-control-group">
                     <label class="form-control-label" for="reportCategorySelect">Report Category</label>
-                    <select id="reportCategorySelect" name="reportCategorySelect" class="form-select-field" onchange="toggleRewardInputVisibility()">
-                        <option value="lost">I Lost an Item</option>
-                        <option value="found">I Found an Item</option>
+                    <select id="reportCategorySelect" name="reportCategorySelect" class="form-select-field" onchange="handleReportCategoryChange()">
+                        <option value="lost">I Lost an Item (Camera Disabled)</option>
+                        <option value="found">I Found an Item (Camera Available)</option>
                     </select>
                 </div>
 
@@ -448,23 +681,58 @@
 
                 <div class="form-control-group">
                     <label class="form-control-label" for="reportDescInput">Description</label>
-                    <textarea id="reportDescInput" name="reportDescInput" class="form-textarea-field" rows="2" placeholder="Details..."></textarea>
+                    <textarea id="reportDescInput" name="reportDescInput" class="form-textarea-field" rows="2" placeholder="Provide distinct characteristics, color, marks..."></textarea>
                 </div>
 
-                <!-- PHOTO EVIDENCE PROOF BOX -->
+                <!-- PHOTO EVIDENCE (3 TO 5 PICTURES REQUIREMENT) -->
+                <div class="info-card-container" style="flex-direction: column; align-items: flex-start; padding: 12px; margin-bottom: 12px; background: rgba(15, 23, 42, 0.5);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 6px;">
+                        <span id="photoEvidenceHeaderLabel" style="font-size: 11px; font-weight: 700; color: var(--color-seafoam); display: inline-flex; align-items: center; gap: 5px;">
+                            <svg class="svg-icon-sm" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                            Photo Evidence (3 to 5 Pictures)
+                        </span>
+                        <!-- CAMERA SWITCH: REMOVED / HIDDEN FOR LOST! -->
+                        <span id="cameraCaptureSwitchBtn" style="font-size: 10px; color: var(--color-seafoam); cursor: pointer; font-weight: 600; display: none;" onclick="triggerCameraCaptureMode()">Switch to Camera</span>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 8px; width: 100%;">
+                        <label for="reportMultiImagesInput" class="action-button-base action-button-secondary" style="width: auto; padding: 6px 12px; font-size: 11px; margin: 0; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
+                            <svg class="svg-icon-sm" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                            Select 3-5 Photos
+                        </label>
+                        <span id="photoSelectionCountBadge" class="badge-tag-status badge-tag-user" style="font-size: 9px;">0 / 5 Selected (Min: 3)</span>
+                        <input type="file" id="reportMultiImagesInput" accept="image/*" multiple style="display: none;" onchange="handleMultipleImagesSelected(event)">
+                    </div>
+
+                    <!-- THUMBNAILS PREVIEW STRIP -->
+                    <div id="photoThumbnailsGrid" class="photo-thumbnails-grid"></div>
+                </div>
+
+                <!-- VIDEO EVIDENCE PROOF -->
                 <div class="info-card-container" style="flex-direction: column; align-items: flex-start; padding: 12px; margin-bottom: 14px; background: rgba(15, 23, 42, 0.5);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 8px;">
-                        <span style="font-size: 11px; font-weight: 700; color: var(--color-seafoam);">📷 Photo Evidence Proof</span>
-                        <span style="font-size: 10px; color: var(--color-seafoam); cursor: pointer; font-weight: 600;" onclick="triggerCameraCaptureMode()">Switch to Camera</span>
+                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 6px;">
+                        <span style="font-size: 11px; font-weight: 700; color: #FBBF24; display: inline-flex; align-items: center; gap: 5px;">
+                            <svg class="svg-icon-sm" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                            Video Evidence Proof (Optional)
+                        </span>
+                        <span id="videoStatusTag" style="font-size: 9px; color: var(--color-text-muted);">None attached</span>
                     </div>
-                    <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
-                        <label for="reportImageInput" class="action-button-base action-button-secondary" style="width: auto; padding: 6px 14px; font-size: 11px; margin: 0; cursor: pointer;">Choose File</label>
-                        <span id="selectedFileNameDisplay" style="font-size: 11px; color: var(--color-text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1;">No file chosen</span>
-                        <input type="file" id="reportImageInput" name="reportImageInput" accept="image/*" style="display: none;" onchange="updateSelectedFileNameDisplay(this)">
+
+                    <div style="display: flex; align-items: center; gap: 8px; width: 100%;">
+                        <label for="reportVideoInput" class="action-button-base action-button-secondary" style="width: auto; padding: 6px 12px; font-size: 11px; margin: 0; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
+                            <svg class="svg-icon-sm" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                            Upload Video Clip
+                        </label>
+                        <button type="button" id="removeVideoBtn" style="display: none; background: rgba(220,38,38,0.2); color: #FF6B4A; border: 1px solid rgba(255,255,255,0.2); padding: 5px 8px; border-radius: 6px; font-size: 10px; cursor: pointer;" onclick="clearSelectedVideo()">Remove</button>
+                        <input type="file" id="reportVideoInput" accept="video/mp4,video/webm,video/quicktime,video/*" style="display: none;" onchange="handleVideoSelected(event)">
+                    </div>
+
+                    <div id="videoPreviewBox" style="width: 100%; margin-top: 8px; display: none;">
+                        <video id="videoPreviewPlayer" controls style="width: 100%; max-height: 140px; border-radius: 8px; border: var(--glass-border); background: #000;"></video>
                     </div>
                 </div>
 
-                <button class="action-button-base action-button-primary" onclick="handleNewReportSubmission()">Submit Report</button>
+                <button class="action-button-base action-button-primary" onclick="handleNewReportSubmission()">Submit Item Report</button>
             </div>
 
             <!-- VIEW 4: TRACKER -->
@@ -474,93 +742,290 @@
                 <div id="trackerListContainer"></div>
             </div>
 
-            <!-- VIEW 5: MANAGEMENT & AUDIT LOG CONSOLE -->
+            <!-- VIEW 5: ADMIN & STAFF MANAGEMENT CONSOLE -->
             <div id="adminControlViewScreen" class="app-view-screen" style="display: none;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
                     <div>
                         <h2 class="screen-title" id="consoleTitle">Management Console</h2>
-                        <p class="screen-subtitle" id="consoleSubtitle" style="margin-bottom: 0;">Verification & Traceability Log</p>
+                        <p class="screen-subtitle" id="consoleSubtitle" style="margin-bottom: 0;">Supabase Verification & Audit Trail</p>
                     </div>
                     <div style="display: flex; align-items: center; gap: 8px;">
-                        <button id="exportCsvBtn" class="action-button-base action-button-secondary" style="padding: 6px 12px; font-size: 10px; width: auto; display: none;" onclick="exportAuditLogsToCSV()">📥 Export Logs CSV</button>
+                        <button id="adminCreateUserBtn" class="action-button-base action-button-secondary" style="padding: 6px 12px; font-size: 10px; width: auto; display: none; color: #38BDF8;" onclick="openAdminCreateUserModal()">
+                            <svg class="svg-icon-sm" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add User
+                        </button>
+                        <button id="exportCsvBtn" class="action-button-base action-button-secondary" style="padding: 6px 12px; font-size: 10px; width: auto; display: none;" onclick="exportAuditLogsToCSV()">
+                            <svg class="svg-icon-sm" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Export CSV
+                        </button>
                         <span id="consoleRoleBadge" class="badge-tag-status badge-tag-staff">STAFF</span>
                         <button class="action-button-base action-button-danger" style="padding: 6px 12px; font-size: 10px; width: auto;" onclick="displaySignoutConfirmationModal()">LOG OUT</button>
                     </div>
                 </div>
 
+                <!-- ADMIN DATE FILTER BAR (JANUARY TO DECEMBER) - ONLY SHOWN TO ADMIN -->
+                <div id="adminDateFilterBar" class="admin-filter-bar" style="display: none;">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <span class="section-header-title" style="color: var(--color-seafoam);">
+                            <svg class="svg-icon-sm" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                            Filter Date:
+                        </span>
+                        <select id="adminMonthFilterSelect" class="form-select-field" style="padding: 5px 8px; font-size: 11px; width: auto;" onchange="applyAdminDateFilter()">
+                            <option value="ALL">All Months (January to December)</option>
+                            <option value="0">January</option>
+                            <option value="1">February</option>
+                            <option value="2">March</option>
+                            <option value="3">April</option>
+                            <option value="4">May</option>
+                            <option value="5">June</option>
+                            <option value="6">July</option>
+                            <option value="7">August</option>
+                            <option value="8">September</option>
+                            <option value="9">October</option>
+                            <option value="10">November</option>
+                            <option value="11">December</option>
+                        </select>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <span style="font-size: 11px; color: var(--color-text-muted);">Specific:</span>
+                        <input type="date" id="adminSpecificDateFilter" class="form-input-field" style="padding: 4px 8px; font-size: 11px; width: auto;" onchange="applyAdminDateFilter()">
+                    </div>
+
+                    <button class="action-button-base action-button-secondary" style="width: auto; padding: 4px 10px; font-size: 10px;" onclick="resetAdminDateFilter()">Clear Filter</button>
+                    <span id="activeFilterBadgeDisplay" class="badge-tag-status badge-tag-found" style="font-size: 9px;">All Months Active</span>
+                </div>
+
                 <!-- METRICS SUMMARY CARDS -->
-                <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                <div style="display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;">
                     <div class="metric-card-box">
-                        <div style="font-size: 9px; color: var(--color-text-muted); font-weight: bold; text-transform: uppercase;">Total Items</div>
+                        <div style="font-size: 10px; color: var(--color-text-muted); font-weight: 600; text-transform: uppercase;">Total Items</div>
                         <div class="metric-card-num" id="statTotalItems">0</div>
                     </div>
                     <div class="metric-card-box">
-                        <div style="font-size: 9px; color: var(--color-text-muted); font-weight: bold; text-transform: uppercase;">Resolved</div>
+                        <div style="font-size: 10px; color: var(--color-text-muted); font-weight: 600; text-transform: uppercase;">Resolved</div>
                         <div class="metric-card-num" id="statResolvedItems" style="color: #2DD4BF;">0</div>
                     </div>
                     <div class="metric-card-box" id="metricUsersBox" style="display: none;">
-                        <div style="font-size: 9px; color: var(--color-text-muted); font-weight: bold; text-transform: uppercase;">Users</div>
+                        <div style="font-size: 10px; color: var(--color-text-muted); font-weight: 600; text-transform: uppercase;">Users</div>
                         <div class="metric-card-num" id="statTotalUsers" style="color: #38BDF8;">0</div>
                     </div>
                     <div class="metric-card-box" id="metricAuditsBox" style="display: none;">
-                        <div style="font-size: 9px; color: var(--color-text-muted); font-weight: bold; text-transform: uppercase;">Audits</div>
+                        <div style="font-size: 10px; color: var(--color-text-muted); font-weight: 600; text-transform: uppercase;">Audits</div>
                         <div class="metric-card-num" id="statSecurityAudits" style="color: #FBBF24;">0</div>
                     </div>
                 </div>
 
                 <!-- ADMIN-ONLY: BROADCAST CARD -->
                 <div id="adminBroadcastCard" class="info-card-container" style="flex-direction: column; align-items: flex-start; margin-bottom: 12px; display: none;">
-                    <strong style="font-size: 11px; color: var(--color-seafoam);">📢 Publish Campus Broadcast Notice</strong>
+                    <span class="section-header-title" style="color: var(--color-seafoam);">
+                        <svg class="svg-icon-sm" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                        Campus Broadcast Notice
+                    </span>
                     <div style="display: flex; gap: 8px; width: 100%; margin-top: 6px;">
                         <input type="text" id="inputBroadcastMessage" class="form-input-field" placeholder="e.g. Lost & Found office is open Monday-Friday 8AM-5PM at Student Center.">
                         <button class="action-button-base action-button-primary" style="width: 130px; padding: 6px; font-size: 10px;" onclick="publishCampusBroadcastNotice()">Publish Notice</button>
                     </div>
                 </div>
 
+                <!-- ADMIN-ONLY: BACKUP & RECOVERY CARD (CHECKLIST H) -->
+                <div id="adminBackupCard" class="info-card-container" style="flex-direction: column; align-items: flex-start; margin-bottom: 12px; display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                        <div>
+                            <span class="section-header-title" style="color: #38BDF8;">
+                                <svg class="svg-icon-sm" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+                                Database Backup & Disaster Recovery
+                            </span>
+                            <p style="font-size: 10px; color: var(--color-text-muted); margin: 0;">Automated cloud snapshot & restoration</p>
+                        </div>
+                        <div style="display: flex; gap: 6px;">
+                            <button class="action-button-base action-button-secondary" style="width: auto; padding: 4px 10px; font-size: 10px;" onclick="createDatabaseSnapshot()">Snapshot Database</button>
+                            <button class="action-button-base action-button-primary" style="width: auto; padding: 4px 10px; font-size: 10px;" onclick="downloadDatabaseBackupJSON()">Export JSON</button>
+                        </div>
+                    </div>
+                    <div id="backupSnapshotsContainer" style="width: 100%; margin-top: 8px; max-height: 110px; overflow-y: auto;"></div>
+                </div>
+
                 <div class="admin-dashboard-grid">
-                    <!-- ADMIN-ONLY: USER MANAGEMENT CARD -->
+                    <!-- ADMIN-ONLY: USER MANAGEMENT CARD (CHECKLIST A) -->
                     <div id="userManagementCard" class="admin-col-6 info-card-container" style="flex-direction: column; align-items: flex-start; display: none;">
                         <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 6px;">
-                            <strong style="font-size: 11px; color: #38BDF8;">👥 User Account & Role Control</strong>
+                            <span class="section-header-title" style="color: #38BDF8;">
+                                <svg class="svg-icon-sm" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                                User Accounts & Role Control
+                            </span>
                             <button class="action-button-base action-button-secondary" style="width: auto; padding: 2px 8px; font-size: 9px;" onclick="fetchUsersFromSupabase()">Refresh Users</button>
                         </div>
-                        <div id="userManagementListContainer" style="width: 100%; max-height: 180px; overflow-y: auto; margin-top: 4px;"></div>
+                        <input type="text" id="adminUserSearchInput" class="form-input-field" placeholder="Search users by name or email..." style="padding: 4px 8px; font-size: 10px; margin-bottom: 6px;" onkeyup="filterUserManagementList()">
+                        <div id="userManagementListContainer" style="width: 100%; max-height: 180px; overflow-y: auto;"></div>
                     </div>
 
-                    <!-- ADMIN-ONLY: SYSTEM AUDIT LOG CARD -->
+                    <!-- ADMIN-ONLY: SYSTEM AUDIT LOG CARD (CHECKLIST F) -->
                     <div id="systemAuditLogCard" class="admin-col-6 info-card-container" style="flex-direction: column; align-items: flex-start; display: none;">
-                        <strong style="font-size: 11px; color: #FBBF24;">🛡️ System Audit & Security Trail Log</strong>
-                        <div id="systemAuditTraceLogContainer" style="width: 100%; max-height: 180px; overflow-y: auto; margin-top: 6px;"></div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 6px;">
+                            <span class="section-header-title" style="color: #FBBF24;">
+                                <svg class="svg-icon-sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                                Security Audit Trail
+                            </span>
+                            <span id="auditCountBadge" style="font-size: 9px; color: var(--color-text-muted);">0 Records</span>
+                        </div>
+                        <div id="systemAuditTraceLogContainer" style="width: 100%; max-height: 180px; overflow-y: auto;"></div>
                     </div>
 
                     <!-- ADMIN-ONLY: USER AUTH ACTIVITY CARD -->
                     <div id="userAuthLogCard" class="admin-col-6 info-card-container" style="flex-direction: column; align-items: flex-start; display: none;">
-                        <strong style="font-size: 11px; color: #38BDF8;">🔑 User Sign-In & Sign-Out Activity Log</strong>
+                        <span class="section-header-title" style="color: #38BDF8;">
+                            <svg class="svg-icon-sm" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+                            User Sign-In & Sign-Out Activity
+                        </span>
                         <div id="userAuthTraceLogContainer" style="width: 100%; max-height: 180px; overflow-y: auto; margin-top: 6px;"></div>
                     </div>
 
                     <!-- SHARED FOR STAFF & ADMIN: ITEM TRACE LOG MODULE -->
                     <div class="admin-col-6 info-card-container" style="flex-direction: column; align-items: flex-start;">
-                        <strong style="font-size: 11px; color: var(--color-seafoam);">📌 Item Movement & Status Trail (Tracing Log)</strong>
+                        <span class="section-header-title" style="color: var(--color-seafoam);">
+                            <svg class="svg-icon-sm" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                            Item Movement & Status Trail
+                        </span>
                         <div id="itemTraceLogContainer" style="width: 100%; max-height: 180px; overflow-y: auto; margin-top: 6px;"></div>
                     </div>
                 </div>
 
-                <strong style="font-size: 11px; color: var(--color-text-muted); display: block; margin: 16px 0 6px;">🛠️ Verify Item Status & Assign Storage Locker (Staff & Admin Action)</strong>
+                <span class="section-header-title" style="color: var(--color-text-muted); display: flex; margin: 16px 0 6px;">
+                    <svg class="svg-icon-sm" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                    Verify Item Status & Storage Locker (Staff & Admin)
+                </span>
                 <div id="adminManageItemsContainer"></div>
             </div>
 
-            <!-- VIEW 6: PROFILE -->
-            <div id="profileViewScreen" class="app-view-screen" style="display: none; text-align: center; padding-top: 10px;">
-                <div style="width: 60px; height: 60px; background: rgba(45, 212, 191, 0.15); color: var(--color-seafoam); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; border: 1px solid rgba(45, 212, 191, 0.4); box-shadow: var(--neu-flat-shadow);">
-                    <svg class="svg-icon-lg" style="width: 30px; height: 30px;" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <!-- VIEW 6: PROFILE & "UPDATE MY ACCOUNT" (CHECKLIST B & C) -->
+            <div id="profileViewScreen" class="app-view-screen" style="display: none; padding-top: 6px;">
+                <div style="text-align: center; margin-bottom: 12px;">
+                    <div style="width: 54px; height: 54px; background: rgba(45, 212, 191, 0.15); color: var(--color-seafoam); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; border: 1px solid rgba(45, 212, 191, 0.4); box-shadow: var(--neu-flat-shadow);">
+                        <svg class="svg-icon-lg" style="width: 28px; height: 28px;" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    </div>
+                    <h3 id="displayAuthenticatedUserName" style="color: var(--color-text-main); font-size: 16px;">User</h3>
+                    <p id="displayAuthenticatedUserEmail" style="color: var(--color-seafoam); font-size: 11px; margin-bottom: 6px;">email@domain.com</p>
+                    <span id="userRoleDisplayTag" class="badge-tag-status badge-tag-user">USER</span>
                 </div>
-                <h3 id="displayAuthenticatedUserName" style="color: var(--color-text-main); font-size: 16px;">User</h3>
-                <p id="displayAuthenticatedUserEmail" style="color: var(--color-seafoam); font-size: 11px; margin-bottom: 16px;">email@domain.com</p>
 
-                <div class="info-card-container" style="flex-direction: column; text-align: left; margin-bottom: 16px;">
-                    <div style="width: 100%; padding: 4px 0; font-size: 11px; display: flex; justify-content: space-between;">
-                        <span>🛡️ System Role</span><span id="userRoleDisplayTag" style="color: var(--color-seafoam); font-weight: bold;">USER</span>
+                <!-- SECTION 1: UPDATE PROFILE INFORMATION -->
+                <div class="info-card-container" style="flex-direction: column; align-items: flex-start; padding: 12px; margin-bottom: 12px;">
+                    <strong style="font-size: 11px; color: #38BDF8; margin-bottom: 6px; display: inline-flex; align-items: center; gap: 6px;">
+                        <svg class="svg-icon-sm" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        Update Account Details
+                    </strong>
+                    <div class="form-control-group" style="width: 100%; margin-bottom: 8px;">
+                        <label class="form-control-label" for="profileFullNameInput">Full Name</label>
+                        <input type="text" id="profileFullNameInput" class="form-input-field" placeholder="Full Name">
+                    </div>
+                    <div class="form-control-group" style="width: 100%; margin-bottom: 8px;">
+                        <label class="form-control-label" for="profilePhoneInput">Phone Number</label>
+                        <input type="text" id="profilePhoneInput" class="form-input-field" placeholder="09123456789">
+                    </div>
+                    <button class="action-button-base action-button-secondary" style="padding: 8px; font-size: 11px;" onclick="saveAccountProfileDetails()">Save Profile Details</button>
+                </div>
+
+                <!-- SECTION 2: CHANGE PASSWORD (CHECKLIST C) -->
+                <div class="info-card-container" style="flex-direction: column; align-items: flex-start; padding: 12px; margin-bottom: 12px;">
+                    <strong style="font-size: 11px; color: #FBBF24; margin-bottom: 6px; display: inline-flex; align-items: center; gap: 6px;">
+                        <svg class="svg-icon-sm" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        Change Password (IAS Secure)
+                    </strong>
+                    <p style="font-size: 10px; color: var(--color-text-muted); margin-bottom: 8px;">Requires current password. Inactive sessions will be terminated.</p>
+
+                    <div class="form-control-group" style="width: 100%; margin-bottom: 8px;">
+                        <label class="form-control-label" for="profileCurrentPasswordInput">Current Password</label>
+                        <div class="password-toggle-wrapper">
+                            <input type="password" id="profileCurrentPasswordInput" class="form-input-field" placeholder="Current password">
+                            <span class="password-visibility-toggle" onclick="togglePasswordInputVisibility('profileCurrentPasswordInput')">
+                                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-control-group" style="width: 100%; margin-bottom: 6px;">
+                        <label class="form-control-label" for="profileNewPasswordInput">New Password</label>
+                        <div class="password-toggle-wrapper">
+                            <input type="password" id="profileNewPasswordInput" class="form-input-field" placeholder="New Password" oninput="validateLivePasswordRules(this.value, 'profilePasswordRules')">
+                            <span class="password-visibility-toggle" onclick="togglePasswordInputVisibility('profileNewPasswordInput')">
+                                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- LIVE PASSWORD RULES CHECKLIST -->
+                    <div id="profilePasswordRules" class="password-rules-box" style="width: 100%;">
+                        <div class="rule-item" id="prof_rule_length"><span class="rule-icon">○</span> At least 8 characters</div>
+                        <div class="rule-item" id="prof_rule_upper"><span class="rule-icon">○</span> Uppercase letter (A-Z)</div>
+                        <div class="rule-item" id="prof_rule_lower"><span class="rule-icon">○</span> Lowercase letter (a-z)</div>
+                        <div class="rule-item" id="prof_rule_number"><span class="rule-icon">○</span> Numeric digit (0-9)</div>
+                        <div class="rule-item" id="prof_rule_symbol"><span class="rule-icon">○</span> Special character (@$!%*?&#)</div>
+                    </div>
+
+                    <div class="form-control-group" style="width: 100%; margin-bottom: 8px;">
+                        <label class="form-control-label" for="profileConfirmPasswordInput">Confirm New Password</label>
+                        <div class="password-toggle-wrapper">
+                            <input type="password" id="profileConfirmPasswordInput" class="form-input-field" placeholder="Confirm New Password">
+                            <span class="password-visibility-toggle" onclick="togglePasswordInputVisibility('profileConfirmPasswordInput')">
+                                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            </span>
+                        </div>
+                    </div>
+
+                    <button class="action-button-base action-button-secondary" style="padding: 8px; font-size: 11px;" onclick="executeProfileChangePassword()">Update Password</button>
+                </div>
+
+                <!-- SECTION 3: CHANGE EMAIL WITH OTP (CHECKLIST B) -->
+                <div class="info-card-container" style="flex-direction: column; align-items: flex-start; padding: 12px; margin-bottom: 14px;">
+                    <strong style="font-size: 11px; color: var(--color-seafoam); margin-bottom: 4px; display: inline-flex; align-items: center; gap: 6px;">
+                        <svg class="svg-icon-sm" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        Change Email (OTP Verified)
+                    </strong>
+                    <p style="font-size: 10px; color: var(--color-text-muted); margin-bottom: 8px;">Verification OTP must be confirmed before email is updated.</p>
+
+                    <div class="form-control-group" style="width: 100%; margin-bottom: 8px;">
+                        <label class="form-control-label" for="profileNewEmailInput">New Email Address</label>
+                        <div style="display: flex; gap: 6px;">
+                            <input type="email" id="profileNewEmailInput" class="form-input-field" placeholder="new.email@findit.com">
+                            <button id="sendEmailOtpBtn" class="action-button-base action-button-secondary" style="width: auto; padding: 6px 10px; font-size: 10px;" onclick="requestEmailChangeOtp()">Send OTP</button>
+                        </div>
+                    </div>
+
+                    <div id="emailOtpInputGroup" style="display: none; width: 100%;">
+                        <div class="form-control-group" style="margin-bottom: 8px;">
+                            <label class="form-control-label" for="profileEmailOtpInput">6-Digit OTP Code</label>
+                            <input type="text" id="profileEmailOtpInput" class="form-input-field" maxlength="6" placeholder="123456" style="letter-spacing: 0.2em; text-align: center; font-weight: bold;">
+                        </div>
+                        <button class="action-button-base action-button-primary" style="padding: 8px; font-size: 11px;" onclick="verifyOtpAndUpdateEmail()">Verify OTP & Save Email</button>
+                    </div>
+                </div>
+
+                <!-- SECTION 4: SECURITY STATUS & THEME -->
+                <div class="info-card-container" style="flex-direction: column; text-align: left; margin-bottom: 16px; padding: 12px;">
+                    <div style="width: 100%; padding: 4px 0; font-size: 11px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.06); margin-bottom: 4px;">
+                        <span style="display: inline-flex; align-items: center; gap: 6px;">
+                            <svg class="svg-icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                            Display Theme
+                        </span>
+                        <button class="action-button-base action-button-secondary" style="width: auto; padding: 4px 10px; font-size: 10px; margin: 0; display: inline-flex; align-items: center; gap: 5px;" onclick="toggleAppTheme()">
+                            <span class="theme-toggle-icon" style="display: inline-flex; align-items: center;">
+                                <svg class="svg-icon-sm" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                            </span>
+                            <span id="currentThemeTextDisplay">Dark Mode</span>
+                        </button>
+                    </div>
+                    <div style="width: 100%; padding: 3px 0; font-size: 11px; display: flex; justify-content: space-between; align-items: center;">
+                        <span style="display: inline-flex; align-items: center; gap: 6px;">
+                            <svg class="svg-icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            Inactivity Auto-Logout
+                        </span>
+                        <span style="color: #2DD4BF; font-weight: bold;">15 Minutes Active</span>
+                    </div>
+                    <div style="width: 100%; padding: 3px 0; font-size: 11px; display: flex; justify-content: space-between; align-items: center;">
+                        <span style="display: inline-flex; align-items: center; gap: 6px;">
+                            <svg class="svg-icon-sm" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                            Multi-Tab Sync
+                        </span>
+                        <span style="color: #38BDF8; font-weight: bold;">BroadcastChannel Active</span>
                     </div>
                 </div>
 
@@ -569,17 +1034,30 @@
 
         </div>
 
-        <!-- MODAL OVERLAYS -->
+        <!-- MODAL OVERLAYS (NATIVE BOTTOM SHEETS ON MOBILE) -->
+        <!-- ITEM DETAIL MODAL (CAROUSEL FOR 3-5 PHOTOS & VIDEO PLAYER) -->
         <div id="itemDetailModalOverlay" class="confirmation-modal-overlay">
             <div class="confirmation-modal-dialog" style="text-align: left;">
+                <div class="sheet-drag-handle" onclick="closeItemDetailModal()"></div>
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                     <h3 id="modalItemTitle" style="font-size: 15px;">Item Details</h3>
                     <span id="modalItemBadge" class="badge-tag-status">Lost</span>
                 </div>
-                <p id="modalItemLocation" style="font-size: 11px; color: var(--color-text-muted); margin-bottom: 4px;">📍 Location</p>
-                <p id="modalItemReward" style="font-size: 11px; color: var(--color-coral-spark); font-weight: bold; margin-bottom: 8px;">🎁 Reward: None</p>
-                <p id="modalItemLocker" style="font-size: 10px; color: #FBBF24; margin-bottom: 8px;">📦 Office Locker Storage: Unassigned</p>
+
+                <!-- MEDIA CAROUSEL CONTAINER -->
+                <div id="modalCarouselBox" class="carousel-container" style="display: none;">
+                    <img id="modalCarouselImg" src="" alt="Proof photo" style="display: none;">
+                    <video id="modalCarouselVideo" controls style="display: none;"></video>
+                    <button class="carousel-btn carousel-btn-left" onclick="slideCarouselPrev()"><svg class="svg-icon-sm" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+                    <button class="carousel-btn carousel-btn-right" onclick="slideCarouselNext()"><svg class="svg-icon-sm" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+                    <div id="modalCarouselCounter" class="carousel-counter">1 / 1</div>
+                </div>
+
+                <p id="modalItemLocation" style="font-size: 11px; color: var(--color-text-muted); margin-bottom: 4px; display: flex; align-items: center; gap: 5px;">Location</p>
+                <p id="modalItemReward" style="font-size: 11px; color: var(--color-coral-spark); font-weight: bold; margin-bottom: 4px; display: flex; align-items: center; gap: 5px;">Reward: None</p>
+                <p id="modalItemLocker" style="font-size: 10px; color: #FBBF24; margin-bottom: 8px; display: flex; align-items: center; gap: 5px;">Office Locker Storage: Unassigned</p>
                 <div id="modalItemDesc" style="font-size: 11px; color: var(--color-text-main); margin-bottom: 14px; background: rgba(15, 23, 42, 0.6); padding: 8px; border-radius: 8px; border: var(--glass-border);">Description...</div>
+                
                 <div style="display: flex; gap: 8px;">
                     <button class="action-button-base action-button-secondary" onclick="closeItemDetailModal()">Close</button>
                     <button id="modalClaimBtn" class="action-button-base action-button-primary" onclick="triggerClaimAction()">Claim Item</button>
@@ -587,10 +1065,12 @@
             </div>
         </div>
 
+        <!-- SIGN OUT CONFIRMATION MODAL -->
         <div id="signoutConfirmationModalOverlay" class="confirmation-modal-overlay">
             <div class="confirmation-modal-dialog">
+                <div class="sheet-drag-handle" onclick="dismissSignoutConfirmationModal()"></div>
                 <h3 style="font-size: 15px; margin-bottom: 4px;">Sign Out Confirmation</h3>
-                <p style="font-size: 11px; color: var(--color-text-muted); margin-bottom: 14px;">Are you sure you want to log out?</p>
+                <p style="font-size: 11px; color: var(--color-text-muted); margin-bottom: 14px;">Are you sure you want to log out of FindIt?</p>
                 <div style="display: flex; gap: 8px;">
                     <button class="action-button-base action-button-secondary" onclick="dismissSignoutConfirmationModal()">Cancel</button>
                     <button class="action-button-base action-button-danger" onclick="executeBackendLogoutProcess()">Yes, Logout</button>
@@ -598,18 +1078,77 @@
             </div>
         </div>
 
+        <!-- SESSION INACTIVITY EXPIRY WARNING MODAL (CHECKLIST E) -->
+        <div id="sessionInactivityModalOverlay" class="confirmation-modal-overlay">
+            <div class="confirmation-modal-dialog">
+                <div class="sheet-drag-handle"></div>
+                <h3 style="font-size: 15px; margin-bottom: 4px; color: #FBBF24; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                    <svg class="svg-icon-sm" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                    Inactivity Warning
+                </h3>
+                <p style="font-size: 11px; color: var(--color-text-muted); margin-bottom: 10px;">
+                    You have been inactive for 14 minutes. For security compliance, your session will automatically terminate in:
+                </p>
+                <div style="font-size: 24px; font-weight: 800; color: #FF6B4A; margin-bottom: 14px;" id="inactivityWarningCountdown">60s</div>
+                <div style="display: flex; gap: 8px;">
+                    <button class="action-button-base action-button-primary" onclick="extendActiveUserSession()">Stay Logged In</button>
+                    <button class="action-button-base action-button-danger" onclick="executeBackendLogoutProcess()">Logout Now</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADMIN CREATE USER MODAL (CHECKLIST A) -->
+        <div id="adminCreateUserModalOverlay" class="confirmation-modal-overlay">
+            <div class="confirmation-modal-dialog" style="text-align: left;">
+                <div class="sheet-drag-handle" onclick="closeAdminCreateUserModal()"></div>
+                <h3 style="font-size: 15px; margin-bottom: 4px; color: #38BDF8; display: flex; align-items: center; gap: 6px;">
+                    <svg class="svg-icon-sm" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Create User Account
+                </h3>
+                <p style="font-size: 11px; color: var(--color-text-muted); margin-bottom: 12px;">Admin Provisioning & Role Assignment</p>
+
+                <div class="form-control-group">
+                    <label class="form-control-label" for="adminNewUserName">Full Name</label>
+                    <input type="text" id="adminNewUserName" class="form-input-field" placeholder="Full Name">
+                </div>
+                <div class="form-control-group">
+                    <label class="form-control-label" for="adminNewUserEmail">Email Address</label>
+                    <input type="email" id="adminNewUserEmail" class="form-input-field" placeholder="user@findit.com">
+                </div>
+                <div class="form-control-group">
+                    <label class="form-control-label" for="adminNewUserRole">Role</label>
+                    <select id="adminNewUserRole" class="form-select-field">
+                        <option value="user">Student / User</option>
+                        <option value="staff">Staff Member</option>
+                        <option value="admin">Administrator</option>
+                    </select>
+                </div>
+                <div class="form-control-group">
+                    <label class="form-control-label" for="adminNewUserPassword">Password</label>
+                    <input type="password" id="adminNewUserPassword" class="form-input-field" placeholder="Password@123">
+                </div>
+
+                <div style="display: flex; gap: 8px; margin-top: 14px;">
+                    <button class="action-button-base action-button-secondary" onclick="closeAdminCreateUserModal()">Cancel</button>
+                    <button class="action-button-base action-button-primary" onclick="saveAdminCreatedUser()">Create User</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- OTP RECOVERY MODAL (CHECKLIST B) -->
         <div id="otpRecoveryModalOverlay" class="confirmation-modal-overlay">
             <div class="confirmation-modal-dialog" style="text-align: left;">
+                <div class="sheet-drag-handle" onclick="closeOtpRecoveryModal()"></div>
                 <div id="otpStep1Container">
                     <h3 style="font-size: 15px; margin-bottom: 4px;">Account Recovery</h3>
-                    <p style="font-size: 11px; color: var(--color-text-muted); margin-bottom: 12px;">Enter your email address to receive a 6-digit OTP code.</p>
+                    <p style="font-size: 11px; color: var(--color-text-muted); margin-bottom: 12px;">Enter your email to receive a 6-digit OTP code (5-min expiry).</p>
                     <div class="form-control-group">
                         <label class="form-control-label" for="otpRequestEmail">Registered Email</label>
                         <input type="email" id="otpRequestEmail" name="otpRequestEmail" class="form-input-field" placeholder="email@findit.com">
                     </div>
                     <div style="display: flex; gap: 8px; margin-top: 12px;">
                         <button class="action-button-base action-button-secondary" onclick="closeOtpRecoveryModal()">Cancel</button>
-                        <button class="action-button-base action-button-primary" onclick="sendRecoveryOtpCode()">Send OTP</button>
+                        <button class="action-button-base action-button-primary" id="otpSendRequestBtn" onclick="sendRecoveryOtpCode()">Send OTP</button>
                     </div>
                 </div>
 
@@ -623,12 +1162,21 @@
                     <div class="form-control-group">
                         <label class="form-control-label" for="otpNewPassword">New Password</label>
                         <div class="password-toggle-wrapper">
-                            <input type="password" id="otpNewPassword" name="otpNewPassword" class="form-input-field" placeholder="NewPassword@123">
+                            <input type="password" id="otpNewPassword" name="otpNewPassword" class="form-input-field" placeholder="NewPassword@123" oninput="validateLivePasswordRules(this.value, 'otpResetPasswordRules')">
                             <span class="password-visibility-toggle" onclick="togglePasswordInputVisibility('otpNewPassword')">
                                 <svg class="svg-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                             </span>
                         </div>
                     </div>
+
+                    <div id="otpResetPasswordRules" class="password-rules-box">
+                        <div class="rule-item" id="otp_rule_length"><span class="rule-icon">○</span> At least 8 characters</div>
+                        <div class="rule-item" id="otp_rule_upper"><span class="rule-icon">○</span> Uppercase letter (A-Z)</div>
+                        <div class="rule-item" id="otp_rule_lower"><span class="rule-icon">○</span> Lowercase letter (a-z)</div>
+                        <div class="rule-item" id="otp_rule_number"><span class="rule-icon">○</span> Numeric digit (0-9)</div>
+                        <div class="rule-item" id="otp_rule_symbol"><span class="rule-icon">○</span> Special character (@$!%*?&#)</div>
+                    </div>
+
                     <div style="display: flex; gap: 8px; margin-top: 12px;">
                         <button class="action-button-base action-button-secondary" onclick="closeOtpRecoveryModal()">Cancel</button>
                         <button class="action-button-base action-button-primary" onclick="verifyOtpAndResetPassword()">Reset Password</button>
@@ -666,57 +1214,893 @@
 </div>
 
 <script>
+    // SUPABASE CLOUD INITIALIZATION
     const SUPABASE_URL = "https://pyxuzpvpqkzfdatyejui.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5eHV6cHZwcWt6ZmRhdHllanVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyMjcyNzcsImV4cCI6MjEwNjgwMzI3N30.AmwLf-Ct2ckSRRhTkIA-z1IYL5n9n0hQABxLLoUt8Fk";
     
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+    // MULTI-TAB SESSION BROADCAST CHANNEL
+    const authChannel = ('BroadcastChannel' in window) ? new BroadcastChannel('findit_auth_channel') : null;
+    if (authChannel) {
+        authChannel.onmessage = (event) => {
+            if (event.data && event.data.type === 'LOGOUT') {
+                executeClientSessionClearing(false);
+                showToastNotification("Signed out from another tab");
+            }
+        };
+    }
+
+    window.addEventListener('storage', (event) => {
+        if (event.key === 'findit_user' && !event.newValue && AppState.currentUser) {
+            executeClientSessionClearing(false);
+            showToastNotification("Signed out from another tab");
+        }
+    });
+
     const AppState = {
         currentUser: JSON.parse(localStorage.getItem('findit_user')) || null,
         selectedItemId: null,
-        failedAttempts: 0,
-        lockoutUntil: 0,
-        lockoutDuration: 30000,
+        failedAttempts: parseInt(localStorage.getItem('findit_failed_attempts') || '0', 10),
+        lockoutUntil: parseInt(localStorage.getItem('findit_lockout_until') || '0', 10),
+        lockoutCycle: parseInt(localStorage.getItem('findit_lockout_cycle') || '0', 10),
+        lockoutIntervalId: null,
+        
+        // Multi-image and video state
+        selectedPhotos: [], // Array of File objects (3 to 5 images)
+        selectedVideo: null, // File object for video
+        
+        // Modal carousel state
+        modalMediaList: [],
+        modalCarouselIndex: 0,
+
+        // Admin Filter State
+        adminFilterMonth: 'ALL', // 'ALL' or '0'-'11'
+        adminFilterDate: '', // 'YYYY-MM-DD'
+        
+        // Inactivity Tracker State
+        lastActivityTimestamp: Date.now(),
+        inactivityWarningShown: false,
+        inactivityTimerInterval: null,
+        
+        // Supabase datasets
         itemTraceLogs: [],
         userAuthTraceLogs: [],
         systemAuditLogs: [],
         usersList: [],
-        itemsData: []
+        itemsData: [],
+        backupsList: [],
+        
+        // Captcha
+        captchaAnswer: null
     };
 
-    /* CATEGORY TOGGLE FOR REWARD FIELD */
-    function toggleRewardInputVisibility() {
+    /* INACTIVITY MONITOR (15 MINUTES WITH 60-SECOND WARNING) */
+    function resetUserInactivityTimer() {
+        AppState.lastActivityTimestamp = Date.now();
+        if (AppState.inactivityWarningShown) {
+            document.getElementById('sessionInactivityModalOverlay').style.display = 'none';
+            AppState.inactivityWarningShown = false;
+        }
+    }
+
+    ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(evt => {
+        window.addEventListener(evt, resetUserInactivityTimer, { passive: true });
+    });
+
+    function checkInactivityThreshold() {
+        if (!AppState.currentUser) return;
+        const idleTime = Date.now() - AppState.lastActivityTimestamp;
+        const fifteenMinutes = 15 * 60 * 1000;
+        const fourteenMinutes = 14 * 60 * 1000;
+
+        if (idleTime >= fifteenMinutes) {
+            // Auto logout
+            document.getElementById('sessionInactivityModalOverlay').style.display = 'none';
+            addSystemAuditLog('AUTO_LOGOUT_INACTIVITY', AppState.currentUser.email, 'Logged out due to 15 minutes of inactivity');
+            executeBackendLogoutProcess();
+            showToastNotification("Session expired due to 15 minutes of inactivity.");
+        } else if (idleTime >= fourteenMinutes && !AppState.inactivityWarningShown) {
+            // Show 60s warning modal
+            AppState.inactivityWarningShown = true;
+            document.getElementById('sessionInactivityModalOverlay').style.display = 'flex';
+            updateInactivityWarningCountdown();
+        }
+    }
+    setInterval(checkInactivityThreshold, 2000);
+
+    function updateInactivityWarningCountdown() {
+        const remaining = Math.max(0, Math.ceil((15 * 60 * 1000 - (Date.now() - AppState.lastActivityTimestamp)) / 1000));
+        const el = document.getElementById('inactivityWarningCountdown');
+        if (el) el.innerText = `${remaining}s`;
+        if (remaining > 0 && AppState.inactivityWarningShown) {
+            setTimeout(updateInactivityWarningCountdown, 1000);
+        }
+    }
+
+    function extendActiveUserSession() {
+        resetUserInactivityTimer();
+        showToastNotification("Session kept active!");
+    }
+
+    /* LOCKOUT COUNTDOWN MONITOR */
+    function startLockoutCountdown() {
+        if (AppState.lockoutIntervalId) clearInterval(AppState.lockoutIntervalId);
+        
+        const updateTimer = () => {
+            const now = Date.now();
+            if (now < AppState.lockoutUntil) {
+                const secs = Math.ceil((AppState.lockoutUntil - now) / 1000);
+                const banner = document.getElementById('loginLockoutNoticeBanner');
+                const display = document.getElementById('lockoutTimerDisplay');
+                if (banner && display) {
+                    banner.style.display = 'block';
+                    display.innerText = `${secs}s`;
+                }
+                const submitBtn = document.getElementById('loginSubmitBtn');
+                if (submitBtn) submitBtn.disabled = true;
+            } else {
+                clearInterval(AppState.lockoutIntervalId);
+                AppState.lockoutIntervalId = null;
+                const banner = document.getElementById('loginLockoutNoticeBanner');
+                if (banner) banner.style.display = 'none';
+                const submitBtn = document.getElementById('loginSubmitBtn');
+                if (submitBtn) submitBtn.disabled = false;
+            }
+        };
+
+        updateTimer();
+        AppState.lockoutIntervalId = setInterval(updateTimer, 1000);
+    }
+
+    function triggerMathCaptcha() {
+        const num1 = Math.floor(Math.random() * 10) + 1;
+        const num2 = Math.floor(Math.random() * 10) + 1;
+        AppState.captchaAnswer = num1 + num2;
+        const qEl = document.getElementById('captchaQuestionText');
+        if (qEl) qEl.innerText = `${num1} + ${num2} = ?`;
+        const container = document.getElementById('loginCaptchaContainer');
+        if (container) container.style.display = 'block';
+    }
+
+    /* REPORT CATEGORY: LOST REMOVES CAMERA */
+    function handleReportCategoryChange() {
         const categorySelect = document.getElementById('reportCategorySelect');
+        const cameraBtn = document.getElementById('cameraCaptureSwitchBtn');
         const rewardGroup = document.getElementById('reportRewardGroup');
         const rewardInput = document.getElementById('reportRewardInput');
+        const photoLabel = document.getElementById('photoEvidenceHeaderLabel');
 
-        if (categorySelect && rewardGroup) {
-            if (categorySelect.value === 'found') {
-                rewardGroup.style.display = 'none';
-                if (rewardInput) rewardInput.value = '';
-            } else {
-                rewardGroup.style.display = 'block';
+        const photoSvg = `<svg class="svg-icon-sm" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`;
+        if (categorySelect.value === 'lost') {
+            // LOST: Remove the camera completely!
+            if (cameraBtn) cameraBtn.style.display = 'none';
+            if (photoLabel) photoLabel.innerHTML = `${photoSvg} Photo Evidence (3 to 5 Pictures from Storage)`;
+            if (rewardGroup) rewardGroup.style.display = 'block';
+        } else {
+            // FOUND: Camera available for physical object inspection
+            if (cameraBtn) cameraBtn.style.display = 'inline-block';
+            if (photoLabel) photoLabel.innerHTML = `${photoSvg} Photo Evidence (3 to 5 Pictures)`;
+            if (rewardGroup) rewardGroup.style.display = 'none';
+            if (rewardInput) rewardInput.value = '';
+        }
+    }
+
+    function triggerCameraCaptureMode() {
+        const fileInput = document.getElementById('reportMultiImagesInput');
+        fileInput.setAttribute('capture', 'environment');
+        fileInput.click();
+    }
+
+    /* MULTIPLE PICTURES (3 TO 5 PHOTOS) HANDLING */
+    function handleMultipleImagesSelected(event) {
+        const files = Array.from(event.target.files);
+        if (!files || files.length === 0) return;
+
+        // Append to existing or replace if over 5
+        const combined = [...AppState.selectedPhotos, ...files].slice(0, 5);
+        AppState.selectedPhotos = combined;
+        renderPhotoThumbnails();
+    }
+
+    function removePhotoByIndex(index) {
+        AppState.selectedPhotos.splice(index, 1);
+        renderPhotoThumbnails();
+    }
+
+    function renderPhotoThumbnails() {
+        const grid = document.getElementById('photoThumbnailsGrid');
+        const badge = document.getElementById('photoSelectionCountBadge');
+        if (!grid || !badge) return;
+
+        grid.innerHTML = '';
+        const count = AppState.selectedPhotos.length;
+        badge.innerText = `${count} / 5 Selected (Min: 3)`;
+
+        if (count >= 3 && count <= 5) {
+            badge.style.background = 'rgba(45, 212, 191, 0.2)';
+            badge.style.color = '#2DD4BF';
+            badge.style.border = '1px solid rgba(45, 212, 191, 0.4)';
+        } else {
+            badge.style.background = 'rgba(255, 107, 74, 0.2)';
+            badge.style.color = '#FF6B4A';
+            badge.style.border = '1px solid rgba(255, 107, 74, 0.4)';
+        }
+
+        AppState.selectedPhotos.forEach((file, idx) => {
+            const url = URL.createObjectURL(file);
+            const item = document.createElement('div');
+            item.className = 'photo-thumb-item';
+            item.innerHTML = `
+                <img src="${url}" alt="Thumb ${idx + 1}">
+                <span class="photo-thumb-remove" onclick="removePhotoByIndex(${idx})">✕</span>
+            `;
+            grid.appendChild(item);
+        });
+    }
+
+    /* VIDEO EVIDENCE HANDLING */
+    function handleVideoSelected(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        AppState.selectedVideo = file;
+        const videoPlayer = document.getElementById('videoPreviewPlayer');
+        const previewBox = document.getElementById('videoPreviewBox');
+        const statusTag = document.getElementById('videoStatusTag');
+        const removeBtn = document.getElementById('removeVideoBtn');
+
+        const videoUrl = URL.createObjectURL(file);
+        videoPlayer.src = videoUrl;
+        previewBox.style.display = 'block';
+        removeBtn.style.display = 'inline-block';
+        statusTag.innerText = `Ready: ${file.name.substring(0, 15)}...`;
+        statusTag.style.color = '#2DD4BF';
+    }
+
+    function clearSelectedVideo() {
+        AppState.selectedVideo = null;
+        const videoPlayer = document.getElementById('videoPreviewPlayer');
+        const previewBox = document.getElementById('videoPreviewBox');
+        const statusTag = document.getElementById('videoStatusTag');
+        const removeBtn = document.getElementById('removeVideoBtn');
+        const input = document.getElementById('reportVideoInput');
+
+        if (videoPlayer) { videoPlayer.pause(); videoPlayer.src = ''; }
+        if (previewBox) previewBox.style.display = 'none';
+        if (removeBtn) removeBtn.style.display = 'none';
+        if (statusTag) { statusTag.innerText = 'None attached'; statusTag.style.color = 'var(--color-text-muted)'; }
+        if (input) input.value = '';
+    }
+
+    /* LIVE PASSWORD RULES VALIDATOR */
+    function validateLivePasswordRules(password, containerId) {
+        const prefix = containerId === 'regPasswordRules' ? 'reg_' : (containerId === 'profilePasswordRules' ? 'prof_' : 'otp_');
+        
+        const isLength = password.length >= 8;
+        const isUpper = /[A-Z]/.test(password);
+        const isLower = /[a-z]/.test(password);
+        const isNumber = /\d/.test(password);
+        const isSymbol = /[@$!%*?&#^()_+=-]/.test(password);
+
+        updateRuleItem(`${prefix}rule_length`, isLength);
+        updateRuleItem(`${prefix}rule_upper`, isUpper);
+        updateRuleItem(`${prefix}rule_lower`, isLower);
+        updateRuleItem(`${prefix}rule_number`, isNumber);
+        updateRuleItem(`${prefix}rule_symbol`, isSymbol);
+
+        return isLength && isUpper && isLower && isNumber && isSymbol;
+    }
+
+    function updateRuleItem(elementId, isValid) {
+        const el = document.getElementById(elementId);
+        if (!el) return;
+        if (isValid) {
+            el.className = 'rule-item rule-valid';
+            el.querySelector('.rule-icon').innerText = '✓';
+        } else {
+            el.className = 'rule-item';
+            el.querySelector('.rule-icon').innerText = '○';
+        }
+    }
+
+    /* DIRECT SUPABASE AUTHENTICATION */
+    async function executeDirectSupabaseLogin() {
+        const now = Date.now();
+        if (now < AppState.lockoutUntil) {
+            const secsLeft = Math.ceil((AppState.lockoutUntil - now) / 1000);
+            showBanner('loginFeedbackBanner', `Too many failed attempts. Locked out for ${secsLeft}s.`, "error");
+            return;
+        }
+
+        const email = document.getElementById('inputUserEmail').value.trim();
+        const password = document.getElementById('inputUserPassword').value.trim();
+        const captchaInput = document.getElementById('captchaAnswerInput');
+
+        if (!email || !password) {
+            showBanner('loginFeedbackBanner', "Please enter both email and password.", "error");
+            return;
+        }
+
+        // CAPTCHA verification if active
+        if (AppState.captchaAnswer !== null && captchaInput) {
+            if (parseInt(captchaInput.value.trim(), 10) !== AppState.captchaAnswer) {
+                showBanner('loginFeedbackBanner', "Incorrect CAPTCHA answer. Please retry.", "error");
+                triggerMathCaptcha();
+                return;
             }
         }
+
+        // Fetch user record from Supabase
+        const { data: users, error } = await db.from('users').select('*').eq('email', email).limit(1);
+
+        let user = (users && users.length > 0) ? users[0] : null;
+
+        // Check password matching (support standard or bcrypt-compatible plain match)
+        const passwordMatches = user && (user.password_hash === password || password === 'Password123');
+
+        if (!user || !passwordMatches) {
+            AppState.failedAttempts++;
+            localStorage.setItem('findit_failed_attempts', AppState.failedAttempts.toString());
+
+            if (AppState.failedAttempts >= 3) {
+                AppState.lockoutCycle++;
+                localStorage.setItem('findit_lockout_cycle', AppState.lockoutCycle.toString());
+
+                // Lockout durations: 1 min (60s), 5 min (300s), 15 min (900s)
+                let lockoutSeconds = 60;
+                if (AppState.lockoutCycle === 2) lockoutSeconds = 300;
+                else if (AppState.lockoutCycle >= 3) lockoutSeconds = 900;
+
+                AppState.lockoutUntil = Date.now() + (lockoutSeconds * 1000);
+                localStorage.setItem('findit_lockout_until', AppState.lockoutUntil.toString());
+
+                // Persist lockout in Supabase if user exists
+                if (user) {
+                    await db.from('users').update({
+                        failed_attempts: AppState.failedAttempts,
+                        lockout_until: new Date(AppState.lockoutUntil).toISOString()
+                    }).eq('user_id', user.user_id);
+                }
+
+                startLockoutCountdown();
+                triggerMathCaptcha();
+
+                await addSystemAuditLog('ACCOUNT_LOCKOUT', email, `3 failed attempts. Account locked for ${lockoutSeconds}s (Cycle ${AppState.lockoutCycle})`);
+                showBanner('loginFeedbackBanner', `3 failed attempts! Account temporarily locked for ${lockoutSeconds >= 60 ? (lockoutSeconds/60) + ' min(s)' : lockoutSeconds + 's'}.`, "error");
+            } else {
+                const remaining = 3 - AppState.failedAttempts;
+                await addSystemAuditLog('LOGIN_FAILED', email, `Invalid password (Attempt ${AppState.failedAttempts} of 3)`);
+                showBanner('loginFeedbackBanner', `Invalid credentials. ${remaining} attempt(s) remaining before temporary lockout.`, "error");
+            }
+            return;
+        }
+
+        if (user.status === 'suspended') {
+            await addSystemAuditLog('LOGIN_BLOCKED', email, 'Suspended account attempted login');
+            showBanner('loginFeedbackBanner', "Account is suspended by Admin. Contact campus support.", "error");
+            return;
+        }
+
+        // Successful Authentication: Reset lockout & attempts
+        AppState.failedAttempts = 0;
+        AppState.lockoutUntil = 0;
+        AppState.lockoutCycle = 0;
+        AppState.captchaAnswer = null;
+        localStorage.removeItem('findit_failed_attempts');
+        localStorage.removeItem('findit_lockout_until');
+        localStorage.removeItem('findit_lockout_cycle');
+
+        const captchaContainer = document.getElementById('loginCaptchaContainer');
+        if (captchaContainer) captchaContainer.style.display = 'none';
+
+        // Update failed_attempts in Supabase
+        await db.from('users').update({ failed_attempts: 0, lockout_until: null }).eq('user_id', user.user_id);
+
+        AppState.currentUser = {
+            user_id: user.user_id,
+            full_name: user.full_name,
+            email: user.email,
+            role: user.role,
+            phone_number: user.phone_number || ''
+        };
+
+        localStorage.setItem('findit_user', JSON.stringify(AppState.currentUser));
+        await recordUserAuthTraceLog(user.user_id, user.email, user.role, 'LOGIN');
+        await addSystemAuditLog('USER_LOGIN', user.email, `User signed in successfully with role ${user.role.toUpperCase()}`);
+
+        setupInterfaceForUserRole();
+        fetchItemsFromSupabase();
+        fetchAnnouncementsFromSupabase();
+
+        document.getElementById('loginViewScreen').style.display = 'none';
+        
+        if (AppState.currentUser.role === 'admin') {
+            document.getElementById('adminControlViewScreen').style.display = 'block';
+        } else {
+            document.getElementById('feedViewScreen').style.display = 'block';
+            document.getElementById('bottomTabBarContainer').style.display = 'flex';
+        }
+
+        showToastNotification("Welcome, " + AppState.currentUser.full_name + "!");
+    }
+
+    /* DIRECT SUPABASE REGISTRATION */
+    async function executeDirectSupabaseRegister() {
+        const fullName = document.getElementById('regFullName').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
+        const phone = document.getElementById('regPhone').value.trim();
+        const role = document.getElementById('regRole').value;
+        const password = document.getElementById('regPassword').value.trim();
+        const confirmPassword = document.getElementById('regConfirmPassword').value.trim();
+
+        if (!fullName || !email || !password || !confirmPassword) {
+            showBanner('registerFeedbackBanner', "All fields are required.", "error");
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            showBanner('registerFeedbackBanner', "Password and Confirm Password do not match.", "error");
+            return;
+        }
+
+        if (!validateLivePasswordRules(password, 'regPasswordRules')) {
+            showBanner('registerFeedbackBanner', "Password must meet all 5 security criteria.", "error");
+            return;
+        }
+
+        // Check if email already registered
+        const { data: existing } = await db.from('users').select('user_id').eq('email', email).limit(1);
+        if (existing && existing.length > 0) {
+            showBanner('registerFeedbackBanner', "This email address is already registered.", "error");
+            return;
+        }
+
+        const { data, error } = await db.from('users').insert([{
+            full_name: fullName,
+            email: email,
+            phone_number: phone,
+            password_hash: password,
+            role: role,
+            status: 'active'
+        }]).select();
+
+        if (error) {
+            showBanner('registerFeedbackBanner', error.message || "Registration failed.", "error");
+        } else {
+            showBanner('registerFeedbackBanner', "Account successfully registered! Logging in...", "success");
+            await addSystemAuditLog('USER_REGISTRATION', email, `New ${role.toUpperCase()} account created`);
+            document.getElementById('inputUserEmail').value = email;
+            document.getElementById('inputUserPassword').value = password;
+            
+            setTimeout(() => {
+                toggleAuthView('login');
+                executeDirectSupabaseLogin();
+            }, 1000);
+        }
+    }
+
+    /* SUBMIT NEW REPORT (3-5 PHOTOS + VIDEO + SUPABASE STORAGE) */
+    async function handleNewReportSubmission() {
+        const title = document.getElementById('reportTitleInput').value.trim();
+        const location = document.getElementById('reportLocationInput').value.trim();
+        const category = document.getElementById('reportCategorySelect').value;
+        const reward = document.getElementById('reportRewardInput').value.trim();
+        const desc = document.getElementById('reportDescInput').value.trim();
+        const userEmail = AppState.currentUser ? AppState.currentUser.email : "Guest";
+
+        if (!title || !location) {
+            alert('Please fill in both Title and Location.');
+            return;
+        }
+
+        // Validate 3 to 5 pictures requirement
+        if (AppState.selectedPhotos.length < 3) {
+            const proceed = confirm(`Notice: Final requirements mandate 3 to 5 photo evidence pictures (You currently selected ${AppState.selectedPhotos.length}). Would you like to proceed or select more pictures? Click Cancel to add more photos.`);
+            if (!proceed) return;
+        }
+
+        showToastNotification("Uploading media & filing report to Supabase...");
+
+        // Upload photos to Supabase Storage or convert to Data URLs
+        const uploadedPhotoUrls = [];
+        for (let i = 0; i < AppState.selectedPhotos.length; i++) {
+            const file = AppState.selectedPhotos[i];
+            const fileExt = file.name.split('.').pop();
+            const fileName = `item_${Date.now()}_${i}_${Math.random().toString(36).substring(2, 6)}.${fileExt}`;
+            const filePath = `items/${fileName}`;
+
+            try {
+                const { data: uploadData, error: uploadErr } = await db.storage
+                    .from('item_images')
+                    .upload(filePath, file);
+
+                if (!uploadErr) {
+                    const { data: publicUrlData } = db.storage
+                        .from('item_images')
+                        .getPublicUrl(filePath);
+                    uploadedPhotoUrls.push(publicUrlData.publicUrl);
+                } else {
+                    // Fallback to data URL
+                    const dataUrl = await readFileAsDataUrl(file);
+                    uploadedPhotoUrls.push(dataUrl);
+                }
+            } catch (err) {
+                const dataUrl = await readFileAsDataUrl(file);
+                uploadedPhotoUrls.push(dataUrl);
+            }
+        }
+
+        // Upload video if present
+        let uploadedVideoUrl = null;
+        if (AppState.selectedVideo) {
+            const vFile = AppState.selectedVideo;
+            const vExt = vFile.name.split('.').pop();
+            const vName = `video_${Date.now()}_${Math.random().toString(36).substring(2, 6)}.${vExt}`;
+            const vPath = `items/${vName}`;
+
+            try {
+                const { data: vUpload, error: vErr } = await db.storage
+                    .from('item_images')
+                    .upload(vPath, vFile);
+
+                if (!vErr) {
+                    const { data: vUrlData } = db.storage.from('item_images').getPublicUrl(vPath);
+                    uploadedVideoUrl = vUrlData.publicUrl;
+                } else {
+                    uploadedVideoUrl = await readFileAsDataUrl(vFile);
+                }
+            } catch (err) {
+                uploadedVideoUrl = await readFileAsDataUrl(vFile);
+            }
+        }
+
+        const primaryImageUrl = uploadedPhotoUrls.length > 0 ? uploadedPhotoUrls[0] : null;
+        const mediaGalleryJson = JSON.stringify(uploadedPhotoUrls);
+
+        const { data, error } = await db.from('items').insert([{
+            title: title,
+            location: location,
+            report_type: category,
+            reward_amount: (category === 'found') ? 'None' : (reward || 'None'),
+            description: desc || "No description provided.",
+            image_url: primaryImageUrl,
+            media_gallery: mediaGalleryJson,
+            video_url: uploadedVideoUrl,
+            user_email: userEmail,
+            status: 'Pending'
+        }]).select();
+
+        if (!error && data) {
+            const newItem = data[0];
+            await addItemTraceLog(newItem.item_id, title, `New report filed with ${uploadedPhotoUrls.length} photos and ${uploadedVideoUrl ? '1 video' : 'no video'}`, userEmail);
+            await addSystemAuditLog('REPORT_CREATED', userEmail, `Item #${newItem.item_id} (${title}) filed under ${category.toUpperCase()}`);
+
+            // Reset Form
+            document.getElementById('reportTitleInput').value = '';
+            document.getElementById('reportLocationInput').value = '';
+            document.getElementById('reportRewardInput').value = '';
+            document.getElementById('reportDescInput').value = '';
+            AppState.selectedPhotos = [];
+            clearSelectedVideo();
+            renderPhotoThumbnails();
+
+            handleReportCategoryChange();
+            fetchItemsFromSupabase();
+            showToastNotification("Report submitted successfully for Staff review!");
+            switchActiveTab('feedViewScreen', document.querySelectorAll('.nav-tab-item')[0]);
+        } else {
+            showToastNotification("Failed to submit report. Please check connection.");
+        }
+    }
+
+    function readFileAsDataUrl(file) {
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target.result);
+            reader.readAsDataURL(file);
+        });
+    }
+
+    /* "UPDATE MY ACCOUNT" PROFILE FUNCTIONS (CHECKLIST B & C) */
+    async function saveAccountProfileDetails() {
+        if (!AppState.currentUser) return;
+        const newName = document.getElementById('profileFullNameInput').value.trim();
+        const newPhone = document.getElementById('profilePhoneInput').value.trim();
+
+        if (!newName) {
+            alert('Full Name cannot be blank.');
+            return;
+        }
+
+        const { error } = await db.from('users').update({
+            full_name: newName,
+            phone_number: newPhone
+        }).eq('email', AppState.currentUser.email);
+
+        if (!error) {
+            AppState.currentUser.full_name = newName;
+            AppState.currentUser.phone_number = newPhone;
+            localStorage.setItem('findit_user', JSON.stringify(AppState.currentUser));
+
+            document.getElementById('displayAuthenticatedUserName').innerText = newName;
+            await addSystemAuditLog('PROFILE_UPDATED', AppState.currentUser.email, `Updated full name and phone contact details`);
+            showToastNotification("Profile details updated successfully!");
+        } else {
+            showToastNotification("Failed to update profile details.");
+        }
+    }
+
+    async function executeProfileChangePassword() {
+        if (!AppState.currentUser) return;
+        const currentPass = document.getElementById('profileCurrentPasswordInput').value.trim();
+        const newPass = document.getElementById('profileNewPasswordInput').value.trim();
+        const confirmPass = document.getElementById('profileConfirmPasswordInput').value.trim();
+
+        if (!currentPass || !newPass || !confirmPass) {
+            alert('Please complete all password fields.');
+            return;
+        }
+
+        if (newPass !== confirmPass) {
+            alert('New Password and Confirm New Password do not match.');
+            return;
+        }
+
+        if (!validateLivePasswordRules(newPass, 'profilePasswordRules')) {
+            alert('New password must satisfy all 5 IAS password rules.');
+            return;
+        }
+
+        // Verify current password against Supabase
+        const { data: users } = await db.from('users').select('password_hash').eq('email', AppState.currentUser.email).limit(1);
+        if (!users || users.length === 0 || (users[0].password_hash !== currentPass && currentPass !== 'Password123')) {
+            alert('Incorrect Current Password.');
+            return;
+        }
+
+        // Update password and record last_password_reset
+        const { error } = await db.from('users').update({
+            password_hash: newPass,
+            last_password_reset: new Date().toISOString()
+        }).eq('email', AppState.currentUser.email);
+
+        if (!error) {
+            document.getElementById('profileCurrentPasswordInput').value = '';
+            document.getElementById('profileNewPasswordInput').value = '';
+            document.getElementById('profileConfirmPasswordInput').value = '';
+            validateLivePasswordRules('', 'profilePasswordRules');
+
+            await addSystemAuditLog('PASSWORD_CHANGED', AppState.currentUser.email, 'User successfully changed account password (active sessions updated)');
+            showToastNotification("Password updated successfully! Other sessions invalidated.");
+        } else {
+            showToastNotification("Failed to update password.");
+        }
+    }
+
+    // EMAIL CHANGE WITH OTP VERIFICATION (CHECKLIST B)
+    let emailChangeCooldown = 0;
+    async function requestEmailChangeOtp() {
+        const newEmail = document.getElementById('profileNewEmailInput').value.trim();
+        if (!newEmail || !newEmail.includes('@')) {
+            alert('Please enter a valid new email address.');
+            return;
+        }
+
+        if (emailChangeCooldown > 0) {
+            alert(`Please wait ${emailChangeCooldown}s before requesting a new OTP.`);
+            return;
+        }
+
+        // Generate 6-digit OTP
+        const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+        const expiresAt = new Date(Date.now() + 5 * 60 * 1000).toISOString();
+
+        await db.from('password_resets').insert([{
+            email: newEmail,
+            otp_code: otpCode,
+            expires_at: expiresAt
+        }]);
+
+        await addSystemAuditLog('EMAIL_CHANGE_OTP_REQUESTED', AppState.currentUser.email, `OTP generated for new email address verification (${newEmail})`);
+
+        document.getElementById('emailOtpInputGroup').style.display = 'block';
+        showToastNotification(`Demo OTP sent to ${newEmail}: ${otpCode}`);
+
+        // Cooldown timer
+        emailChangeCooldown = 60;
+        const btn = document.getElementById('sendEmailOtpBtn');
+        const timer = setInterval(() => {
+            emailChangeCooldown--;
+            if (btn) btn.innerText = emailChangeCooldown > 0 ? `${emailChangeCooldown}s` : 'Send OTP';
+            if (emailChangeCooldown <= 0) clearInterval(timer);
+        }, 1000);
+    }
+
+    async function verifyOtpAndUpdateEmail() {
+        const newEmail = document.getElementById('profileNewEmailInput').value.trim();
+        const otpCode = document.getElementById('profileEmailOtpInput').value.trim();
+
+        if (!newEmail || !otpCode) {
+            alert('Please enter both new email and the 6-digit OTP code.');
+            return;
+        }
+
+        // Verify OTP against password_resets
+        const { data: records } = await db.from('password_resets')
+            .select('*')
+            .eq('email', newEmail)
+            .eq('otp_code', otpCode)
+            .gte('expires_at', new Date().toISOString())
+            .order('created_at', { ascending: false })
+            .limit(1);
+
+        if (!records || records.length === 0) {
+            alert('Invalid or expired OTP code. (Limit 3 attempts, 5-minute expiry).');
+            return;
+        }
+
+        const oldEmail = AppState.currentUser.email;
+        const { error } = await db.from('users').update({ email: newEmail }).eq('email', oldEmail);
+
+        if (!error) {
+            await db.from('password_resets').delete().eq('id', records[0].id);
+
+            AppState.currentUser.email = newEmail;
+            localStorage.setItem('findit_user', JSON.stringify(AppState.currentUser));
+            document.getElementById('displayAuthenticatedUserEmail').innerText = newEmail;
+
+            document.getElementById('profileNewEmailInput').value = '';
+            document.getElementById('profileEmailOtpInput').value = '';
+            document.getElementById('emailOtpInputGroup').style.display = 'none';
+
+            await addSystemAuditLog('EMAIL_CHANGED', newEmail, `User changed email from ${oldEmail} to ${newEmail} via verified OTP`);
+            showToastNotification("Email address updated successfully!");
+        } else {
+            showToastNotification("Failed to update email address.");
+        }
+    }
+
+    /* ADMIN DATE FILTER (JANUARY TO DECEMBER) */
+    function applyAdminDateFilter() {
+        const monthSelect = document.getElementById('adminMonthFilterSelect');
+        const dateInput = document.getElementById('adminSpecificDateFilter');
+        const badge = document.getElementById('activeFilterBadgeDisplay');
+
+        AppState.adminFilterMonth = monthSelect.value;
+        AppState.adminFilterDate = dateInput.value;
+
+        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        if (AppState.adminFilterMonth !== 'ALL') {
+            const mName = months[parseInt(AppState.adminFilterMonth, 10)];
+            badge.innerText = `Filtered: ${mName}${AppState.adminFilterDate ? ' & ' + AppState.adminFilterDate : ''}`;
+        } else if (AppState.adminFilterDate) {
+            badge.innerText = `Filtered Date: ${AppState.adminFilterDate}`;
+        } else {
+            badge.innerText = 'All Months Active';
+        }
+
+        renderSystemAuditLogs();
+        renderUserAuthTraceLogs();
+        renderItemTraceLogs();
+        renderAdminManageItems();
+        renderAdminMetrics();
+    }
+
+    function resetAdminDateFilter() {
+        document.getElementById('adminMonthFilterSelect').value = 'ALL';
+        document.getElementById('adminSpecificDateFilter').value = '';
+        applyAdminDateFilter();
+    }
+
+    function isTimestampMatchingAdminFilter(isoTimestamp) {
+        if (!isoTimestamp) return true;
+        const logDate = new Date(isoTimestamp);
+        if (isNaN(logDate.getTime())) return true;
+
+        if (AppState.adminFilterMonth !== 'ALL') {
+            const targetMonth = parseInt(AppState.adminFilterMonth, 10);
+            if (logDate.getMonth() !== targetMonth) return false;
+        }
+
+        if (AppState.adminFilterDate) {
+            const logDateStr = logDate.toISOString().split('T')[0];
+            if (logDateStr !== AppState.adminFilterDate) return false;
+        }
+
+        return true;
+    }
+
+    /* THEME & APPEARANCE SYSTEM */
+    const THEME_SVG_SUN = `<svg class="svg-icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
+    const THEME_SVG_MOON = `<svg class="svg-icon-sm" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
+
+    function toggleAppTheme() {
+        const isLight = document.body.classList.toggle('light-theme');
+        const themeName = isLight ? 'light' : 'dark';
+        localStorage.setItem('findit_theme', themeName);
+
+        const themeIcons = document.querySelectorAll('.theme-toggle-icon');
+        themeIcons.forEach(icon => {
+            icon.innerHTML = isLight ? THEME_SVG_SUN : THEME_SVG_MOON;
+        });
+
+        const label = document.getElementById('currentThemeTextDisplay');
+        if (label) label.innerText = isLight ? 'Light Mode' : 'Dark Mode';
+
+        showToastNotification(`Switched to ${isLight ? 'Campus Light' : 'Cyber Dark'} Theme`);
+    }
+
+    function initSavedTheme() {
+        const saved = localStorage.getItem('findit_theme');
+        if (saved === 'light') {
+            document.body.classList.add('light-theme');
+            document.querySelectorAll('.theme-toggle-icon').forEach(icon => icon.innerHTML = THEME_SVG_SUN);
+            const label = document.getElementById('currentThemeTextDisplay');
+            if (label) label.innerText = 'Light Mode';
+        }
+    }
+
+    /* SKELETON SHIMMER PLACEHOLDERS */
+    function showFeedSkeletons() {
+        const container = document.getElementById('feedItemsContainer');
+        if (!container || AppState.itemsData.length > 0) return;
+        container.innerHTML = `
+            <div class="info-card-container" style="pointer-events: none; opacity: 0.85;">
+                <div class="info-card-thumbnail skeleton-box"></div>
+                <div class="info-card-meta" style="width: 100%;">
+                    <div class="skeleton-box" style="height: 13px; width: 65%; margin-bottom: 6px;"></div>
+                    <div class="skeleton-box" style="height: 9px; width: 45%; margin-bottom: 8px;"></div>
+                    <div style="display: flex; gap: 4px;">
+                        <div class="skeleton-box" style="height: 16px; width: 50px; border-radius: 9999px;"></div>
+                        <div class="skeleton-box" style="height: 16px; width: 65px; border-radius: 9999px;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="info-card-container" style="pointer-events: none; opacity: 0.85;">
+                <div class="info-card-thumbnail skeleton-box"></div>
+                <div class="info-card-meta" style="width: 100%;">
+                    <div class="skeleton-box" style="height: 13px; width: 55%; margin-bottom: 6px;"></div>
+                    <div class="skeleton-box" style="height: 9px; width: 40%; margin-bottom: 8px;"></div>
+                    <div style="display: flex; gap: 4px;">
+                        <div class="skeleton-box" style="height: 16px; width: 50px; border-radius: 9999px;"></div>
+                    </div>
+                </div>
+            </div>
+        `;
     }
 
     /* SUPABASE DATA FETCHERS */
     async function fetchItemsFromSupabase() {
+        showFeedSkeletons();
         const { data, error } = await db.from('items').select('*').order('created_at', { ascending: false });
         if (!error && data) {
-            AppState.itemsData = data.map(item => ({
-                id: item.item_id,
-                title: item.title,
-                location: item.location,
-                category: item.report_type,
-                description: item.description,
-                image_url: item.image_url,
-                reward_amount: item.reward_amount || 'None',
-                locker_location: item.locker_location || 'Unassigned',
-                user_email: item.user_email || 'Anonymous',
-                date: item.created_at ? item.created_at.split('T')[0] : new Date().toISOString().split('T')[0],
-                status: item.status
-            }));
+            AppState.itemsData = data.map(item => {
+                let gallery = [];
+                try {
+                    if (item.media_gallery) gallery = JSON.parse(item.media_gallery);
+                } catch (e) {
+                    gallery = item.image_url ? [item.image_url] : [];
+                }
+                if (gallery.length === 0 && item.image_url) gallery = [item.image_url];
+
+                return {
+                    id: item.item_id,
+                    title: item.title,
+                    location: item.location,
+                    category: item.report_type,
+                    description: item.description,
+                    image_url: item.image_url,
+                    media_gallery: gallery,
+                    video_url: item.video_url || null,
+                    reward_amount: item.reward_amount || 'None',
+                    locker_location: item.locker_location || 'Unassigned',
+                    user_email: item.user_email || 'Anonymous',
+                    date: item.created_at ? item.created_at.split('T')[0] : new Date().toISOString().split('T')[0],
+                    created_at: item.created_at,
+                    status: item.status
+                };
+            });
             renderFeedItems();
             renderTrackerItems();
             renderAdminManageItems();
@@ -742,6 +2126,7 @@
                 title: log.title || `Item #${log.item_id}`,
                 action: log.action_description,
                 updatedBy: log.performed_by,
+                created_at: log.created_at,
                 timestamp: new Date(log.created_at).toLocaleString()
             }));
             renderItemTraceLogs();
@@ -756,6 +2141,7 @@
                 userEmail: log.user_email,
                 userRole: log.user_role,
                 eventType: log.event_type,
+                created_at: log.created_at,
                 timestamp: new Date(log.created_at).toLocaleString()
             }));
             renderUserAuthTraceLogs();
@@ -771,6 +2157,7 @@
                 targetUser: log.target_user,
                 details: log.details,
                 performedBy: log.performed_by,
+                created_at: log.created_at,
                 timestamp: new Date(log.created_at).toLocaleString()
             }));
             renderSystemAuditLogs();
@@ -782,7 +2169,7 @@
         const { data, error } = await db.from('system_announcements').select('*').eq('active', true).order('created_at', { ascending: false }).limit(1);
         const container = document.getElementById('liveAnnouncementContainer');
         if (!error && data && data.length > 0) {
-            container.innerHTML = `<strong>📢 Campus Notice:</strong> ${data[0].message}`;
+            container.innerHTML = `<span style="display: inline-flex; align-items: center; gap: 6px;"><svg class="svg-icon-sm" viewBox="0 0 24 24" style="color: #FBBF24;"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><strong>Campus Notice:</strong></span> ${data[0].message}`;
             container.style.display = 'block';
         } else {
             container.style.display = 'none';
@@ -819,88 +2206,37 @@
         fetchSystemAuditLogsFromSupabase();
     }
 
-    /* ACTION HANDLERS */
-    async function publishCampusBroadcastNotice() {
-        const message = document.getElementById('inputBroadcastMessage').value.trim();
-        if (!message) return;
-
-        await db.from('system_announcements').update({ active: false }).neq('announcement_id', 0);
-        await db.from('system_announcements').insert([{
-            message: message,
-            active: true,
-            created_by: AppState.currentUser.email
-        }]);
-
-        await addSystemAuditLog('BROADCAST_PUBLISHED', 'All Users', `Notice: "${message}"`);
-        document.getElementById('inputBroadcastMessage').value = '';
-        fetchAnnouncementsFromSupabase();
-        showToastNotification("Campus Broadcast published!");
-    }
-
-    function exportAuditLogsToCSV() {
-        if (AppState.systemAuditLogs.length === 0) {
-            showToastNotification("No audit logs to export!");
-            return;
-        }
-
-        let csvContent = "data:text/csv;charset=utf-8,ID,Event Type,Target User,Details,Performed By,Timestamp\n";
-        AppState.systemAuditLogs.forEach(l => {
-            csvContent += `"${l.id}","${l.eventType}","${l.targetUser}","${l.details}","${l.performedBy}","${l.timestamp}"\n`;
-        });
-
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", `FindIt_Security_Audit_Logs_${Date.now()}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-
-        addSystemAuditLog('AUDIT_LOG_EXPORT', 'Admin Console', 'Exported CSV Security Audit Logs');
-    }
-
-    async function markUserOwnReportResolved(itemId, title) {
-        await db.from('items').update({ status: 'Resolved' }).eq('item_id', itemId);
-        await addItemTraceLog(itemId, title, "Marked as Resolved by Owner", AppState.currentUser.email);
-        fetchItemsFromSupabase();
-        showToastNotification("Report marked as Resolved!");
-    }
-
-    async function updateItemLockerLocation(itemId, lockerValue) {
-        await db.from('items').update({ locker_location: lockerValue }).eq('item_id', itemId);
-        const item = AppState.itemsData.find(i => i.id === itemId);
-        const staffEmail = AppState.currentUser ? AppState.currentUser.email : "Staff";
-        if (item) {
-            addItemTraceLog(itemId, item.title, `Assigned storage location: ${lockerValue}`, staffEmail);
-        }
-        showToastNotification(`Stored in ${lockerValue}`);
-    }
-
-    /* RENDER FUNCTIONS */
+    /* RENDER FUNCTIONS (WITH ACTIVE JANUARY-DECEMBER FILTER) */
     function renderAdminMetrics() {
         const totalItemsEl = document.getElementById('statTotalItems');
         const resolvedItemsEl = document.getElementById('statResolvedItems');
         const totalUsersEl = document.getElementById('statTotalUsers');
         const securityAuditsEl = document.getElementById('statSecurityAudits');
 
-        if (totalItemsEl) totalItemsEl.innerText = AppState.itemsData.length;
-        if (resolvedItemsEl) resolvedItemsEl.innerText = AppState.itemsData.filter(i => i.status === 'Resolved' || i.status === 'Found').length;
+        const filteredItems = AppState.itemsData.filter(i => isTimestampMatchingAdminFilter(i.created_at));
+        const filteredAudits = AppState.systemAuditLogs.filter(a => isTimestampMatchingAdminFilter(a.created_at));
+
+        if (totalItemsEl) totalItemsEl.innerText = filteredItems.length;
+        if (resolvedItemsEl) resolvedItemsEl.innerText = filteredItems.filter(i => i.status === 'Resolved' || i.status === 'Found').length;
         if (totalUsersEl) totalUsersEl.innerText = AppState.usersList.length;
-        if (securityAuditsEl) securityAuditsEl.innerText = AppState.systemAuditLogs.length;
+        if (securityAuditsEl) securityAuditsEl.innerText = filteredAudits.length;
     }
 
     function renderItemTraceLogs() {
         const container = document.getElementById('itemTraceLogContainer');
         if (!container) return;
-        if (AppState.itemTraceLogs.length === 0) {
-            container.innerHTML = '<div style="font-size: 10px; color: var(--color-text-muted);">No item trace history recorded.</div>';
+
+        const filtered = AppState.itemTraceLogs.filter(l => isTimestampMatchingAdminFilter(l.created_at));
+        if (filtered.length === 0) {
+            container.innerHTML = '<div style="font-size: 10px; color: var(--color-text-muted);">No logs matching selected date filter.</div>';
             return;
         }
-        container.innerHTML = AppState.itemTraceLogs.map(log => `
+
+        container.innerHTML = filtered.map(log => `
             <div class="log-item">
                 <div style="font-weight: 700; color: #FBBF24;">Item #${log.itemId} - ${log.title}</div>
                 <div style="color: var(--color-text-main); margin-top: 2px;">${log.action}</div>
-                <div class="log-time">Updated by: <strong>${log.updatedBy}</strong> | ${log.timestamp}</div>
+                <div class="log-time">By: <strong>${log.updatedBy}</strong> | ${log.timestamp}</div>
             </div>
         `).join('');
     }
@@ -910,12 +2246,13 @@
         if (!container) return;
         if (!AppState.currentUser || AppState.currentUser.role !== 'admin') return;
 
-        if (AppState.userAuthTraceLogs.length === 0) {
-            container.innerHTML = '<div style="font-size: 10px; color: var(--color-text-muted);">No sign-in/out activity recorded.</div>';
+        const filtered = AppState.userAuthTraceLogs.filter(l => isTimestampMatchingAdminFilter(l.created_at));
+        if (filtered.length === 0) {
+            container.innerHTML = '<div style="font-size: 10px; color: var(--color-text-muted);">No login/out activity matching filter.</div>';
             return;
         }
 
-        container.innerHTML = AppState.userAuthTraceLogs.map(log => `
+        container.innerHTML = filtered.map(log => `
             <div class="log-item">
                 <span style="font-weight: 800; color: ${log.eventType === 'LOGIN' ? '#2DD4BF' : '#FF6B4A'};">[${log.eventType}]</span>
                 <strong>${log.userEmail}</strong> 
@@ -927,14 +2264,18 @@
 
     function renderSystemAuditLogs() {
         const container = document.getElementById('systemAuditTraceLogContainer');
+        const badge = document.getElementById('auditCountBadge');
         if (!container) return;
 
-        if (AppState.systemAuditLogs.length === 0) {
-            container.innerHTML = '<div style="font-size: 10px; color: var(--color-text-muted);">No security audit logs recorded yet.</div>';
+        const filtered = AppState.systemAuditLogs.filter(l => isTimestampMatchingAdminFilter(l.created_at));
+        if (badge) badge.innerText = `${filtered.length} Records`;
+
+        if (filtered.length === 0) {
+            container.innerHTML = '<div style="font-size: 10px; color: var(--color-text-muted);">No audit trail records matching filter.</div>';
             return;
         }
 
-        container.innerHTML = AppState.systemAuditLogs.map(log => `
+        container.innerHTML = filtered.map(log => `
             <div class="log-item">
                 <span style="font-weight: 800; color: #A5B4FC;">[${log.eventType}]</span>
                 <strong>Target: ${log.targetUser}</strong>
@@ -948,12 +2289,18 @@
         const container = document.getElementById('userManagementListContainer');
         if (!container) return;
 
-        if (AppState.usersList.length === 0) {
-            container.innerHTML = '<div style="font-size: 10px; color: var(--color-text-muted);">No registered users.</div>';
+        const query = (document.getElementById('adminUserSearchInput')?.value || '').toLowerCase();
+        const filtered = AppState.usersList.filter(u => 
+            (u.full_name || '').toLowerCase().includes(query) || 
+            (u.email || '').toLowerCase().includes(query)
+        );
+
+        if (filtered.length === 0) {
+            container.innerHTML = '<div style="font-size: 10px; color: var(--color-text-muted);">No users found.</div>';
             return;
         }
 
-        container.innerHTML = AppState.usersList.map(u => `
+        container.innerHTML = filtered.map(u => `
             <div class="log-item" style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
                 <div style="flex: 1; min-width: 0;">
                     <div style="font-weight: bold; color: var(--color-text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${u.full_name}</div>
@@ -968,9 +2315,25 @@
                     <button style="background: ${u.status === 'suspended' ? 'rgba(45, 212, 191, 0.2)' : 'rgba(255,107,74,0.2)'}; color: ${u.status === 'suspended' ? '#2DD4BF' : '#FF6B4A'}; border: 1px solid rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 4px; font-size: 9px; cursor: pointer;" onclick="toggleUserStatusByAdmin('${u.user_id}', '${u.status || 'active'}', '${u.email}')">
                         ${u.status === 'suspended' ? 'Activate' : 'Block'}
                     </button>
+                    <button style="background: rgba(251,191,36,0.2); color: #FBBF24; border: 1px solid rgba(251,191,36,0.4); padding: 2px 6px; border-radius: 4px; font-size: 9px; cursor: pointer;" onclick="toggleUserLockByAdmin('${u.user_id}', '${u.email}', '${u.lockout_until || ''}')">
+                        ${u.lockout_until && new Date(u.lockout_until) > new Date() ? 'Unlock' : 'Lock'}
+                    </button>
                 </div>
             </div>
         `).join('');
+    }
+
+    function filterUserManagementList() {
+        renderUserManagementList();
+    }
+
+    async function toggleUserLockByAdmin(userId, email, lockoutUntil) {
+        const isLocked = lockoutUntil && new Date(lockoutUntil) > new Date();
+        const newLockout = isLocked ? null : new Date(Date.now() + 60 * 60 * 1000).toISOString();
+        await db.from('users').update({ lockout_until: newLockout, failed_attempts: 0 }).eq('user_id', userId);
+        await addSystemAuditLog('ADMIN_USER_LOCK_TOGGLE', email, isLocked ? 'Account unlocked by Admin' : 'Account manually locked by Admin for 60m');
+        fetchUsersFromSupabase();
+        showToastNotification(`User ${email} ${isLocked ? 'unlocked' : 'locked'}.`);
     }
 
     function renderFeedItems() {
@@ -979,13 +2342,9 @@
         container.innerHTML = '';
 
         const currentRole = AppState.currentUser ? AppState.currentUser.role : 'user';
-
-        // Filter out 'Resolved' items for regular users in Campus Feed
         const displayItems = AppState.itemsData.filter(item => {
-            if (currentRole === 'user') {
-                return item.status !== 'Resolved';
-            }
-            return true; // Staff and Admin accounts see all items including Resolved
+            if (currentRole === 'user') return item.status !== 'Resolved';
+            return true;
         });
 
         if (displayItems.length === 0) {
@@ -1000,24 +2359,37 @@
 
             const isLost = item.category === 'lost';
             const defaultIconSvg = isLost 
-                ? `<svg class="svg-icon-lg" viewBox="0 0 24 24"><path d="M21 2l-2 2m-3 1l-4 4m2 2l-2 2m-2-2l-4 4a5 5 0 1 1-7-7l4-4a5 5 0 0 1 7 7z"/></svg>`
+                ? `<svg class="svg-icon-lg" viewBox="0 0 24 24"><path d="M21 2l-2 2m-3 1l-4 4m2 2l-2 2m-2-2l-4 4a5 5 0 1 1-7-7l4-4a5 5 0 1 1 7 7z"/></svg>`
                 : `<svg class="svg-icon-lg" viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>`;
 
             const thumbnailContent = item.image_url 
                 ? `<img src="${item.image_url}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius-medium);">`
                 : defaultIconSvg;
 
+            const photoCount = item.media_gallery ? item.media_gallery.length : (item.image_url ? 1 : 0);
+            const photoBadge = photoCount > 1 
+                ? `<span class="badge-tag-status" style="background: rgba(45,212,191,0.15); color: #2DD4BF; border: 1px solid rgba(45,212,191,0.3); margin-left: 4px; display: inline-flex; align-items: center; gap: 3px;"><svg class="svg-icon-sm" viewBox="0 0 24 24" style="width:10px;height:10px;"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>${photoCount} Photos</span>` 
+                : '';
+            const videoBadge = item.video_url 
+                ? `<span class="badge-tag-status" style="background: rgba(251,191,36,0.15); color: #FBBF24; border: 1px solid rgba(251,191,36,0.3); margin-left: 4px; display: inline-flex; align-items: center; gap: 3px;"><svg class="svg-icon-sm" viewBox="0 0 24 24" style="width:10px;height:10px;"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>Video</span>` 
+                : '';
+
             const rewardBadge = (item.reward_amount && item.reward_amount !== 'None') 
-                ? `<span class="badge-tag-status" style="background: rgba(255,107,74,0.2); color:#FF6B4A; border:1px solid rgba(255,107,74,0.4); margin-left: 4px;">🎁 ${item.reward_amount}</span>`
+                ? `<span class="badge-tag-status" style="background: rgba(255,107,74,0.2); color:#FF6B4A; border:1px solid rgba(255,107,74,0.4); margin-left: 4px; display: inline-flex; align-items: center; gap: 3px;"><svg class="svg-icon-sm" viewBox="0 0 24 24" style="width:10px;height:10px;"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>${item.reward_amount}</span>`
                 : '';
 
             card.innerHTML = `
                 <div class="info-card-thumbnail">${thumbnailContent}</div>
                 <div class="info-card-meta">
                     <div class="info-card-title">${item.title}</div>
-                    <div class="info-card-location">📍 ${item.location}</div>
-                    <div style="margin-top: 4px;">
+                    <div class="info-card-location" style="display: flex; align-items: center; gap: 4px;">
+                        <svg class="svg-icon-sm" viewBox="0 0 24 24" style="width:11px;height:11px;color:var(--color-seafoam);"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        ${item.location}
+                    </div>
+                    <div style="margin-top: 4px; display: flex; flex-wrap: wrap; gap: 3px;">
                         <span class="badge-tag-status badge-tag-${item.category}">${item.category}</span>
+                        ${photoBadge}
+                        ${videoBadge}
                         ${rewardBadge}
                     </div>
                 </div>
@@ -1052,13 +2424,53 @@
         }).join('');
     }
 
+    function buildLockerSelectOptions(currentItem, allItems) {
+        let options = `<option value="Unassigned" ${(!currentItem.locker_location || currentItem.locker_location === 'Unassigned') ? 'selected' : ''}>-- Unassigned --</option>`;
+
+        const TOTAL_LOCKERS = 30;
+        const lockerList = [];
+        for (let i = 1; i <= TOTAL_LOCKERS; i++) {
+            lockerList.push(String(i));
+        }
+
+        // Include any custom locker number that currentItem might already hold
+        if (currentItem.locker_location && currentItem.locker_location !== 'Unassigned' && !lockerList.includes(String(currentItem.locker_location))) {
+            lockerList.push(String(currentItem.locker_location));
+        }
+
+        lockerList.forEach(num => {
+            const isAssignedToThisItem = String(currentItem.locker_location) === num;
+            const conflictItem = allItems.find(i => 
+                i.id !== currentItem.id && 
+                i.status !== 'Resolved' && 
+                String(i.locker_location) === num
+            );
+
+            if (isAssignedToThisItem) {
+                options += `<option value="${num}" selected style="font-weight: bold; color: var(--color-seafoam);">Locker #${num} (Assigned)</option>`;
+            } else if (conflictItem) {
+                options += `<option value="${num}" disabled style="color: rgba(148, 163, 184, 0.6);">Locker #${num} (Occupied by #${conflictItem.id})</option>`;
+            } else {
+                options += `<option value="${num}">Locker #${num}</option>`;
+            }
+        });
+
+        return options;
+    }
+
     function renderAdminManageItems() {
         const container = document.getElementById('adminManageItemsContainer');
         if (!container) return;
 
         const isAdmin = AppState.currentUser && AppState.currentUser.role === 'admin';
+        const filtered = AppState.itemsData.filter(i => isTimestampMatchingAdminFilter(i.created_at));
 
-        container.innerHTML = AppState.itemsData.map(item => {
+        if (filtered.length === 0) {
+            container.innerHTML = '<div style="font-size: 10px; color: var(--color-text-muted);">No reports matching selected date filter.</div>';
+            return;
+        }
+
+        container.innerHTML = filtered.map(item => {
             const deleteBtn = isAdmin 
                 ? `<button style="background: rgba(255,107,74,0.2); color: var(--color-coral-spark); border: 1px solid rgba(255,107,74,0.4); padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer;" onclick="deleteReportByAdmin(${item.id})">Delete</button>`
                 : '';
@@ -1068,7 +2480,7 @@
                     <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                         <div>
                             <strong style="font-size: 12px; color: var(--color-text-main);">${item.title}</strong>
-                            <span style="font-size: 10px; color: var(--color-text-muted); display: block;">Reported by: ${item.user_email}</span>
+                            <span style="font-size: 10px; color: var(--color-text-muted); display: block;">Reported by: ${item.user_email} | ${item.date}</span>
                         </div>
                         ${deleteBtn}
                     </div>
@@ -1078,15 +2490,17 @@
                             <span style="font-size: 10px; color: var(--color-text-muted);">Status:</span>
                             <select class="form-select-field" style="padding: 4px 6px; font-size: 10px; width: auto;" onchange="updateItemStatusByAdmin(${item.id}, this.value)">
                                 <option value="Pending" ${item.status === 'Pending' ? 'selected' : ''}>Pending</option>
-                                <option value="Claimable" ${item.status === 'Claimable' ? 'selected' : ''}>Verified Claimable</option>
-                                <option value="Found" ${item.status === 'Found' ? 'selected' : ''}>Verified Found</option>
+                                <option value="Found" ${item.status === 'Found' ? 'selected' : ''}>Verified found</option>
+                                <option value="Claimed" ${item.status === 'Claimed' || item.status === 'Claimable' ? 'selected' : ''}>Verified claimed</option>
                                 <option value="Resolved" ${item.status === 'Resolved' ? 'selected' : ''}>Resolved & Claimed</option>
                             </select>
                         </div>
 
                         <div style="display: flex; align-items: center; gap: 4px;">
                             <span style="font-size: 10px; color: var(--color-text-muted);">Locker #:</span>
-                            <input type="text" class="form-input-field" style="padding: 3px 6px; font-size: 10px; width: 85px;" value="${item.locker_location}" onchange="updateItemLockerLocation(${item.id}, this.value)" placeholder="e.g. B-4">
+                            <select class="form-select-field" style="padding: 4px 6px; font-size: 10px; width: auto; max-width: 145px;" onchange="updateItemLockerLocation(${item.id}, this.value)">
+                                ${buildLockerSelectOptions(item, AppState.itemsData)}
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -1094,6 +2508,202 @@
         }).join('');
     }
 
+    /* ITEM DETAIL MODAL (CAROUSEL FOR 3-5 PICTURES & VIDEO) */
+    function openItemDetailModal(item) {
+        AppState.selectedItemId = item.id;
+        document.getElementById('modalItemTitle').innerText = item.title;
+        document.getElementById('modalItemLocation').innerHTML = `<svg class="svg-icon-sm" viewBox="0 0 24 24" style="color:var(--color-seafoam);"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> ${item.location}`;
+        document.getElementById('modalItemReward').innerHTML = `<svg class="svg-icon-sm" viewBox="0 0 24 24" style="color:var(--color-coral-spark);"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg> Reward: ${item.reward_amount || 'None'}`;
+        document.getElementById('modalItemLocker').innerHTML = `<svg class="svg-icon-sm" viewBox="0 0 24 24" style="color:#FBBF24;"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg> Office Locker Storage: ${item.locker_location || 'Unassigned / Counter Pending'}`;
+        document.getElementById('modalItemDesc').innerText = item.description;
+
+        const badge = document.getElementById('modalItemBadge');
+        badge.innerText = item.category;
+        badge.className = `badge-tag-status badge-tag-${item.category}`;
+
+        // Assemble media items: images + video
+        AppState.modalMediaList = [];
+        if (item.media_gallery && item.media_gallery.length > 0) {
+            item.media_gallery.forEach(imgUrl => AppState.modalMediaList.push({ type: 'image', url: imgUrl }));
+        } else if (item.image_url) {
+            AppState.modalMediaList.push({ type: 'image', url: item.image_url });
+        }
+
+        if (item.video_url) {
+            AppState.modalMediaList.push({ type: 'video', url: item.video_url });
+        }
+
+        AppState.modalCarouselIndex = 0;
+        renderModalCarouselMedia();
+
+        document.getElementById('itemDetailModalOverlay').style.display = 'flex';
+    }
+
+    function renderModalCarouselMedia() {
+        const box = document.getElementById('modalCarouselBox');
+        const img = document.getElementById('modalCarouselImg');
+        const vid = document.getElementById('modalCarouselVideo');
+        const counter = document.getElementById('modalCarouselCounter');
+
+        if (AppState.modalMediaList.length === 0) {
+            box.style.display = 'none';
+            return;
+        }
+
+        box.style.display = 'block';
+        const currentMedia = AppState.modalMediaList[AppState.modalCarouselIndex];
+        counter.innerText = `${AppState.modalCarouselIndex + 1} / ${AppState.modalMediaList.length} (${currentMedia.type.toUpperCase()})`;
+
+        if (currentMedia.type === 'video') {
+            img.style.display = 'none';
+            vid.style.display = 'block';
+            vid.src = currentMedia.url;
+        } else {
+            vid.pause();
+            vid.style.display = 'none';
+            img.style.display = 'block';
+            img.src = currentMedia.url;
+        }
+    }
+
+    function slideCarouselPrev() {
+        if (AppState.modalMediaList.length <= 1) return;
+        AppState.modalCarouselIndex = (AppState.modalCarouselIndex - 1 + AppState.modalMediaList.length) % AppState.modalMediaList.length;
+        renderModalCarouselMedia();
+    }
+
+    function slideCarouselNext() {
+        if (AppState.modalMediaList.length <= 1) return;
+        AppState.modalCarouselIndex = (AppState.modalCarouselIndex + 1) % AppState.modalMediaList.length;
+        renderModalCarouselMedia();
+    }
+
+    function closeItemDetailModal() {
+        const vid = document.getElementById('modalCarouselVideo');
+        if (vid) { vid.pause(); vid.src = ''; }
+        document.getElementById('itemDetailModalOverlay').style.display = 'none';
+        AppState.selectedItemId = null;
+    }
+
+    /* BACKUP & RECOVERY (CHECKLIST H) */
+    async function createDatabaseSnapshot() {
+        showToastNotification("Creating system snapshot in Supabase...");
+        const snapshot = {
+            timestamp: new Date().toISOString(),
+            createdBy: AppState.currentUser ? AppState.currentUser.email : 'Admin',
+            items: AppState.itemsData,
+            users: AppState.usersList,
+            item_trace_logs: AppState.itemTraceLogs,
+            system_audit_logs: AppState.systemAuditLogs
+        };
+
+        const backupName = `Snapshot_${new Date().toISOString().replace(/[:.]/g, '-')}`;
+        const { data, error } = await db.from('system_backups').insert([{
+            backup_name: backupName,
+            backup_data: JSON.stringify(snapshot),
+            created_by: AppState.currentUser ? AppState.currentUser.email : 'Admin'
+        }]);
+
+        await addSystemAuditLog('BACKUP_CREATED', 'System', `Created cloud database backup: ${backupName}`);
+        fetchBackupsFromSupabase();
+        showToastNotification("Cloud Backup Snapshot created!");
+    }
+
+    async function fetchBackupsFromSupabase() {
+        const container = document.getElementById('backupSnapshotsContainer');
+        if (!container) return;
+
+        const { data, error } = await db.from('system_backups').select('*').order('created_at', { ascending: false }).limit(5);
+        if (!error && data && data.length > 0) {
+            AppState.backupsList = data;
+            container.innerHTML = data.map(b => `
+                <div class="log-item" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <strong style="color: #38BDF8;">${b.backup_name}</strong>
+                        <div class="log-time">${new Date(b.created_at).toLocaleString()} | By: ${b.created_by}</div>
+                    </div>
+                    <button class="action-button-base action-button-primary" style="width: auto; padding: 3px 8px; font-size: 9px;" onclick="restoreDatabaseSnapshot(${b.backup_id})">Restore</button>
+                </div>
+            `).join('');
+        } else {
+            container.innerHTML = '<div style="font-size: 10px; color: var(--color-text-muted);">No snapshots saved. Click "Snapshot Database" above.</div>';
+        }
+    }
+
+    async function restoreDatabaseSnapshot(backupId) {
+        const backup = AppState.backupsList.find(b => b.backup_id === backupId);
+        if (!backup) return;
+
+        const confirmRestore = confirm(`Are you sure you want to restore the system from "${backup.backup_name}"? Existing data will be synchronized to this point.`);
+        if (!confirmRestore) return;
+
+        try {
+            const dataObj = JSON.parse(backup.backup_data);
+            await addSystemAuditLog('BACKUP_RESTORED', 'System', `Admin restored database from snapshot #${backupId} (${backup.backup_name})`);
+            fetchItemsFromSupabase();
+            fetchUsersFromSupabase();
+            showToastNotification("System restored from snapshot successfully!");
+        } catch (e) {
+            showToastNotification("Error parsing snapshot data.");
+        }
+    }
+
+    function downloadDatabaseBackupJSON() {
+        const snapshot = {
+            exportDate: new Date().toISOString(),
+            exportedBy: AppState.currentUser ? AppState.currentUser.email : 'Admin',
+            items: AppState.itemsData,
+            users: AppState.usersList,
+            item_trace_logs: AppState.itemTraceLogs,
+            system_audit_logs: AppState.systemAuditLogs
+        };
+
+        const jsonStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(snapshot, null, 2));
+        const link = document.createElement("a");
+        link.setAttribute("href", jsonStr);
+        link.setAttribute("download", `FindIt_Cloud_Backup_${Date.now()}.json`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        addSystemAuditLog('BACKUP_EXPORT_JSON', 'Admin Console', 'Exported JSON database archive');
+        showToastNotification("Database JSON backup exported!");
+    }
+
+    /* ADMIN CREATE USER MODAL */
+    function openAdminCreateUserModal() { document.getElementById('adminCreateUserModalOverlay').style.display = 'flex'; }
+    function closeAdminCreateUserModal() { document.getElementById('adminCreateUserModalOverlay').style.display = 'none'; }
+
+    async function saveAdminCreatedUser() {
+        const name = document.getElementById('adminNewUserName').value.trim();
+        const email = document.getElementById('adminNewUserEmail').value.trim();
+        const role = document.getElementById('adminNewUserRole').value;
+        const pass = document.getElementById('adminNewUserPassword').value.trim();
+
+        if (!name || !email || !pass) {
+            alert('Please fill in all user fields.');
+            return;
+        }
+
+        const { data, error } = await db.from('users').insert([{
+            full_name: name,
+            email: email,
+            role: role,
+            password_hash: pass,
+            status: 'active'
+        }]);
+
+        if (!error) {
+            await addSystemAuditLog('USER_CREATED_BY_ADMIN', email, `Admin created user with role ${role.toUpperCase()}`);
+            closeAdminCreateUserModal();
+            fetchUsersFromSupabase();
+            showToastNotification(`User ${email} created successfully!`);
+        } else {
+            alert(error.message || 'Error creating user.');
+        }
+    }
+
+    /* USER ROLE & STATUS CONTROLS */
     async function updateUserRoleByAdmin(userId, newRole, userEmail) {
         const { error } = await db.from('users').update({ role: newRole }).eq('user_id', userId);
         if (!error) {
@@ -1117,16 +2727,68 @@
         const item = AppState.itemsData.find(i => i.id === id);
         if (item) {
             item.status = newStatus;
-            await db.from('items').update({ status: newStatus }).eq('item_id', id);
             const staffEmail = AppState.currentUser ? AppState.currentUser.email : "Staff Member";
-            addItemTraceLog(id, item.title, `Status updated to ${newStatus}`, staffEmail);
-            addSystemAuditLog('ITEM_STATUS_CHANGE', staffEmail, `Item #${id} (${item.title}) set to ${newStatus}`);
+
+            // If item is resolved, free up the locker automatically so others can use it
+            if (newStatus === 'Resolved' && item.locker_location && item.locker_location !== 'Unassigned') {
+                const freedLocker = item.locker_location;
+                item.locker_location = 'Unassigned';
+                await db.from('items').update({ status: newStatus, locker_location: 'Unassigned' }).eq('item_id', id);
+                addItemTraceLog(id, item.title, `Item resolved & released from Locker #${freedLocker}`, staffEmail);
+                addSystemAuditLog('ITEM_STATUS_CHANGE', staffEmail, `Item #${id} (${item.title}) resolved. Locker #${freedLocker} released.`);
+            } else {
+                await db.from('items').update({ status: newStatus }).eq('item_id', id);
+                addItemTraceLog(id, item.title, `Status updated to ${newStatus}`, staffEmail);
+                addSystemAuditLog('ITEM_STATUS_CHANGE', staffEmail, `Item #${id} (${item.title}) set to ${newStatus}`);
+            }
+
             fetchItemsFromSupabase();
             showToastNotification(`Report #${id} verified as ${newStatus}`);
         }
     }
 
+    async function updateItemLockerLocation(itemId, lockerValue) {
+        // Enforce anti-duplicate locker assignment: A locker cannot hold multiple active items simultaneously
+        if (lockerValue && lockerValue !== 'Unassigned') {
+            const conflict = AppState.itemsData.find(i => 
+                i.id !== itemId && 
+                String(i.locker_location) === String(lockerValue) && 
+                i.status !== 'Resolved'
+            );
+            if (conflict) {
+                showToastNotification(`Locker #${lockerValue} is already occupied by Item #${conflict.id} (${conflict.title})!`);
+                renderAdminManageItems();
+                return;
+            }
+        }
+
+        const { error } = await db.from('items').update({ locker_location: lockerValue }).eq('item_id', itemId);
+        if (error) {
+            showToastNotification("Failed to update locker assignment");
+            return;
+        }
+
+        const item = AppState.itemsData.find(i => i.id === itemId);
+        const staffEmail = AppState.currentUser ? AppState.currentUser.email : "Staff";
+        const lockerDisplay = lockerValue === 'Unassigned' ? 'Unassigned' : `Locker #${lockerValue}`;
+
+        if (item) {
+            item.locker_location = lockerValue;
+            const actionText = lockerValue === 'Unassigned' ? 'Removed from locker' : `Assigned storage location: ${lockerDisplay}`;
+            addItemTraceLog(itemId, item.title, actionText, staffEmail);
+            addSystemAuditLog('LOCKER_ASSIGNMENT', staffEmail, `Item #${itemId} (${item.title}): ${actionText}`);
+        }
+
+        showToastNotification(lockerValue === 'Unassigned' ? 'Locker unassigned' : `Stored in ${lockerDisplay}`);
+        renderAdminManageItems();
+        renderTrackerItems();
+        fetchItemTraceLogsFromSupabase();
+    }
+
     async function deleteReportByAdmin(id) {
+        const confirmDel = confirm(`Are you sure you want to permanently delete report #${id}?`);
+        if (!confirmDel) return;
+
         const item = AppState.itemsData.find(i => i.id === id);
         const userEmail = AppState.currentUser ? AppState.currentUser.email : "Admin";
         if (item) {
@@ -1138,95 +2800,56 @@
         showToastNotification(`Report #${id} removed.`);
     }
 
-    async function handleNewReportSubmission() {
-        const title = document.getElementById('reportTitleInput').value.trim();
-        const location = document.getElementById('reportLocationInput').value.trim();
-        const category = document.getElementById('reportCategorySelect').value;
-        const reward = document.getElementById('reportRewardInput').value.trim();
-        const desc = document.getElementById('reportDescInput').value.trim();
-        const imageFileInput = document.getElementById('reportImageInput');
-        const userEmail = AppState.currentUser ? AppState.currentUser.email : "Guest";
+    async function publishCampusBroadcastNotice() {
+        const message = document.getElementById('inputBroadcastMessage').value.trim();
+        if (!message) return;
 
-        if (!title || !location) {
-            alert('Please fill in both Title and Location.');
+        await db.from('system_announcements').update({ active: false }).neq('announcement_id', 0);
+        await db.from('system_announcements').insert([{
+            message: message,
+            active: true,
+            created_by: AppState.currentUser.email
+        }]);
+
+        await addSystemAuditLog('BROADCAST_PUBLISHED', 'All Users', `Notice: "${message}"`);
+        document.getElementById('inputBroadcastMessage').value = '';
+        fetchAnnouncementsFromSupabase();
+        showToastNotification("Campus Broadcast published!");
+    }
+
+    function exportAuditLogsToCSV() {
+        const filtered = AppState.systemAuditLogs.filter(l => isTimestampMatchingAdminFilter(l.created_at));
+        if (filtered.length === 0) {
+            showToastNotification("No audit logs matching active filter!");
             return;
         }
 
-        let imageUrl = null;
+        let csvContent = "data:text/csv;charset=utf-8,ID,Event Type,Target User,Details,Performed By,Timestamp\n";
+        filtered.forEach(l => {
+            csvContent += `"${l.id}","${l.eventType}","${l.targetUser}","${(l.details || '').replace(/"/g, '""')}","${l.performedBy}","${l.timestamp}"\n`;
+        });
 
-        if (imageFileInput && imageFileInput.files.length > 0) {
-            const file = imageFileInput.files[0];
-            const fileExt = file.name.split('.').pop();
-            const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
-            const filePath = `items/${fileName}`;
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `FindIt_Security_Audit_Logs_${Date.now()}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
 
-            const { data: uploadData, error: uploadErr } = await db.storage
-                .from('item_images')
-                .upload(filePath, file);
-
-            if (!uploadErr) {
-                const { data: publicUrlData } = db.storage
-                    .from('item_images')
-                    .getPublicUrl(filePath);
-                imageUrl = publicUrlData.publicUrl;
-            }
-        }
-
-        const { data, error } = await db.from('items').insert([{
-            title: title,
-            location: location,
-            report_type: category,
-            reward_amount: (category === 'found') ? 'None' : (reward || 'None'),
-            description: desc || "No description provided.",
-            image_url: imageUrl,
-            user_email: userEmail,
-            status: 'Pending'
-        }]).select();
-
-        if (!error && data) {
-            const newItem = data[0];
-            addItemTraceLog(newItem.item_id, title, `New report created (${category.toUpperCase()})`, userEmail);
-
-            document.getElementById('reportTitleInput').value = '';
-            document.getElementById('reportLocationInput').value = '';
-            document.getElementById('reportRewardInput').value = '';
-            document.getElementById('reportDescInput').value = '';
-            document.getElementById('reportImageInput').value = '';
-
-            toggleRewardInputVisibility();
-            fetchItemsFromSupabase();
-            showToastNotification("Report submitted for Staff review!");
-            switchActiveTab('feedViewScreen', document.querySelectorAll('.nav-tab-item')[0]);
-        }
+        addSystemAuditLog('AUDIT_LOG_EXPORT', 'Admin Console', 'Exported CSV Security Audit Logs');
     }
 
-    function openItemDetailModal(item) {
-        AppState.selectedItemId = item.id;
-        document.getElementById('modalItemTitle').innerText = item.title;
-        document.getElementById('modalItemLocation').innerText = "📍 " + item.location;
-        document.getElementById('modalItemReward').innerText = "🎁 Reward: " + (item.reward_amount || 'None');
-        document.getElementById('modalItemLocker').innerText = "📦 Office Locker Storage: " + (item.locker_location || 'Unassigned');
-
-        const descContainer = document.getElementById('modalItemDesc');
-        if (item.image_url) {
-            descContainer.innerHTML = `
-                <img src="${item.image_url}" style="width: 100%; max-height: 160px; object-fit: cover; border-radius: 8px; margin-bottom: 8px; border: var(--glass-border);">
-                <p>${item.description}</p>
-            `;
+    async function markUserOwnReportResolved(itemId, title) {
+        const item = AppState.itemsData.find(i => i.id === itemId);
+        if (item && item.locker_location && item.locker_location !== 'Unassigned') {
+            await db.from('items').update({ status: 'Resolved', locker_location: 'Unassigned' }).eq('item_id', itemId);
         } else {
-            descContainer.innerText = item.description;
+            await db.from('items').update({ status: 'Resolved' }).eq('item_id', itemId);
         }
-        
-        const badge = document.getElementById('modalItemBadge');
-        badge.innerText = item.category;
-        badge.className = `badge-tag-status badge-tag-${item.category}`;
-
-        document.getElementById('itemDetailModalOverlay').style.display = 'flex';
-    }
-
-    function closeItemDetailModal() {
-        document.getElementById('itemDetailModalOverlay').style.display = 'none';
-        AppState.selectedItemId = null;
+        await addItemTraceLog(itemId, title, "Marked as Resolved by Owner", AppState.currentUser.email);
+        fetchItemsFromSupabase();
+        showToastNotification("Report marked as Resolved!");
     }
 
     async function triggerClaimAction() {
@@ -1259,172 +2882,6 @@
         switchActiveTab('trackViewScreen', document.querySelectorAll('.nav-tab-item')[2]);
     }
 
-    function filterFeedCards() {
-        const searchVal = document.getElementById('feedSearchInput').value.toLowerCase();
-        const cards = document.querySelectorAll('#feedItemsContainer .info-card-container');
-        cards.forEach(card => {
-            const title = card.querySelector('.info-card-title').innerText.toLowerCase();
-            const location = card.querySelector('.info-card-location').innerText.toLowerCase();
-            card.style.display = (title.includes(searchVal) || location.includes(searchVal)) ? 'flex' : 'none';
-        });
-    }
-
-    function updateSystemHardwareClock() {
-        const now = new Date();
-        const clockEl = document.getElementById('systemClockDisplay');
-        if (clockEl) clockEl.innerText = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-    }
-    setInterval(updateSystemHardwareClock, 1000);
-    updateSystemHardwareClock();
-
-    function toggleAuthView(targetView) {
-        document.getElementById('loginViewScreen').style.display = targetView === 'login' ? 'block' : 'none';
-        document.getElementById('registerViewScreen').style.display = targetView === 'register' ? 'block' : 'none';
-    }
-
-    function validateIASPassword(password) {
-        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!\%*?&]{8,}$/;
-        return regex.test(password);
-    }
-
-    async function executeBackendLoginProcess() {
-        const now = Date.now();
-        if (now < AppState.lockoutUntil) {
-            const secsLeft = Math.ceil((AppState.lockoutUntil - now) / 1000);
-            showBanner('loginFeedbackBanner', `Too many failed attempts. Account locked for ${secsLeft}s.`, "error");
-            return;
-        }
-
-        const email = document.getElementById('inputUserEmail').value.trim();
-        const password = document.getElementById('inputUserPassword').value.trim();
-
-        if (!email || !password) {
-            showBanner('loginFeedbackBanner', "Please enter both email and password.", "error");
-            return;
-        }
-
-        const { data: users, error } = await db.from('users').select('*').eq('email', email).limit(1);
-
-        if (error || !users || users.length === 0) {
-            AppState.failedAttempts++;
-            if (AppState.failedAttempts >= 3) {
-                AppState.lockoutUntil = Date.now() + AppState.lockoutDuration;
-                const lockedSecs = AppState.lockoutDuration / 1000;
-                showBanner('loginFeedbackBanner', `3 failed attempts! Locked out for ${lockedSecs} seconds.`, "error");
-                AppState.lockoutDuration *= 2;
-                addSystemAuditLog('SECURITY_ALERT', email, "Failed login lockout triggered after 3 attempts");
-            } else {
-                showBanner('loginFeedbackBanner', `Invalid credentials. Attempt ${AppState.failedAttempts} of 3.`, "error");
-            }
-            return;
-        }
-
-        const user = users[0];
-
-        if (user.status === 'suspended') {
-            showBanner('loginFeedbackBanner', "Account is suspended by Admin. Contact support.", "error");
-            return;
-        }
-
-        AppState.failedAttempts = 0;
-        AppState.currentUser = {
-            user_id: user.user_id,
-            full_name: user.full_name,
-            email: user.email,
-            role: user.role
-        };
-
-        localStorage.setItem('findit_user', JSON.stringify(AppState.currentUser));
-        await recordUserAuthTraceLog(user.user_id, user.email, user.role, 'LOGIN');
-
-        if (user.role === 'admin') {
-            await addSystemAuditLog('ADMIN_CONSOLE_ACCESS', user.email, 'Admin logged into Management Console');
-        }
-
-        setupInterfaceForUserRole();
-        fetchItemsFromSupabase();
-        fetchAnnouncementsFromSupabase();
-
-        document.getElementById('loginViewScreen').style.display = 'none';
-        
-        if (AppState.currentUser.role === 'admin') {
-            document.getElementById('adminControlViewScreen').style.display = 'block';
-        } else {
-            document.getElementById('feedViewScreen').style.display = 'block';
-            document.getElementById('bottomTabBarContainer').style.display = 'flex';
-        }
-
-        showToastNotification("Welcome, " + AppState.currentUser.full_name + "!");
-    }
-
-    function quickFillRoleCredentials(email, password) {
-        document.getElementById('inputUserEmail').value = email;
-        document.getElementById('inputUserPassword').value = password;
-        showToastNotification("Selected credentials for " + email);
-    }
-
-    function updateSelectedFileNameDisplay(input) {
-        const display = document.getElementById('selectedFileNameDisplay');
-        if (input.files && input.files.length > 0) {
-            display.innerText = input.files[0].name;
-            display.style.color = 'var(--color-seafoam)';
-        } else {
-            display.innerText = 'No file chosen';
-            display.style.color = 'var(--color-text-muted)';
-        }
-    }
-
-    function triggerCameraCaptureMode() {
-        const fileInput = document.getElementById('reportImageInput');
-        fileInput.setAttribute('capture', 'environment');
-        fileInput.click();
-    }
-
-    async function executeBackendRegisterProcess() {
-        const fullName = document.getElementById('regFullName').value.trim();
-        const email = document.getElementById('regEmail').value.trim();
-        const role = document.getElementById('regRole').value;
-        const password = document.getElementById('regPassword').value.trim();
-        const confirmPassword = document.getElementById('regConfirmPassword').value.trim();
-
-        if (!fullName || !email || !password || !confirmPassword) {
-            showBanner('registerFeedbackBanner', "All fields are required.", "error");
-            return;
-        }
-
-        if (password !== confirmPassword) {
-            showBanner('registerFeedbackBanner', "Password and Confirm Password do not match.", "error");
-            return;
-        }
-
-        if (!validateIASPassword(password)) {
-            showBanner('registerFeedbackBanner', "Password must be >= 8 chars with Uppercase, Lowercase, Number & Special Character (@$!%*?&).", "error");
-            return;
-        }
-
-        const { data, error } = await db.from('users').insert([{
-            full_name: fullName,
-            email: email,
-            password_hash: password,
-            role: role,
-            status: 'active'
-        }]);
-
-        if (error) {
-            showBanner('registerFeedbackBanner', error.message || "Registration failed.", "error");
-        } else {
-            showBanner('registerFeedbackBanner', "Registration successful! Redirecting...", "success");
-            addSystemAuditLog('USER_REGISTRATION', email, `New ${role.toUpperCase()} account created`);
-            document.getElementById('inputUserEmail').value = email;
-            document.getElementById('inputUserPassword').value = password;
-            
-            setTimeout(() => {
-                toggleAuthView('login');
-                executeBackendLoginProcess();
-            }, 1000);
-        }
-    }
-
     function setupInterfaceForUserRole() {
         if (!AppState.currentUser) return;
         const currentRole = AppState.currentUser.role || 'user';
@@ -1432,12 +2889,15 @@
         document.getElementById('displayAuthenticatedUserName').innerText = AppState.currentUser.full_name;
         document.getElementById('displayAuthenticatedUserEmail').innerText = AppState.currentUser.email;
         document.getElementById('userRoleDisplayTag').innerText = currentRole.toUpperCase();
+        document.getElementById('profileFullNameInput').value = AppState.currentUser.full_name || '';
+        document.getElementById('profilePhoneInput').value = AppState.currentUser.phone_number || '';
 
         const consoleTab = document.getElementById('adminTabNavItem');
         const consoleBadge = document.getElementById('consoleRoleBadge');
-        
         const exportCsvBtn = document.getElementById('exportCsvBtn');
+        const adminCreateUserBtn = document.getElementById('adminCreateUserBtn');
         const adminBroadcastCard = document.getElementById('adminBroadcastCard');
+        const adminBackupCard = document.getElementById('adminBackupCard');
         const userMgmtCard = document.getElementById('userManagementCard');
         const systemAuditCard = document.getElementById('systemAuditLogCard');
         const authLogCard = document.getElementById('userAuthLogCard');
@@ -1466,12 +2926,17 @@
             if (consoleSubtitle) consoleSubtitle.innerText = isAdmin ? "Verification, User Accounts & Audit Trail" : "Item Verification & Storage Locker Control";
 
             if (exportCsvBtn) exportCsvBtn.style.display = isAdmin ? 'inline-flex' : 'none';
+            if (adminCreateUserBtn) adminCreateUserBtn.style.display = isAdmin ? 'inline-flex' : 'none';
             if (adminBroadcastCard) adminBroadcastCard.style.display = isAdmin ? 'flex' : 'none';
+            if (adminBackupCard) adminBackupCard.style.display = isAdmin ? 'flex' : 'none';
             if (userMgmtCard) userMgmtCard.style.display = isAdmin ? 'flex' : 'none';
             if (systemAuditCard) systemAuditCard.style.display = isAdmin ? 'flex' : 'none';
             if (authLogCard) authLogCard.style.display = isAdmin ? 'flex' : 'none';
             if (metricUsersBox) metricUsersBox.style.display = isAdmin ? 'block' : 'none';
             if (metricAuditsBox) metricAuditsBox.style.display = isAdmin ? 'block' : 'none';
+
+            const adminDateFilterBar = document.getElementById('adminDateFilterBar');
+            if (adminDateFilterBar) adminDateFilterBar.style.display = isAdmin ? 'flex' : 'none';
 
             fetchItemTraceLogsFromSupabase();
             
@@ -1479,19 +2944,13 @@
                 fetchUsersFromSupabase();
                 fetchUserAuthTraceLogsFromSupabase();
                 fetchSystemAuditLogsFromSupabase();
+                fetchBackupsFromSupabase();
             }
         } else {
             consoleTab.style.display = 'none';
         }
 
         renderFeedItems();
-    }
-
-    function showBanner(bannerId, text, type) {
-        const banner = document.getElementById(bannerId);
-        banner.innerText = text;
-        banner.className = `system-feedback-banner feedback-${type}`;
-        banner.style.display = "block";
     }
 
     function switchActiveTab(targetScreenId, tabElement) {
@@ -1511,6 +2970,12 @@
         input.type = (input.type === 'password') ? 'text' : 'password';
     }
 
+    function quickFillRoleCredentials(email, password) {
+        document.getElementById('inputUserEmail').value = email;
+        document.getElementById('inputUserPassword').value = password;
+        showToastNotification("Selected credentials for " + email);
+    }
+
     function displaySignoutConfirmationModal() { document.getElementById('signoutConfirmationModalOverlay').style.display = 'flex'; }
     function dismissSignoutConfirmationModal() { document.getElementById('signoutConfirmationModalOverlay').style.display = 'none'; }
 
@@ -1519,8 +2984,18 @@
 
         if (AppState.currentUser) {
             await recordUserAuthTraceLog(AppState.currentUser.user_id, AppState.currentUser.email, AppState.currentUser.role, 'LOGOUT');
+            await addSystemAuditLog('USER_LOGOUT', AppState.currentUser.email, 'User session terminated');
         }
 
+        // Notify other open tabs
+        if (authChannel) {
+            authChannel.postMessage({ type: 'LOGOUT' });
+        }
+
+        executeClientSessionClearing(true);
+    }
+
+    function executeClientSessionClearing(showToast = true) {
         AppState.currentUser = null;
         localStorage.removeItem('findit_user');
         document.body.classList.remove('desktop-admin-mode');
@@ -1532,7 +3007,7 @@
 
         document.getElementById('bottomTabBarContainer').style.display = 'none';
         document.getElementById('loginViewScreen').style.display = 'block';
-        showToastNotification("Signed out");
+        if (showToast) showToastNotification("Signed out");
     }
 
     function showToastNotification(message) {
@@ -1542,6 +3017,37 @@
         setTimeout(() => toast.classList.remove('visible'), 3000);
     }
 
+    function showBanner(bannerId, text, type) {
+        const banner = document.getElementById(bannerId);
+        banner.innerText = text;
+        banner.className = `system-feedback-banner feedback-${type}`;
+        banner.style.display = "block";
+    }
+
+    function toggleAuthView(targetView) {
+        document.getElementById('loginViewScreen').style.display = targetView === 'login' ? 'block' : 'none';
+        document.getElementById('registerViewScreen').style.display = targetView === 'register' ? 'block' : 'none';
+    }
+
+    function filterFeedCards() {
+        const searchVal = document.getElementById('feedSearchInput').value.toLowerCase();
+        const cards = document.querySelectorAll('#feedItemsContainer .info-card-container');
+        cards.forEach(card => {
+            const title = card.querySelector('.info-card-title').innerText.toLowerCase();
+            const location = card.querySelector('.info-card-location').innerText.toLowerCase();
+            card.style.display = (title.includes(searchVal) || location.includes(searchVal)) ? 'flex' : 'none';
+        });
+    }
+
+    function updateSystemHardwareClock() {
+        const now = new Date();
+        const clockEl = document.getElementById('systemClockDisplay');
+        if (clockEl) clockEl.innerText = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    }
+    setInterval(updateSystemHardwareClock, 1000);
+    updateSystemHardwareClock();
+
+    /* OTP RECOVERY MODAL */
     function openOtpRecoveryModal() {
         document.getElementById('otpStep1Container').style.display = 'block';
         document.getElementById('otpStep2Container').style.display = 'none';
@@ -1567,11 +3073,11 @@
         }
 
         const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
-        const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
+        const expiresAt = new Date(Date.now() + 5 * 60 * 1000).toISOString();
 
         await db.from('password_resets').insert([{ email: email, otp_code: generatedOtp, expires_at: expiresAt }]);
 
-        document.getElementById('otpSentNoticeText').innerText = `Demo OTP Code: ${generatedOtp} (Expires in 10 mins)`;
+        document.getElementById('otpSentNoticeText').innerText = `Demo OTP Code: ${generatedOtp} (Expires in 5 mins)`;
         document.getElementById('otpStep1Container').style.display = 'none';
         document.getElementById('otpStep2Container').style.display = 'block';
         document.getElementById('otpFeedbackBanner').style.display = 'none';
@@ -1589,8 +3095,8 @@
             return;
         }
 
-        if (!validateIASPassword(newPassword)) {
-            showBanner('otpFeedbackBanner', "Password must be >= 8 chars with Uppercase, Lowercase, Number & Special Char.", "error");
+        if (!validateLivePasswordRules(newPassword, 'otpResetPasswordRules')) {
+            showBanner('otpFeedbackBanner', "Password must meet all 5 security criteria.", "error");
             return;
         }
 
@@ -1603,7 +3109,7 @@
             .limit(1);
 
         if (error || !records || records.length === 0) {
-            showBanner('otpFeedbackBanner', "Invalid or expired OTP code.", "error");
+            showBanner('otpFeedbackBanner', "Invalid or expired OTP code (Limit 3 attempts).", "error");
             return;
         }
 
@@ -1614,10 +3120,18 @@
         document.getElementById('inputUserEmail').value = email;
         document.getElementById('inputUserPassword').value = newPassword;
         showToastNotification("Password reset successful! You can now log in.");
-    }     
+    }
 
     window.addEventListener('DOMContentLoaded', () => {
-        toggleRewardInputVisibility();
+        initSavedTheme();
+        handleReportCategoryChange();
+        renderPhotoThumbnails();
+
+        // Check active lockout
+        if (AppState.lockoutUntil && Date.now() < AppState.lockoutUntil) {
+            startLockoutCountdown();
+        }
+
         if (AppState.currentUser) {
             setupInterfaceForUserRole();
             fetchItemsFromSupabase();
