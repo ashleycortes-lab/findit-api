@@ -6,6 +6,8 @@
     <title>FINDIT - Campus Lost & Found System</title>
     <!-- SUPABASE JS CLIENT SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- MERMAID JS FOR ARCHITECTURE DIAGRAMS -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
     <!-- GOOGLE FONTS: PLUS JAKARTA SANS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -455,6 +457,43 @@
             display: flex; gap: 10px; align-items: center; flex-wrap: wrap; width: 100%;
         }
 
+        /* HIGH-CONTRAST MERMAID DIAGRAM OVERRIDES */
+        #siaDiagramCanvas svg, #modalSiaDiagramCanvas svg {
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+        }
+        /* ERD Specific Styling */
+        #siaDiagramCanvas .er.entityBox, #modalSiaDiagramCanvas .er.entityBox {
+            fill: #0F172A !important;
+            stroke: #2DD4BF !important;
+            stroke-width: 1.5px !important;
+        }
+        #siaDiagramCanvas .er.entityLabel, #modalSiaDiagramCanvas .er.entityLabel {
+            fill: #FFFFFF !important;
+            font-weight: 700 !important;
+            font-size: 13px !important;
+        }
+        #siaDiagramCanvas .er.attributeBoxOdd, #modalSiaDiagramCanvas .er.attributeBoxOdd {
+            fill: #1E293B !important;
+            stroke: #334155 !important;
+        }
+        #siaDiagramCanvas .er.attributeBoxEven, #modalSiaDiagramCanvas .er.attributeBoxEven {
+            fill: #0F172A !important;
+            stroke: #334155 !important;
+        }
+        #siaDiagramCanvas text, #modalSiaDiagramCanvas text {
+            fill: #F1F5F9 !important;
+            font-weight: 500 !important;
+        }
+        #siaDiagramCanvas .er.relationshipLine, #modalSiaDiagramCanvas .er.relationshipLine {
+            stroke: #38BDF8 !important;
+            stroke-width: 1.5px !important;
+        }
+        #siaDiagramCanvas .er.relationshipLabel, #modalSiaDiagramCanvas .er.relationshipLabel {
+            fill: #FBBF24 !important;
+            font-size: 11px !important;
+            font-weight: 600 !important;
+        }
+
         @keyframes fadeInSlideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
         .app-view-screen { animation: fadeInSlideUp var(--transition-smooth) forwards; }
         .brand-vector-svg-container { width: 55px; height: 55px; margin: 0 auto 8px; filter: drop-shadow(0 0 10px rgba(13, 148, 136, 0.5)); }
@@ -750,6 +789,9 @@
                         <p class="screen-subtitle" id="consoleSubtitle" style="margin-bottom: 0;">Supabase Verification & Audit Trail</p>
                     </div>
                     <div style="display: flex; align-items: center; gap: 8px;">
+                        <button id="adminSiaModalBtn" class="action-button-base action-button-primary" style="padding: 6px 12px; font-size: 10px; width: auto; display: none; background: linear-gradient(135deg, #0D9488, #2DD4BF); color: #0F172A; font-weight: 700;" onclick="openSiaModal()">
+                            <svg class="svg-icon-sm" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg> SIA Diagrams
+                        </button>
                         <button id="adminCreateUserBtn" class="action-button-base action-button-secondary" style="padding: 6px 12px; font-size: 10px; width: auto; display: none; color: #38BDF8;" onclick="openAdminCreateUserModal()">
                             <svg class="svg-icon-sm" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add User
                         </button>
@@ -842,6 +884,53 @@
                         </div>
                     </div>
                     <div id="backupSnapshotsContainer" style="width: 100%; margin-top: 8px; max-height: 110px; overflow-y: auto;"></div>
+                </div>
+
+                <!-- ADMIN-ONLY: SYSTEM INTEGRATION & ARCHITECTURE (SIA) FINAL PROJECT DIAGRAMS -->
+                <div id="adminArchitectureCard" class="info-card-container" style="flex-direction: column; align-items: flex-start; margin-bottom: 12px; display: none; background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(45, 212, 191, 0.3);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+                        <div>
+                            <span class="section-header-title" style="color: var(--color-seafoam); font-size: 13px;">
+                                <svg class="svg-icon-sm" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                                System Integration & Architecture (SIA) Diagrams
+                            </span>
+                            <p style="font-size: 10px; color: var(--color-text-muted); margin: 0;">Interactive Architecture & Requirement Specifications</p>
+                        </div>
+                        <div style="display: flex; gap: 4px; flex-wrap: wrap;">
+                            <button type="button" class="action-button-base action-button-secondary sia-tab-btn active" style="width: auto; padding: 4px 8px; font-size: 9px; color: var(--color-seafoam);" onclick="switchSiaDiagram('usecase', this)">1. Use Case</button>
+                            <button type="button" class="action-button-base action-button-secondary sia-tab-btn" style="width: auto; padding: 4px 8px; font-size: 9px;" onclick="switchSiaDiagram('swimlane', this)">2. Swimlane Flow</button>
+                            <button type="button" class="action-button-base action-button-secondary sia-tab-btn" style="width: auto; padding: 4px 8px; font-size: 9px;" onclick="switchSiaDiagram('erd', this)">3. ERD</button>
+                            <button type="button" class="action-button-base action-button-secondary sia-tab-btn" style="width: auto; padding: 4px 8px; font-size: 9px;" onclick="switchSiaDiagram('flowchart', this)">4. Flowchart</button>
+                            <button type="button" class="action-button-base action-button-secondary sia-tab-btn" style="width: auto; padding: 4px 8px; font-size: 9px;" onclick="switchSiaDiagram('network', this)">5. Network Flow</button>
+                        </div>
+                    </div>
+
+                    <!-- DIAGRAM VIEWER BOX -->
+                    <div id="siaDiagramContainer" style="width: 100%; min-height: 420px; max-height: 560px; overflow: hidden; background: #0B111A; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.08); display: flex; flex-direction: column; position: relative;">
+                        <!-- DIAGRAM HEADER & ZOOM CONTROLS -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: rgba(15, 23, 42, 0.85); border-bottom: 1px solid rgba(255,255,255,0.06); z-index: 10; flex-wrap: wrap; gap: 8px;">
+                            <div id="siaDiagramTitle" style="font-size: 11px; font-weight: 700; color: #38BDF8; text-transform: uppercase; letter-spacing: 0.05em;">Diagram 1: Use Case Diagram (System Users & Functions)</div>
+                            
+                            <!-- INTERACTIVE ZOOM & PAN CONTROLS -->
+                            <div style="display: flex; align-items: center; gap: 4px; background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 2px 4px;">
+                                <button type="button" class="action-button-base action-button-secondary" style="width: 26px; height: 26px; padding: 0; font-size: 14px; font-weight: bold; line-height: 1;" onclick="zoomSiaDiagram(0.2)" title="Zoom In (Scroll Up)">+</button>
+                                <span id="siaZoomLevelDisplay" style="font-size: 10px; font-family: monospace; color: var(--color-seafoam); padding: 0 6px; min-width: 42px; text-align: center;">100%</span>
+                                <button type="button" class="action-button-base action-button-secondary" style="width: 26px; height: 26px; padding: 0; font-size: 14px; font-weight: bold; line-height: 1;" onclick="zoomSiaDiagram(-0.2)" title="Zoom Out (Scroll Down)">−</button>
+                                <button type="button" class="action-button-base action-button-secondary" style="width: auto; height: 26px; padding: 0 8px; font-size: 10px;" onclick="resetSiaPanZoom()" title="Reset View">Reset</button>
+                                <button type="button" class="action-button-base action-button-primary" style="width: auto; height: 26px; padding: 0 8px; font-size: 10px; background: #0D9488;" onclick="openSiaModal()" title="Open Fullscreen Modal">⛶ Fullscreen</button>
+                            </div>
+                        </div>
+
+                        <!-- PAN & DRAG VIEWPORT (MOUSE DRAG / TOUCH DRAG / WHEEL ZOOM) -->
+                        <div id="siaPanViewport" style="flex: 1; width: 100%; height: 100%; overflow: hidden; position: relative; cursor: grab; user-select: none;">
+                            <div id="siaDiagramCanvas" style="position: absolute; left: 0; top: 0; transform-origin: 0 0; transition: transform 0.05s ease-out; display: flex; justify-content: center; align-items: center; min-width: 100%; min-height: 100%;">
+                                <!-- Diagram rendered by mermaid -->
+                            </div>
+                        </div>
+                        <div style="position: absolute; bottom: 8px; right: 12px; font-size: 9px; color: var(--color-text-muted); pointer-events: none; background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 4px;">
+                            💡 Click & drag to pan • Mouse wheel or + / − to zoom
+                        </div>
+                    </div>
                 </div>
 
                 <div class="admin-dashboard-grid">
@@ -1183,6 +1272,56 @@
                     </div>
                 </div>
                 <div id="otpFeedbackBanner" class="system-feedback-banner"></div>
+            </div>
+        </div>
+
+        <!-- FULL-SCREEN SIA ARCHITECTURE DIAGRAMS MODAL (PICTURE / DIAGRAM VIEWER) -->
+        <div id="siaDiagramModalOverlay" class="confirmation-modal-overlay">
+            <div class="confirmation-modal-dialog" style="text-align: left; max-width: 950px; width: 96%; max-height: 92vh; display: flex; flex-direction: column;">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 12px;">
+                    <div>
+                        <h3 style="font-size: 16px; font-weight: 700; color: var(--color-seafoam); display: flex; align-items: center; gap: 8px;">
+                            <svg class="svg-icon" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                            System Integration & Architecture (SIA) Diagrams
+                        </h3>
+                        <p style="font-size: 11px; color: var(--color-text-muted); margin: 0;">Interactive Diagrams: Use Case, Swimlane Flow, ERD, System Flowchart & Network Topology</p>
+                    </div>
+                    <button class="action-button-base action-button-secondary" style="width: auto; padding: 4px 10px; font-size: 11px;" onclick="closeSiaModal()">Close ✕</button>
+                </div>
+
+                <!-- DIAGRAM TABS -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+                    <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                        <button type="button" class="action-button-base action-button-secondary sia-modal-tab-btn active" style="width: auto; padding: 5px 10px; font-size: 10px; color: var(--color-seafoam);" onclick="switchModalSiaDiagram('usecase', this)">1. Use Case Diagram</button>
+                        <button type="button" class="action-button-base action-button-secondary sia-modal-tab-btn" style="width: auto; padding: 5px 10px; font-size: 10px;" onclick="switchModalSiaDiagram('swimlane', this)">2. Swimlane Flow</button>
+                        <button type="button" class="action-button-base action-button-secondary sia-modal-tab-btn" style="width: auto; padding: 5px 10px; font-size: 10px;" onclick="switchModalSiaDiagram('erd', this)">3. ERD Database</button>
+                        <button type="button" class="action-button-base action-button-secondary sia-modal-tab-btn" style="width: auto; padding: 5px 10px; font-size: 10px;" onclick="switchModalSiaDiagram('flowchart', this)">4. System Flowchart</button>
+                        <button type="button" class="action-button-base action-button-secondary sia-modal-tab-btn" style="width: auto; padding: 5px 10px; font-size: 10px;" onclick="switchModalSiaDiagram('network', this)">5. Network Flow</button>
+                    </div>
+
+                    <!-- MODAL ZOOM CONTROLS -->
+                    <div style="display: flex; align-items: center; gap: 4px; background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 2px 4px;">
+                        <button type="button" class="action-button-base action-button-secondary" style="width: 26px; height: 26px; padding: 0; font-size: 14px; font-weight: bold; line-height: 1;" onclick="zoomModalSiaDiagram(0.2)" title="Zoom In">+</button>
+                        <span id="modalSiaZoomLevelDisplay" style="font-size: 10px; font-family: monospace; color: var(--color-seafoam); padding: 0 6px; min-width: 42px; text-align: center;">100%</span>
+                        <button type="button" class="action-button-base action-button-secondary" style="width: 26px; height: 26px; padding: 0; font-size: 14px; font-weight: bold; line-height: 1;" onclick="zoomModalSiaDiagram(-0.2)" title="Zoom Out">−</button>
+                        <button type="button" class="action-button-base action-button-secondary" style="width: auto; height: 26px; padding: 0 8px; font-size: 10px;" onclick="resetModalSiaPanZoom()" title="Reset View">Reset</button>
+                    </div>
+                </div>
+
+                <!-- DIAGRAM DISPLAY CANVAS (PAN/ZOOM ENABLED) -->
+                <div id="modalSiaPanViewport" style="flex: 1; overflow: hidden; background: #0B111A; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.08); display: flex; flex-direction: column; position: relative; cursor: grab; user-select: none;">
+                    <div style="padding: 10px 14px; background: rgba(15, 23, 42, 0.85); border-bottom: 1px solid rgba(255,255,255,0.06); z-index: 10; width: 100%;">
+                        <div id="modalSiaDiagramTitle" style="font-size: 12px; font-weight: 700; color: #38BDF8; text-transform: uppercase; letter-spacing: 0.05em;">Diagram 1: Use Case Diagram (System Users & Functions)</div>
+                    </div>
+                    <div style="flex: 1; position: relative; overflow: hidden; width: 100%; height: 100%;">
+                        <div id="modalSiaDiagramCanvas" style="position: absolute; left: 0; top: 0; transform-origin: 0 0; transition: transform 0.05s ease-out; display: flex; justify-content: center; align-items: center; min-width: 100%; min-height: 100%;">
+                            <div style="font-size: 11px; color: var(--color-text-muted);">Loading architecture diagram...</div>
+                        </div>
+                    </div>
+                    <div style="position: absolute; bottom: 8px; right: 12px; font-size: 9px; color: var(--color-text-muted); pointer-events: none; background: rgba(0,0,0,0.5); padding: 2px 6px; border-radius: 4px; z-index: 20;">
+                        💡 Click & drag to pan • Mouse wheel or + / − to zoom
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -2428,7 +2567,8 @@
         const isResolved = currentItem.status === 'Resolved';
         let options = `<option value="Unassigned" ${(!currentItem.locker_location || currentItem.locker_location === 'Unassigned' || isResolved) ? 'selected' : ''}>-- Unassigned --</option>`;
 
-        const TOTAL_LOCKERS = 30;
+        // EXPANDED CAPACITY: 120 storage lockers (4 zones A-D x 30 lockers) to support over 1 month of active custody storage
+        const TOTAL_LOCKERS = 120;
         const lockerList = [];
         for (let i = 1; i <= TOTAL_LOCKERS; i++) {
             lockerList.push(String(i));
@@ -2447,12 +2587,20 @@
                 String(i.locker_location) === num
             );
 
+            // Group lockers by storage tier/zone for clean organization
+            const n = parseInt(num, 10);
+            let zonePrefix = "";
+            if (n >= 1 && n <= 30) zonePrefix = "Zone A (Daily Intake): ";
+            else if (n >= 31 && n <= 60) zonePrefix = "Zone B (Week 1-2): ";
+            else if (n >= 61 && n <= 90) zonePrefix = "Zone C (Week 3-4): ";
+            else if (n >= 91 && n <= 120) zonePrefix = "Zone D (Extended 30+ Days): ";
+
             if (isAssignedToThisItem) {
-                options += `<option value="${num}" selected style="font-weight: bold; color: var(--color-seafoam);">Locker #${num} (Assigned)</option>`;
+                options += `<option value="${num}" selected style="font-weight: bold; color: var(--color-seafoam); background: #0F172A;">${zonePrefix}Locker #${num} (Assigned)</option>`;
             } else if (conflictItem) {
-                options += `<option value="${num}" disabled style="color: rgba(148, 163, 184, 0.6);">Locker #${num} (Occupied by #${conflictItem.id})</option>`;
+                options += `<option value="${num}" disabled style="color: rgba(148, 163, 184, 0.45); background: #0F172A;">${zonePrefix}Locker #${num} (Occupied by #${conflictItem.id})</option>`;
             } else {
-                options += `<option value="${num}">Locker #${num}</option>`;
+                options += `<option value="${num}" style="background: #0F172A; color: #F1F5F9;">${zonePrefix}Locker #${num}</option>`;
             }
         });
 
@@ -2927,6 +3075,8 @@
             if (consoleSubtitle) consoleSubtitle.innerText = isAdmin ? "Verification, User Accounts & Audit Trail" : "Item Verification & Storage Locker Control";
 
             if (exportCsvBtn) exportCsvBtn.style.display = isAdmin ? 'inline-flex' : 'none';
+            const adminSiaModalBtn = document.getElementById('adminSiaModalBtn');
+            if (adminSiaModalBtn) adminSiaModalBtn.style.display = isAdmin ? 'inline-flex' : 'none';
             if (adminCreateUserBtn) adminCreateUserBtn.style.display = isAdmin ? 'inline-flex' : 'none';
             if (adminBroadcastCard) adminBroadcastCard.style.display = isAdmin ? 'flex' : 'none';
             if (adminBackupCard) adminBackupCard.style.display = isAdmin ? 'flex' : 'none';
@@ -2938,6 +3088,11 @@
 
             const adminDateFilterBar = document.getElementById('adminDateFilterBar');
             if (adminDateFilterBar) adminDateFilterBar.style.display = isAdmin ? 'flex' : 'none';
+            const adminArchitectureCard = document.getElementById('adminArchitectureCard');
+            if (adminArchitectureCard) {
+                adminArchitectureCard.style.display = isAdmin ? 'flex' : 'none';
+                if (isAdmin) setTimeout(() => initSiaDiagramViewer(), 100);
+            }
 
             fetchItemTraceLogsFromSupabase();
             
@@ -3121,6 +3276,670 @@
         document.getElementById('inputUserEmail').value = email;
         document.getElementById('inputUserPassword').value = newPassword;
         showToastNotification("Password reset successful! You can now log in.");
+    }
+
+    // ==========================================
+    // SYSTEM INTEGRATION & ARCHITECTURE (SIA) DIAGRAM VIEWER
+    // ==========================================
+    const SIA_DIAGRAMS = {
+        usecase: {
+            title: "Diagram 1: Use Case Diagram (System Users & Functions)",
+            definition: `
+flowchart LR
+    %% Primary & Operational Actors
+    subgraph Users ["Campus Users (Actors)"]
+        direction TB
+        STU["Student / Campus User<br/><b>(Primary Actor)</b>"]
+        STF["Campus Staff / Security<br/><b>(Operational Actor)</b>"]
+        ADM["System Administrator<br/><b>(Governance Actor)</b>"]
+    end
+
+    %% Functional Boundaries
+    subgraph CorePortal ["Citizen & Reporting Services"]
+        direction TB
+        UC1(["Register with OTP Verification"])
+        UC2(["Secure Session Login"])
+        UC3(["Report Lost Item (File Upload Only)"])
+        UC4(["Report Found Item (3-5 Photos / Video)"])
+        UC5(["Browse Item Feed Blotter"])
+        UC12(["Account Security & Password Reset"])
+    end
+
+    subgraph StaffPortal ["Custody & Verification Services"]
+        direction TB
+        UC7(["Verify Item Status & Claim Proof"])
+        UC8(["Assign Locker Location (#1 to #120)"])
+    end
+
+    subgraph AdminPortal ["Governance & Audit Services"]
+        direction TB
+        UC6(["Filter Records by Month (Jan-Dec)"])
+        UC9(["User Account Management & RBAC"])
+        UC10(["Security Audit Log Trails"])
+        UC11(["Cloud Database Snapshot Backup"])
+    end
+
+    subgraph BackendSystem ["Backend Cloud Services"]
+        direction TB
+        EXT_SB["Supabase Cloud Platform<br/><b>(PostgreSQL, Auth, Storage)</b>"]
+    end
+
+    %% User Connections
+    STU --> UC1
+    STU --> UC2
+    STU --> UC3
+    STU --> UC4
+    STU --> UC5
+    STU --> UC12
+
+    %% Staff Connections
+    STF --> UC2
+    STF --> UC4
+    STF --> UC5
+    STF --> UC7
+    STF --> UC8
+
+    %% Admin Connections
+    ADM --> UC2
+    ADM --> UC5
+    ADM --> UC6
+    ADM --> UC7
+    ADM --> UC8
+    ADM --> UC9
+    ADM --> UC10
+    ADM --> UC11
+    ADM --> UC12
+
+    %% Cloud Persist
+    UC3 -.-> EXT_SB
+    UC4 -.-> EXT_SB
+    UC8 -.-> EXT_SB
+    UC10 -.-> EXT_SB
+    UC11 -.-> EXT_SB
+`
+        },
+        swimlane: {
+            title: "Diagram 2: System Flow Diagram (Swimlanes & Pools)",
+            definition: `
+sequenceDiagram
+    autonumber
+    actor User as Campus User
+    participant App as FINDIT App
+    actor Staff as Campus Staff
+    actor Admin as Administrator
+    participant DB as Supabase Cloud
+
+    Note over User,DB: Phase 1: Intake & Evidence Surrender
+    User->>App: Report Found Item (Photos/Video)
+    App->>DB: Upload Media & Insert Item Record
+    DB-->>App: Return Stored Item (Status: Pending)
+    
+    Note over User,DB: Phase 2: Custody & Locker Storage
+    Staff->>App: Inspect Item in Staff Console
+    Staff->>App: Select Locker Number (1-120)
+    App->>App: Anti-Duplicate Validation Check
+    App->>DB: Update Locker & Status: In Custody
+    App->>DB: Log Locker Assignment Audit Trail
+
+    Note over User,DB: Phase 3: Claim Verification & Release
+    User->>Staff: Present Verification Proof
+    Staff->>App: Mark as Resolved
+    App->>DB: Set Status: Resolved & Release Locker
+    App->>DB: Record Resolution Audit Trail
+
+    Note over User,DB: Phase 4: Administrative Governance
+    Admin->>App: Filter by Month (Jan to Dec)
+    App->>DB: Query Filtered Audit Records
+    DB-->>Admin: Display Reports & Allow Export
+`
+        },
+        erd: {
+            title: "Diagram 3: Entity Relationship Diagram (ERD & Database Schema)",
+            definition: `
+erDiagram
+    USERS ||--o{ ITEMS : "reports"
+    USERS ||--o{ AUDIT_LOGS : "triggers"
+    USERS ||--o{ PASSWORD_RESETS : "initiates"
+    ITEMS ||--o{ ITEM_TRACE_LOGS : "tracks"
+    LOCKERS ||--o| ITEMS : "stores"
+
+    USERS {
+        uuid id PK
+        varchar email UK
+        varchar full_name
+        varchar role
+        varchar password_hash
+        boolean is_active
+        boolean is_locked
+        int failed_attempts
+        timestamp lockout_until
+        timestamp created_at
+    }
+
+    ITEMS {
+        bigserial id PK
+        uuid user_id FK
+        varchar type
+        varchar title
+        varchar category
+        text description
+        varchar location
+        varchar status
+        varchar locker_location
+        varchar image_url
+        timestamp date_reported
+        timestamp created_at
+    }
+
+    LOCKERS {
+        int locker_number PK
+        varchar status
+        bigint current_item_id FK
+    }
+
+    AUDIT_LOGS {
+        bigserial id PK
+        varchar action_type
+        varchar performed_by
+        text details
+        varchar ip_address
+        timestamp created_at
+    }
+
+    ITEM_TRACE_LOGS {
+        bigserial id PK
+        bigint item_id FK
+        varchar action
+        varchar performed_by
+        timestamp timestamp
+    }
+
+    PASSWORD_RESETS {
+        bigserial id PK
+        varchar email
+        varchar otp_code
+        boolean is_used
+        timestamp expires_at
+    }
+`
+        },
+        flowchart: {
+            title: "Diagram 4: System Flowchart (Detailed Process & Storage Logic)",
+            definition: `
+flowchart TD
+    START([User Launches FINDIT]) --> AUTH_CHECK{Authenticated?}
+    
+    AUTH_CHECK -- No --> LOGIN_SCREEN[/"Enter Email and Password"/]
+    LOGIN_SCREEN --> PASS_CHECK{Validate SHA-256 Hash?}
+    
+    PASS_CHECK -- Invalid --> ATTEMPT_INC["Increment Failed Attempts"]
+    ATTEMPT_INC --> LOCKOUT_CHECK{Attempts >= 3?}
+    LOCKOUT_CHECK -- Yes --> LOCK_ACC["Lock Account with Progressive Timer"]
+    LOCK_ACC --> LOG_FAIL[("Record Failed Attempt in Logs")]
+    LOG_FAIL --> LOGIN_SCREEN
+    LOCKOUT_CHECK -- No --> SHOW_REMAIN[/"Display Remaining Tries"/]
+    SHOW_REMAIN --> LOGIN_SCREEN
+    
+    PASS_CHECK -- Valid --> RESET_FAIL["Reset Failed Count to 0"]
+    RESET_FAIL --> ROLE_EVAL{Evaluate Role}
+    AUTH_CHECK -- Yes --> ROLE_EVAL
+
+    ROLE_EVAL -- Student / User --> USER_PORTAL["Load Campus Feed Screen"]
+    ROLE_EVAL -- Staff --> STAFF_PORTAL["Load Staff Locker Console"]
+    ROLE_EVAL -- Admin --> ADMIN_PORTAL["Load Admin Governance & Date Filter"]
+
+    USER_PORTAL --> FILE_REPORT{Report Type?}
+    FILE_REPORT -- Lost Item --> UPLOAD_FILE[/"Upload Photos via File Picker - Camera Hidden"/]
+    FILE_REPORT -- Found Item --> CAPTURE_PHOTO[/"Capture Live Camera or Select Media"/]
+    
+    UPLOAD_FILE --> SUBMIT_ITEM["Upload Media to Supabase Storage Bucket"]
+    CAPTURE_PHOTO --> SUBMIT_ITEM
+    SUBMIT_ITEM --> SAVE_DB[("Insert Record into Items Table")]
+    SAVE_DB --> REFRESH_FEED[/"Update Blotter Feed Display"/]
+
+    STAFF_PORTAL --> SELECT_ITEM["Select Active Found Item"]
+    SELECT_ITEM --> PICK_LOCKER[/"Select Locker Number 1 to 120"/]
+    PICK_LOCKER --> LOCKER_VAL{Is Locker Currently Occupied?}
+    
+    LOCKER_VAL -- Yes --> REJECT_LOCKER[/"Show Alert: Duplicate Locker Prevented"/]
+    REJECT_LOCKER --> PICK_LOCKER
+    
+    LOCKER_VAL -- No --> ASSIGN_LOCKER[("Update Item: Locker Assigned")]
+    ASSIGN_LOCKER --> LOG_LOCKER[("Append Locker Assignment to Audit Trail")]
+
+    ASSIGN_LOCKER --> VERIFY_CLAIM{Citizen Claims Item?}
+    VERIFY_CLAIM -- Verified --> RESOLVE_ITEM[("Set Status Resolved & Locker Released")]
+    RESOLVE_ITEM --> LOG_RESOLVE[("Append Status Change to Audit Trail")]
+    LOG_RESOLVE --> END_NODE([Process Finished])
+`
+        },
+        network: {
+            title: "Diagram 5: Network Diagram (Physical & Logical Network Flow)",
+            definition: `
+graph TD
+    subgraph CampusZone ["Campus Client Network"]
+        USER_PC["Student Mobile & Laptop (Wi-Fi)"]
+        STAFF_PC["Staff Security Desk Workstation"]
+        ADMIN_PC["Administrator Control Console"]
+    end
+
+    subgraph SecurityEdge ["Campus Perimeter & Transport Security"]
+        ROUTER["Campus Gateway Firewall & Router"]
+        TLS["Cloudflare TLS 1.3 / HTTPS Gateway"]
+    end
+
+    subgraph SupabaseCloud ["Supabase Cloud BaaS Infrastructure"]
+        GATEWAY["Kong API Gateway (Port 443 HTTPS / REST API)"]
+        AUTH["GoTrue Authentication Engine"]
+        REST["PostgREST REST API Engine"]
+        PG[("PostgreSQL 15 Relational Database Cluster<br/>(Tables: items, users, audit_logs, lockers)")]
+        S3[("S3 Object Storage Bucket<br/>(Bucket: item-photos)")]
+    end
+
+    USER_PC --> ROUTER
+    STAFF_PC --> ROUTER
+    ADMIN_PC --> ROUTER
+
+    ROUTER --> TLS
+    TLS --> GATEWAY
+
+    GATEWAY --> AUTH
+    GATEWAY --> REST
+    GATEWAY --> S3
+
+    REST <--> PG
+    AUTH <--> PG
+`
+        }
+    };
+
+    let activeSiaKey = 'usecase';
+
+    function initSiaDiagramViewer() {
+        if (typeof mermaid !== 'undefined') {
+            try {
+                mermaid.initialize({ 
+                    startOnLoad: false, 
+                    theme: 'base', 
+                    securityLevel: 'loose',
+                    flowchart: { 
+                        useMaxWidth: false, 
+                        htmlLabels: true, 
+                        curve: 'linear',
+                        nodeSpacing: 50,
+                        rankSpacing: 60
+                    },
+                    sequence: { 
+                        useMaxWidth: false, 
+                        showSequenceNumbers: true,
+                        actorMargin: 70,
+                        boxMargin: 10,
+                        boxTextMargin: 5,
+                        noteMargin: 10,
+                        messageMargin: 35
+                    },
+                    er: { 
+                        useMaxWidth: false,
+                        layoutDirection: 'TB',
+                        minEntityWidth: 120,
+                        minEntityHeight: 80,
+                        entityPadding: 15
+                    },
+                    themeVariables: {
+                        darkMode: true,
+                        background: '#0F172A',
+                        mainBkg: '#1E293B',
+                        primaryColor: '#0F766E',
+                        primaryTextColor: '#FFFFFF',
+                        primaryBorderColor: '#2DD4BF',
+                        lineColor: '#38BDF8',
+                        secondaryColor: '#1E293B',
+                        secondaryTextColor: '#F1F5F9',
+                        secondaryBorderColor: '#0EA5E9',
+                        tertiaryColor: '#0F172A',
+                        tertiaryTextColor: '#E2E8F0',
+                        tertiaryBorderColor: '#334155',
+                        actorBkg: '#0F766E',
+                        actorTextColor: '#FFFFFF',
+                        actorBorder: '#2DD4BF',
+                        actorLineColor: '#38BDF8',
+                        signalColor: '#2DD4BF',
+                        signalTextColor: '#F1F5F9',
+                        labelBoxBkgColor: '#1E293B',
+                        labelBoxBorderColor: '#2DD4BF',
+                        labelTextColor: '#FFFFFF',
+                        loopTextColor: '#FFFFFF',
+                        noteBorderColor: '#F59E0B',
+                        noteBkgColor: '#1E293B',
+                        noteTextColor: '#FDE68A',
+                        clusterBkg: '#111827',
+                        clusterBorder: '#38BDF8',
+                        fontSize: '13px',
+                        fontFamily: "'Plus Jakarta Sans', sans-serif"
+                    },
+                    themeCSS: `
+                        .er.entityBox { fill: #0F172A !important; stroke: #2DD4BF !important; stroke-width: 1.5px !important; }
+                        .er.entityLabel { fill: #FFFFFF !important; font-weight: 700 !important; font-size: 13px !important; }
+                        .er.attributeBoxOdd { fill: #1E293B !important; stroke: #334155 !important; }
+                        .er.attributeBoxEven { fill: #0F172A !important; stroke: #334155 !important; }
+                        .er.relationshipLine { stroke: #38BDF8 !important; stroke-width: 1.5px !important; }
+                        .er.relationshipLabel { fill: #FBBF24 !important; font-weight: 600 !important; }
+                        text { fill: #F8FAFC !important; font-family: 'Plus Jakarta Sans', sans-serif !important; }
+                    `
+                });
+            } catch (e) {
+                console.warn("Mermaid init notice:", e);
+            }
+            renderActiveSiaDiagram();
+        }
+    }
+
+    // ==========================================
+    // SYSTEM INTEGRATION & ARCHITECTURE (SIA) DIAGRAM VIEWER WITH PAN & ZOOM
+    // ==========================================
+    let siaState = {
+        zoom: 1.0,
+        panX: 0,
+        panY: 0,
+        isDragging: false,
+        startX: 0,
+        startY: 0
+    };
+
+    let modalSiaState = {
+        zoom: 1.0,
+        panX: 0,
+        panY: 0,
+        isDragging: false,
+        startX: 0,
+        startY: 0
+    };
+
+    function applySiaTransform() {
+        const canvas = document.getElementById('siaDiagramCanvas');
+        const display = document.getElementById('siaZoomLevelDisplay');
+        if (canvas) {
+            canvas.style.transform = `translate(${siaState.panX}px, ${siaState.panY}px) scale(${siaState.zoom})`;
+        }
+        if (display) {
+            display.innerText = `${Math.round(siaState.zoom * 100)}%`;
+        }
+    }
+
+    function zoomSiaDiagram(delta) {
+        siaState.zoom = Math.min(Math.max(0.3, siaState.zoom + delta), 3.0);
+        applySiaTransform();
+    }
+
+    function resetSiaPanZoom() {
+        siaState.zoom = 1.0;
+        siaState.panX = 0;
+        siaState.panY = 0;
+        applySiaTransform();
+    }
+
+    function applyModalSiaTransform() {
+        const canvas = document.getElementById('modalSiaDiagramCanvas');
+        const display = document.getElementById('modalSiaZoomLevelDisplay');
+        if (canvas) {
+            canvas.style.transform = `translate(${modalSiaState.panX}px, ${modalSiaState.panY}px) scale(${modalSiaState.zoom})`;
+        }
+        if (display) {
+            display.innerText = `${Math.round(modalSiaState.zoom * 100)}%`;
+        }
+    }
+
+    function zoomModalSiaDiagram(delta) {
+        modalSiaState.zoom = Math.min(Math.max(0.3, modalSiaState.zoom + delta), 3.0);
+        applyModalSiaTransform();
+    }
+
+    function resetModalSiaPanZoom() {
+        modalSiaState.zoom = 1.0;
+        modalSiaState.panX = 0;
+        modalSiaState.panY = 0;
+        applyModalSiaTransform();
+    }
+
+    // Attach Pan & Mouse Wheel Listeners
+    function setupSiaPanZoomListeners() {
+        // Main Dashboard Viewport
+        const viewport = document.getElementById('siaPanViewport');
+        if (viewport && !viewport._hasPanZoom) {
+            viewport._hasPanZoom = true;
+
+            viewport.addEventListener('mousedown', (e) => {
+                siaState.isDragging = true;
+                siaState.startX = e.clientX - siaState.panX;
+                siaState.startY = e.clientY - siaState.panY;
+                viewport.style.cursor = 'grabbing';
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!siaState.isDragging) return;
+                siaState.panX = e.clientX - siaState.startX;
+                siaState.panY = e.clientY - siaState.startY;
+                applySiaTransform();
+            });
+
+            window.addEventListener('mouseup', () => {
+                if (siaState.isDragging) {
+                    siaState.isDragging = false;
+                    if (viewport) viewport.style.cursor = 'grab';
+                }
+            });
+
+            // Wheel zoom
+            viewport.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const delta = e.deltaY < 0 ? 0.15 : -0.15;
+                zoomSiaDiagram(delta);
+            }, { passive: false });
+
+            // Touch events for mobile/tablet
+            let initialTouchDist = null;
+            viewport.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 1) {
+                    siaState.isDragging = true;
+                    siaState.startX = e.touches[0].clientX - siaState.panX;
+                    siaState.startY = e.touches[0].clientY - siaState.panY;
+                } else if (e.touches.length === 2) {
+                    initialTouchDist = Math.hypot(
+                        e.touches[0].clientX - e.touches[1].clientX,
+                        e.touches[0].clientY - e.touches[1].clientY
+                    );
+                }
+            }, { passive: true });
+
+            viewport.addEventListener('touchmove', (e) => {
+                if (e.touches.length === 1 && siaState.isDragging) {
+                    siaState.panX = e.touches[0].clientX - siaState.startX;
+                    siaState.panY = e.touches[0].clientY - siaState.startY;
+                    applySiaTransform();
+                } else if (e.touches.length === 2 && initialTouchDist) {
+                    const currentDist = Math.hypot(
+                        e.touches[0].clientX - e.touches[1].clientX,
+                        e.touches[0].clientY - e.touches[1].clientY
+                    );
+                    const diff = (currentDist - initialTouchDist) * 0.005;
+                    zoomSiaDiagram(diff);
+                    initialTouchDist = currentDist;
+                }
+            }, { passive: true });
+
+            viewport.addEventListener('touchend', () => {
+                siaState.isDragging = false;
+                initialTouchDist = null;
+            }, { passive: true });
+        }
+
+        // Modal Viewport
+        const modalViewport = document.getElementById('modalSiaPanViewport');
+        if (modalViewport && !modalViewport._hasPanZoom) {
+            modalViewport._hasPanZoom = true;
+
+            modalViewport.addEventListener('mousedown', (e) => {
+                modalSiaState.isDragging = true;
+                modalSiaState.startX = e.clientX - modalSiaState.panX;
+                modalSiaState.startY = e.clientY - modalSiaState.panY;
+                modalViewport.style.cursor = 'grabbing';
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!modalSiaState.isDragging) return;
+                modalSiaState.panX = e.clientX - modalSiaState.startX;
+                modalSiaState.panY = e.clientY - modalSiaState.startY;
+                applyModalSiaTransform();
+            });
+
+            window.addEventListener('mouseup', () => {
+                if (modalSiaState.isDragging) {
+                    modalSiaState.isDragging = false;
+                    if (modalViewport) modalViewport.style.cursor = 'grab';
+                }
+            });
+
+            modalViewport.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const delta = e.deltaY < 0 ? 0.15 : -0.15;
+                zoomModalSiaDiagram(delta);
+            }, { passive: false });
+        }
+    }
+
+    async function switchSiaDiagram(key, btnElement) {
+        activeSiaKey = key;
+        document.querySelectorAll('.sia-tab-btn').forEach(b => {
+            b.classList.remove('active');
+            b.style.color = '';
+            b.style.fontWeight = 'normal';
+        });
+        if (btnElement) {
+            btnElement.classList.add('active');
+            btnElement.style.color = 'var(--color-seafoam)';
+            btnElement.style.fontWeight = 'bold';
+        }
+        resetSiaPanZoom();
+        await renderActiveSiaDiagram();
+    }
+
+    async function renderActiveSiaDiagram() {
+        const titleEl = document.getElementById('siaDiagramTitle');
+        const canvasEl = document.getElementById('siaDiagramCanvas');
+        const viewport = document.getElementById('siaPanViewport');
+        if (!canvasEl || !titleEl) return;
+
+        const dia = SIA_DIAGRAMS[activeSiaKey];
+        if (!dia) return;
+
+        titleEl.innerText = dia.title;
+        canvasEl.innerHTML = `<div style="font-size: 11px; color: var(--color-text-muted); padding: 30px;">Rendering diagram...</div>`;
+
+        if (typeof mermaid !== 'undefined') {
+            try {
+                const uniqueId = `mermaid_${activeSiaKey}_${Math.floor(Math.random()*100000)}`;
+                const { svg } = await mermaid.render(uniqueId, dia.definition.trim());
+                canvasEl.innerHTML = svg;
+                const svgElement = canvasEl.querySelector('svg');
+                if (svgElement) {
+                    svgElement.style.maxWidth = 'none';
+                    svgElement.style.height = 'auto';
+
+                    // Automatic Fit-to-Viewport on Load
+                    if (viewport) {
+                        setTimeout(() => {
+                            const vpWidth = viewport.clientWidth || 800;
+                            const vpHeight = viewport.clientHeight || 450;
+                            const svgRect = svgElement.getBoundingClientRect();
+                            const svgWidth = svgRect.width || 1000;
+                            const svgHeight = svgRect.height || 600;
+
+                            if (svgWidth > 0 && svgHeight > 0) {
+                                const scaleX = (vpWidth - 60) / svgWidth;
+                                const scaleY = (vpHeight - 60) / svgHeight;
+                                const fitScale = Math.min(Math.max(Math.min(scaleX, scaleY), 0.4), 1.0);
+
+                                siaState.zoom = Math.round(fitScale * 10) / 10;
+                                siaState.panX = Math.round((vpWidth - (svgWidth * siaState.zoom)) / 2);
+                                siaState.panY = Math.round((vpHeight - (svgHeight * siaState.zoom)) / 2);
+                                applySiaTransform();
+                            }
+                        }, 50);
+                    }
+                }
+                setupSiaPanZoomListeners();
+            } catch (err) {
+                console.error("Mermaid render error:", err);
+                canvasEl.innerHTML = `
+                    <div style="font-size: 11px; color: #FF6B4A; text-align: center; padding: 24px; background: rgba(255,107,74,0.08); border-radius: 8px;">
+                        Diagram preview error (${err.message || 'Syntax'}). View full documentation in <code>SYSTEM_INTEGRATION_AND_ARCHITECTURE_DOCUMENTATION.md</code>.
+                    </div>
+                `;
+            }
+        }
+    }
+
+    function openSiaModal() {
+        const overlay = document.getElementById('siaDiagramModalOverlay');
+        if (overlay) {
+            overlay.classList.add('active');
+            resetModalSiaPanZoom();
+            renderModalSiaDiagram();
+        }
+    }
+
+    function closeSiaModal() {
+        const overlay = document.getElementById('siaDiagramModalOverlay');
+        if (overlay) overlay.classList.remove('active');
+    }
+
+    async function switchModalSiaDiagram(key, btnElement) {
+        activeSiaKey = key;
+        document.querySelectorAll('.sia-modal-tab-btn').forEach(b => {
+            b.classList.remove('active');
+            b.style.color = '';
+            b.style.fontWeight = 'normal';
+        });
+        if (btnElement) {
+            btnElement.classList.add('active');
+            btnElement.style.color = 'var(--color-seafoam)';
+            btnElement.style.fontWeight = 'bold';
+        }
+        resetModalSiaPanZoom();
+        await renderModalSiaDiagram();
+    }
+
+    async function renderModalSiaDiagram() {
+        const titleEl = document.getElementById('modalSiaDiagramTitle');
+        const canvasEl = document.getElementById('modalSiaDiagramCanvas');
+        if (!canvasEl || !titleEl) return;
+
+        const dia = SIA_DIAGRAMS[activeSiaKey];
+        if (!dia) return;
+
+        titleEl.innerText = dia.title;
+        canvasEl.innerHTML = `<div style="font-size: 11px; color: var(--color-text-muted); padding: 30px;">Rendering diagram...</div>`;
+
+        if (typeof mermaid !== 'undefined') {
+            try {
+                const uniqueId = `mermaid_modal_${activeSiaKey}_${Math.floor(Math.random()*100000)}`;
+                const { svg } = await mermaid.render(uniqueId, dia.definition.trim());
+                canvasEl.innerHTML = svg;
+                const svgElement = canvasEl.querySelector('svg');
+                if (svgElement) {
+                    svgElement.style.maxWidth = 'none';
+                    svgElement.style.height = 'auto';
+                }
+                setupSiaPanZoomListeners();
+            } catch (err) {
+                console.error("Mermaid modal render error:", err);
+                canvasEl.innerHTML = `
+                    <div style="font-size: 11px; color: #FF6B4A; text-align: center; padding: 24px; background: rgba(255,107,74,0.08); border-radius: 8px;">
+                        Diagram preview error.
+                    </div>
+                `;
+            }
+        }
     }
 
     window.addEventListener('DOMContentLoaded', () => {
